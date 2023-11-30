@@ -113,6 +113,7 @@ class AbstractProgram(ABC):
         self.nr_reactions = 0
         self.initial_fitness = INF
         self.contents = dict()
+		# Changes here to account for how to modify program
         self.reaction_mpids = dict()  # Modification point ids of reactions
         self.reactions = dict()  # reactions dictionary from name to reaction id
         self.react_probs = dict()
@@ -240,7 +241,7 @@ class AbstractProgram(ABC):
 
     def load_config(self):
         """
-        
+			TODO
           :param self:
         """
         config_file_name = AbstractProgram.CONFIG_FILE_NAME
@@ -346,6 +347,7 @@ class AbstractProgram(ABC):
             return target_file, random.randrange(len(candidates))
 
         candidates = self.reaction_mpids[target_file]
+		# Here we target different features of the AST
         if method == 'reaction':
             tid = self.react_probs[target_file].rnd_choice()
             return target_file, tid
@@ -365,54 +367,6 @@ class AbstractProgram(ABC):
 
         return target_file, tid
 
-    def reaction_lst(self, filename, root):
-        """
-        Given a root, prepare reaction list
-            self.reactions => Dictionary(file_name => Dictionary)
-            self.reactions[filename] => Dictionary(name => id)
-              e.g. {'reaction1': 'mw6a6837f6_96a0_4e94_8be5_4bded1c7520c', 'reaction2': 'mwce70d8c9_61e3_4f9f_89bb_475933ad4232'}
-          :param string filename: target file name
-          :param (Element in an ElementTree) root: AST node
-          :return type: void
-        """
-        reactions = root.iter("reaction")
-        react_lst = {}
-        react_probs = {}
-        for react in reactions:
-            name = react.attrib["name"]
-            react_lst[name] = react.attrib["id"]
-            react_probs[name] = 1
-
-        self.nr_reactions = len(react_lst)
-        self.reactions[filename] = react_lst
-        self.react_probs[filename] = react_probs
-
-    def generate_name(self, f_name, name, ID):
-        """
-        This function is used generate new names for new reactions,
-        Given a file name, identifier name and an ID, generate an unused identifier name
-          :param string f_name: target file name
-          :param string name: new reaction name string
-          :param string ID: new reaction string ID (e.g. mwb5da936c_1228_068e_2dec_053c1eb8dabe)
-          :return string: new reaction name (e.g. nreact_1, or nreact_2, etc.)
-        """
-        num = 1
-        while True:
-            if name + str(num) in self.reactions[f_name]:
-                num += 1
-                continue
-            name = name + str(num)
-            self.reactions[f_name][name] = ID
-            break
-
-        return name
-
-    def rename_target(self, f_name, target):
-        if target.tag == 'reaction':
-            rid = generate_id()  # generate a random reaction id
-            target.set('id', rid)
-            r_name = self.generate_name(f_name, "reaction_", rid)
-            target.set('name', r_name)
 
     def tag(self, filename, tid):
         """
