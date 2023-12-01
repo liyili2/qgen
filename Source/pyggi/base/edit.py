@@ -24,10 +24,11 @@ class AbstractEdit(ABC):
         return True
 
     @property
+    @abstractmethod
     def domain(self):
-        return AbstractEdit
+        pass
 
-    def __repr__(self):
+    def __str__(self):
         """
         :return: ``LineReplacement([target], [ingredient])``
         """
@@ -50,7 +51,7 @@ class AbstractEdit(ABC):
 
     @classmethod
     @abstractmethod
-    def create(cls, program, target_file=None, ingr_file=None, method='reaction'):
+    def create(cls):
         """
         :return: The operator instance with randomly-selected properties.
         """

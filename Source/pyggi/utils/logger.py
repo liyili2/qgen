@@ -18,7 +18,7 @@ class Logger(object):
     """
     LOG_DIR = os.path.join(PYGGI_DIR, 'logs')
 
-    def __init__(self, name, path_name):
+    def __init__(self, name):
         import time
         import os
         # initialize
@@ -26,12 +26,10 @@ class Logger(object):
         self._logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)s\t[%(levelname)s]\t%(message)s')
         # log directory
-        # if not os.path.exists(Logger.LOG_DIR):
-        #     pathlib.Path(Logger.LOG_DIR).mkdir(parents=True)
+        if not os.path.exists(Logger.LOG_DIR):
+            pathlib.Path(Logger.LOG_DIR).mkdir(parents=True)
         # file handler
-        # self.log_file_path = os.path.join(Logger.LOG_DIR, "{}.log".format(name))
-        self.log_file_path = os.path.join(path_name, "{}.log".format(name))
-
+        self.log_file_path = os.path.join(Logger.LOG_DIR, "{}.log".format(name))
         file_handler = logging.FileHandler(self.log_file_path)
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.DEBUG)

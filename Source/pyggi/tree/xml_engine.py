@@ -3,59 +3,14 @@ import re
 import os
 from . import AbstractTreeEngine
 from xml.etree import ElementTree
-from ..utils import generate_id
-
 
 class XmlEngine(AbstractTreeEngine):
     @classmethod
-    def process_tree(cls, tree, tags):
+    def process_tree(cls, tree):
         pass
 
     @classmethod
-    def clean_tree(cls, xml):
-        """
-        Receives an xml string. Then, it cleans and parses into
-        Xml ElementTree
-         :param string xml: xml string
-         :rtype: ElementTree
-        """
-        cnt = 0
-        while True:
-            prv = xml
-            rtxt = "ns" + str(cnt) + ":"
-            xml = xml.replace(rtxt, "")
-            if prv == xml:
-                break
-            cnt += 1
-
-        return ElementTree.fromstring(xml)
-
-    @classmethod
-    def get_contents(cls, file_path, tags):
-        """
-        Read a file and parse it into xml ElementTree
-        :param string file_path: xml file to read and process
-        :param string[] tags: tags to keep, other tags used in xml will be removed
-        :rtype: tuple (ElementTree, string prefix, string suffix)
-           prefix is the xml information before the <listOfReactions> tag
-           suffix is the xml information after the </listOfReactions> tag
-        """
-        with open(file_path) as target_file:
-            file_str = target_file.read()
-            pos1 = file_str.find("<listOfSpecies>")
-            pos2 = file_str.find("</listOfReactions>")
-            prefix = file_str[:pos1 + 16]
-            suffix = file_str[pos2:]
-
-        tree = ElementTree.parse(file_path).getroot()
-        xml = ElementTree.tostring(tree, method='xml').decode('ascii')
-        tree = cls.clean_tree(xml)
-
-        # cls.process_tree(tree, tags)
-        return tree, prefix, suffix
-
-    @classmethod
-    def get_contents2(cls, file_path):
+    def get_contents(cls, file_path):
         with open(file_path) as target_file:
             tree = cls.string_to_tree(target_file.read())
         cls.process_tree(tree)
@@ -84,8 +39,8 @@ class XmlEngine(AbstractTreeEngine):
     @classmethod
     def write_to_tmp_dir(cls, contents_of_file, tmp_path):
         root, ext = os.path.splitext(tmp_path)
-        assert ext == '.sbml'
-        with open(tmp_path, 'w') as tmp_file:
+        assert ext == '.xml'
+        with open(root, 'w') as tmp_file:
             tmp_file.write(cls.dump(contents_of_file))
 
     @classmethod
@@ -116,22 +71,21 @@ class XmlEngine(AbstractTreeEngine):
             pattern = re.compile(r'^(.*)/([^\[]+)(?:\[([^\]]+)\])?$')
             match = re.match(pattern, xpath)
             assert match
-            return match.group(1), match.group(2), int(match.group(3)), None
+            return (match.group(1), match.group(2), int(match.group(3)), None)
         else:
             if xpath[:len(prefix)+1] == prefix+'/':
                 pattern = re.compile(r'^/([^\[]+)(?:\[([^\]]+)\])?(?:/(.*))?$')
                 match = re.match(pattern, xpath[len(prefix):])
                 assert match
-                return prefix, match.group(1), int(match.group(2)), match.group(3)
+                return (prefix, match.group(1), int(match.group(2)), match.group(3))
             else:
-                return None, None, None, None
+                return (None, None, None, None)
 
     @classmethod
     def do_replace(cls, program, op, new_contents, modification_points):
         # get elements
-        f_name = op.target[0]
-        target = new_contents[f_name].find(modification_points[f_name][op.target[1]])
-        ingredient = new_contents[f_name].find(modification_points[f_name][op.ingredient[1]])
+        target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
+        ingredient = program.contents[op.ingredient[0]].find(program.modification_points[op.ingredient[0]][op.ingredient[1]])
         if target is None or ingredient is None:
             return False
         if target == ingredient:
@@ -150,9 +104,9 @@ class XmlEngine(AbstractTreeEngine):
 
         # update modification points
         if old_tag != ingredient.tag:
-            head, tag, pos, _ = cls.split_xpath(modification_points[f_name][op.target[1]])
+            head, tag, pos, _ = cls.split_xpath(modification_points[op.target[0]][op.target[1]])
             itag = 1
-            for i, xpath in enumerate(modification_points[f_name]):
+            for i, xpath in enumerate(modification_points[op.target[0]]):
                 h, t, p, s = cls.split_xpath(xpath, head)
                 if i < op.target[1]:
                     if h != head:
@@ -177,16 +131,14 @@ class XmlEngine(AbstractTreeEngine):
                     else:
                         new_pos = '{}/{}[{}]'.format(h, t, p+1)
                     modification_points[op.target[0]][i] = new_pos
-
         return True
 
     @classmethod
     def do_insert(cls, program, op, new_contents, modification_points):
         # get elements
-        f_name = op.target[0]
-        target = new_contents[f_name].find(modification_points[f_name][op.target[1]])
-        parent = new_contents[f_name].find(modification_points[f_name][op.target[1]]+'..')
-        ingredient = new_contents[f_name].find(modification_points[f_name][op.ingredient[1]])
+        target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
+        parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
+        ingredient = program.contents[op.ingredient[0]].find(program.modification_points[op.ingredient[0]][op.ingredient[1]])
         if target is None or ingredient is None:
             return False
 
@@ -194,17 +146,20 @@ class XmlEngine(AbstractTreeEngine):
         for i, child in enumerate(parent):
             if child == target:
                 tmp = copy.deepcopy(ingredient)
-                tmp.tail = None
                 if op.direction == 'after':
+                    tmp.tail = child.tail
+                    child.tail = None
                     i += 1
+                else:
+                    tmp.tail = None
                 parent.insert(i, tmp)
                 break
         else:
             assert False
 
         # update modification points
-        head, tag, pos, _ = cls.split_xpath(modification_points[f_name][op.target[1]])
-        for i, xpath in enumerate(modification_points[f_name]):
+        head, tag, pos, _ = cls.split_xpath(modification_points[op.target[0]][op.target[1]])
+        for i, xpath in enumerate(modification_points[op.target[0]]):
             if i < op.target[1]:
                 continue
             h, t, p, s = cls.split_xpath(xpath, head)
@@ -217,14 +172,7 @@ class XmlEngine(AbstractTreeEngine):
                     new_pos = '{}/{}[{}]/{}'.format(h, t, p+1, s)
                 else:
                     new_pos = '{}/{}[{}]'.format(h, t, p+1)
-                modification_points[f_name][i] = new_pos
-
-        if target.tag == 'reaction':
-            rid = generate_id()  # generate a random reaction id
-            target.set('id', rid)
-            r_name = program.generate_name(f_name, "reaction_", rid)
-            target.set('name', r_name)
-
+                modification_points[op.target[0]][i] = new_pos
         return True
 
     @classmethod

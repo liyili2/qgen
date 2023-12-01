@@ -1,108 +1,58 @@
 """
 This module contains Patch class.
 """
-from __future__ import annotations
+import os
 from copy import deepcopy
 from . import AbstractEdit
-from .. import INF
-from .program import AbstractProgram
-from ..jmetal.core.solution import Solution
 
-
-class Patch(Solution):
+class Patch:
     """
 
     Patch is a sequence of edit operators: both atomic and custom.
-    During search iteration, PyGGI modifies the source code of the target program
+    During search iteration, PYGGI modifies the source code of the target program
     by applying a candidate patch. Subsequently, it runs the test script to collect
     dynamic information, such as the execution time or any other user-provided
-    properties, via the predefined format that PyGGI recognises.
+    properties, via the predefined format that PYGGI recognises.
+
     """
-    def __init__(self, program: AbstractProgram, number_of_variables: int = 1, number_of_objectives: int = 1):
-        # super(JPPatch, self).__init__(program)
-        super(Patch, self).__init__(number_of_variables=number_of_variables, number_of_objectives=number_of_objectives)
-        self.program: AbstractProgram = program
-        self.edit_list: list = []
-        self.fitness: float = INF
-        self.modified: bool = True
-        self.elapsed = 0
+    def __init__(self, program):
+        self.program = program
+        self.edit_list = []
 
-    # Sort according fitness in decreasing order
-    def __repr__(self) -> str:
-        return '\n'.join(list(map(str, self.edit_list))) + " {:.0f}".format(self.fitness)
+    def __str__(self):
+        return ' | '.join(list(map(str, self.edit_list)))
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.edit_list)
 
-    def __lt__(self, other: Patch) -> bool:
-        if self.fitness == INF:
-            return False
-        if abs(self.fitness - other.fitness) < 0.0001:
-            return self.__len__() < other.__len__()
+    def __eq__(self, other):
+        return isinstance(other, Patch) and self.edit_list == other.edit_list
 
-        return self.fitness < other.fitness
-
-    def __eq__(self, other: Patch) -> bool:
-        if len(self.edit_list) != len(other.edit_list):
-            return False
-        for k, el in enumerate(self.edit_list):
-            if el != other.edit_list[k]:
-                return False
-        return True
-        # return self.edit_list == other.edit_list
-
-    def __le__(self, other: Patch) -> bool:
-        return self < other or self == other
-
-    def clone(self) -> Patch:
+    def clone(self):
         """
         Create a new patch which has the same sequence of edits with the current one.
 
         :return: The created Patch
         :rtype: :py:class:`.Patch`
         """
-        clone_patch = Patch(self.program, number_of_variables=self.number_of_variables, \
-                            number_of_objectives=self.number_of_objectives)
+        clone_patch = Patch(self.program)
         clone_patch.edit_list = deepcopy(self.edit_list)
-        clone_patch.fitness = self.fitness
-        clone_patch.modified = self.modified
-        clone_patch.elapsed = self.elapsed
-        clone_patch.program = self.program
         return clone_patch
 
     @property
     def diff(self):
         return self.program.diff(self)
 
-    def edit(self, edit: AbstractEdit, index: int = 0):
+    def add(self, edit):
         """
         Add an edit to the edit list
-        :param edit: The edit to be added
-        :param index: index of edit_list
-        :type edit: :py:class:`.base.AbstractEdit`
-        :return: None
-        """
-        assert isinstance(edit, AbstractEdit)
-        if index < 0 or index >= len(self.edit_list):
-            return
 
-        self.edit_list[index] = deepcopy(edit)
-
-    def add(self, edit: AbstractEdit):
-        """
-        Add an edit to the edit list
-        :param after: if true, the patch is added to the end
         :param edit: The edit to be added
         :type edit: :py:class:`.base.AbstractEdit`
         :return: None
         """
         assert isinstance(edit, AbstractEdit)
-
-        if type(edit) == 'NewReaction':
-            self.edit_list.append(edit)
-            return
-
-        self.edit_list.insert(0, edit)
+        self.edit_list.append(edit)
 
     def remove(self, index: int):
         """
