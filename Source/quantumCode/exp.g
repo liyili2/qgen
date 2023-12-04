@@ -10,16 +10,23 @@ grammar TypeLang;
         (def=definedecl { $defs.add($def.ast); } )* (e=exp { $expr = $e.ast; } )? 
         { $ast = new Program($defs, $expr); }
         ;
- 
-exp returns [Exp ast]: 
+        
+        
+vexp returns [VExp ast]:
         va=varexp { $ast = $va.ast; }
         | num=numexp { $ast = $num.ast; }
-        | str=strexp { $ast = $str.ast; }
         | bl=boolexp { $ast = $bl.ast; }
         | add=addexp { $ast = $add.ast; }
         | sub=subexp { $ast = $sub.ast; }
         | mul=multexp { $ast = $mul.ast; }
         | div=divexp { $ast = $div.ast; }
+        ;
+
+posi returns [PosiExp ast]:
+        posii=posiexp {$ast = $posii.ast;};
+        
+exp returns [Exp ast]: 
+        vxx=vexp { $ast = $xx.ast; }
         | let=letexp { $ast = $let.ast; }
         | lam=lambdaexp { $ast = $lam.ast; }
         | call=callexp { $ast = $call.ast; }
@@ -27,14 +34,10 @@ exp returns [Exp ast]:
         | less=lessexp { $ast = $less.ast; }
         | eq=equalexp { $ast = $eq.ast; }
         | gt=greaterexp { $ast = $gt.ast; }
-        | car=carexp { $ast = $car.ast; }
-        | cdr=cdrexp { $ast = $cdr.ast; }
-        | cons=consexp { $ast = $cons.ast; }
-        | list=listexp { $ast = $list.ast; }
-        | nl=nullexp { $ast = $nl.ast; }
+
+
         | lrec=letrecexp { $ast = $lrec.ast; }
         | skip=skipexp {$ast = $skip.ast;}
-        | posi=posiexp {$ast = $posi.ast;}
         | xgate=XExp {$ast = xgate.ast;}
         | cu=cuexp {$ast = cu.ast;}
         | rz=rzexp {$ast = rz.ast;}
@@ -57,47 +60,58 @@ exp returns [Exp ast]:
 
 
  skipexp returns [SkipExp] :
-        SKIP { $ast = new SkipExp(); }
+        SKIP e1=posiexp { $ast = new SkipExp(e1); }
         ;
         
+
+
  posiexp returns [PosiExp ast] :
-        '(' e1=exp
+        '(' e1=vexp
         ',' 
-            e2=exp 
+            e2=vexp 
         ')' { $ast = new PosiExp($e1.ast,$e2.ast); }
         ;
  xgate returns [XExp ast]:
-       Xgate e = exp {$ast = new XExp($e.ast)} ;
+       Xgate e = posiexp {$ast = new XExp($e.ast)} ;
+       
+       
+       
 
  cuexp returns [CUExp ast]:
-       CU e1=exp e2=exp {$ast = new CUExp($e1.ast, $e2.ast)} ;
+       CU e1=posiexp e2=exp {$ast = new CUExp($e1.ast, $e2.ast)} ;
+       
+       
 
  rzexp returns [RZExp ast]:
-       RZ e1=exp e2=exp {$ast = new RZExp($e1.ast, $e2.ast)} ;
+       RZ e1=vexp e2=exp {$ast = new RZExp($e1.ast, $e2.ast)} ;
+       
 
  rrzexp returns [RRZExp ast]:
-       RRZ e1=exp e2=exp {$ast = new RRZExp($e1.ast, $e2.ast)} ;
+       RRZ e1=vexp e2=exp {$ast = new RRZExp($e1.ast, $e2.ast)} ;
+       
 
  srexp returns [SRExp ast]:
-       SR e1=exp e2=exp {$ast = new SRExp($e1.ast, $e2.ast)} ;
+       SR e1=vexp e2=exp {$ast = new SRExp($e1.ast, $e2.ast)} ;
        
  srrexp returns [SRRExp ast]:
-       SRR e1=exp e2=exp {$ast = new SRRExp($e1.ast, $e2.ast)} ;
+       SRR e1=vexp e2=exp {$ast = new SRRExp($e1.ast, $e2.ast)} ;
 
  lshiftexp returns [LshExp ast]:
-       Lshift e1=exp {$ast = new LshExp($e1.ast)} ;
+       Lshift e1=vexp {$ast = new LshExp($e1.ast)} ;
+
 
  rshiftexp returns [RshExp ast]:
-       Rshift e1=exp {$ast = new RshExp($e1.ast)} ;
+       Rshift e1=vexp {$ast = new RshExp($e1.ast)} ;
 
  revexp returns [RevExp ast]:
-       Rev e1=exp {$ast = new RevExp($e1.ast)} ;
+       Rev e1=vexp {$ast = new RevExp($e1.ast)} ;
 
  qftexp returns [QFTExp ast]:
-       QFT e1=exp e2=exp {$ast = new QFTExp($e1.ast, $e2.ast)} ;
+       QFT e1=vexp e2=vexp {$ast = new QFTExp($e1.ast, $e2.ast)} ;
+       
 
  rqftexp returns [QFTExp ast]:
-       RQFT e1=exp e2=exp {$ast = new RQFTExp($e1.ast, $e2.ast)} ;
+       RQFT e1=vexp e2=vexp {$ast = new RQFTExp($e1.ast, $e2.ast)} ;
 
  seqexp returns [SeqExp ast]:
       e1=exp Seq e2=exp {$ast = new SeqExp($e1.ast, $e2.ast)} ;
@@ -167,43 +181,9 @@ exp returns [Exp ast]:
         ;
         
 
- carexp returns [CarExp ast] :
-        '(' Car 
-            e=exp 
-        ')' { $ast = new CarExp($e.ast); }
-        ;
-
- cdrexp returns [CdrExp ast] :
-        '(' Cdr 
-            e=exp 
-        ')' { $ast = new CdrExp($e.ast); }
-        ;
-
- consexp returns [ConsExp ast] :
-        '(' Cons 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new ConsExp($e1.ast,$e2.ast); }
-        ;
-
-
- listexp returns [ListExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
-        '(' List ':' t=type
-            ( e=exp { $list.add($e.ast); } )* 
-        ')' { $ast = new ListExp($t.ast ,$list); }
-        ;
-
- nullexp returns [NullExp ast] :
-        '(' Null 
-            e=exp 
-        ')' { $ast = new NullExp($e.ast); }
-        ;
- 
- strexp returns [StrExp ast] :
-        s=StrLiteral { $ast = new StrExp($s.text); } 
-        ;
+ //strexp returns [StrExp ast] :
+ //       s=StrLiteral { $ast = new StrExp($s.text); } 
+  //      ;
 
  boolexp returns [BoolExp ast] :
         TrueLiteral { $ast = new BoolExp(true); } 
