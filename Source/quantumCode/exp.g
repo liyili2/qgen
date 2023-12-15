@@ -38,7 +38,7 @@ exp returns [Exp ast]:
 
         | lrec=letrecexp { $ast = $lrec.ast; }
         | skip=skipexp {$ast = $skip.ast;}
-        | xgate=XExp {$ast = $xgate.ast;}
+        | xgexp=XExp {$ast = $xgexp.ast;}
         | cu=cuexp {$ast = cu.ast;}
         | rz=rzexp {$ast = rz.ast;}
         | rrz=rrzexp {$ast = rrz.ast;}
@@ -71,7 +71,7 @@ exp returns [Exp ast]:
             e2=vexp 
         ')' { $ast = new PosiExp($e1.ast,$e2.ast); }
         ;
- xgate returns [XExp ast]:
+ xgexp returns [XExp ast]:
        Xgate e = posiexp {$ast = new XExp($e.ast)} ;
        
        
