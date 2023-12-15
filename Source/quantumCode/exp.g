@@ -38,7 +38,7 @@ exp returns [Exp ast]:
 
         | lrec=letrecexp { $ast = $lrec.ast; }
         | skip=skipexp {$ast = $skip.ast;}
-        | xgexp=XExp {$ast = $xgexp.ast;}
+        | xgate=xgexp {$ast = $xgate.ast;}
         | cu=cuexp {$ast = cu.ast;}
         | rz=rzexp {$ast = rz.ast;}
         | rrz=rrzexp {$ast = rrz.ast;}
