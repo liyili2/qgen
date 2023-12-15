@@ -38,7 +38,7 @@ exp returns [Exp ast]:
 
         | lrec=letrecexp { $ast = $lrec.ast; }
         | skip=skipexp {$ast = $skip.ast;}
-        | xgate=XExp {$ast = xgate.ast;}
+        | xgate=XExp {$ast = $xgate.ast;}
         | cu=cuexp {$ast = cu.ast;}
         | rz=rzexp {$ast = rz.ast;}
         | rrz=rrzexp {$ast = rrz.ast;}
@@ -60,7 +60,7 @@ exp returns [Exp ast]:
 
 
  skipexp returns [SkipExp] :
-        SKIP e1=posiexp { $ast = new SkipExp(e1); }
+        SKIPEXP e1=posiexp { $ast = new SkipExp(e1); }
         ;
         
 
@@ -348,7 +348,7 @@ stringt returns [StringT ast] :
 // Deref : 'deref' ;
 // Assign : 'set!' ;
 
- SKIP : 'SKIP';
+ SKIPEXP : 'SKIP';
  Xgate : 'X' ;
  CU : 'CU';
  RZ : 'RZ';
