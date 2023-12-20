@@ -187,7 +187,13 @@ exp returns [Exp ast]:
             body=exp 
         { $ast = new LetExp($names, $types, $value_exps, $body.ast); }
 ;
-        
+
+ matchexp  returns [MatchExp ast] 
+        locals [ArrayList<Pair<Exp,Exp>> value_exps]
+        @init { $value_exps = new ArrayList<Pair<Exp,Exp>>(); } :
+        Match e=exp With ( '|' e1=exp '=>' e2=exp { Pair<Exp,Exp> tmp = new Pair<Exp,Exp>($e1.ast,$e2.ast); $value_exps.add(tmp); } )+
+        { $ast = new MatchExp($e.ast, $value_exps); }
+;
 
  //strexp returns [StrExp ast] :
  //       s=StrLiteral { $ast = new StrExp($s.text); } 
@@ -291,7 +297,8 @@ pairtype returns [PairT ast] :
  //  - lexical specification rules start with uppercase
 
  Let : 'let' ;
- Letrec : 'letrec' ;
+ Match : 'match' ;
+ With : 'with' ;
  Fun : 'Fun' ;
  If : 'if' ; 
  Car : 'car' ; 
