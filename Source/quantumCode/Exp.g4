@@ -218,7 +218,7 @@ exp returns [Exp ast]:
 
  ifexp returns [IfExp ast] :
         '(' If 
-            e1=exp 
+            e1=bexp 
             e2=exp 
             e3=exp 
         ')' { $ast = new IfExp($e1.ast,$e2.ast,$e3.ast); }
