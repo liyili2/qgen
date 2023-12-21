@@ -29,9 +29,9 @@ bexp returns [BExp ast]:
 posi returns [PosiExp ast]:
         posii=posiexp {$ast = $posii.ast;};
         
-exp returns [Exp ast]: 
-          let=letexp { $ast = $let.ast; }
-        | lam=lambdaexp { $ast = $lam.ast; }
+exp returns [Exp ast]:
+          vb=varexp {$ ast = $vb.ast;} 
+        | let=letexp { $ast = $let.ast; }
         | call=callexp { $ast = $call.ast; }
         | i=ifexp { $ast = $i.ast; }
  //       | lrec=letrecexp { $ast = $lrec.ast; }
@@ -121,58 +121,40 @@ exp returns [Exp ast]:
         | '-' n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble("-" + $n0.text+"."+$n1.text)); }
         ;       
   
- addexp returns [AddExp ast]
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ addexp returns [AddExp ast]:
         '(' '+'
-            e=exp { $list.add($e.ast); } 
-            e=exp { $list.add($e.ast); }
-        ')' { $ast = new AddExp($list); }
+            e1=exp e2=exp 
+        ')' { $ast = new AddExp($e1.ast,$e2.ast); }
         ;
  
- subexp returns [SubExp ast]  
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ subexp returns [SubExp ast]: 
         '(' '-'
-            e=exp { $list.add($e.ast); } 
-            ( e=exp { $list.add($e.ast); } )?
-        ')' { $ast = new SubExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new SubExp($e1.ast,$e2.ast); }
         ;
 
- multexp returns [MultExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ multexp returns [MultExp ast]:
         '(' '*'
-            e=exp { $list.add($e.ast); } 
-            e=exp { $list.add($e.ast); }
-        ')' { $ast = new MultExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new MultExp($e1.ast,$e2.ast); }
         ;
  
- divexp returns [DivExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ divexp returns [DivExp ast]:
         '(' '/'
-            e=exp { $list.add($e.ast); } 
-            e=exp { $list.add($e.ast); } 
-        ')' { $ast = new DivExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new DivExp($e1.ast,$e2.ast); }
         ;
         
- modexp returns [ModExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ modexp returns [ModExp ast]:
         '(' '%'
-            e=exp { $list.add($e.ast); } 
-            e=exp { $list.add($e.ast); } 
-        ')' { $ast = new ModExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new ModExp($e1.ast,$e2.ast); }
         ;
 
- expexp returns [ExpExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ expexp returns [ExpExp ast]:
         '(' '^'
-            e=exp { $list.add($e.ast); } 
-            e=exp { $list.add($e.ast); } 
-        ')' { $ast = new ExpExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new ExpExp($e1.ast,$e2.ast); }
         ;
         
  varexp returns [VarExp ast]: 
@@ -180,12 +162,11 @@ exp returns [Exp ast]:
         ;
 
  letexp  returns [LetExp ast] 
-        locals [ArrayList<String> names, ArrayList<Type> types, ArrayList<Exp> value_exps]
-        @init { $names = new ArrayList<String>(); $types=new ArrayList<Type>(); $value_exps = new ArrayList<Exp>(); } :
-        Let 
-            '(' ( '(' ida=Identifier ':' t=typea e=exp ')' { $names.add($ida.text);$types.add($t.ast); $value_exps.add($e.ast); } )  ')'
-            body=exp 
-        { $ast = new LetExp($names, $types, $value_exps, $body.ast); }
+        locals [ArrayList<String> names, ArrayList<Type> types]
+        @init { $names = new ArrayList<String>(); $types=new ArrayList<Type>(); } :
+        Let ( '(' ida=Identifier ':' t=typea ')' { $names.add($ida.text);$types.add($t.ast); } )+
+            e=exp IN body=exp 
+        { $ast = new LetExp($names, $types, $e.ast, $body.ast); }
 ;
 
  matchexp  returns [MatchExp ast] 
@@ -206,14 +187,14 @@ exp returns [Exp ast]:
 
 
 
-  lambdaexp returns [LambdaExp ast] 
-        locals [ArrayList<String> formals, ArrayList<Type> types  ]
-        @init { $formals = new ArrayList<String>(); $types = new ArrayList<Type>(); } :
-        Fun 
-        '(' (ida=Identifier ':' ty=typea { $formals.add($ida.text); $types.add($ty.ast); } )* ')'
-            body=exp
-        {$ast = new LambdaExp($formals, $types, $body.ast); }
-        ;
+ // lambdaexp returns [LambdaExp ast] 
+ //       locals [ArrayList<String> formals, ArrayList<Type> types  ]
+ //       @init { $formals = new ArrayList<String>(); $types = new ArrayList<Type>(); } :
+ //       Fun 
+ //       '(' (ida=Identifier ':' ty=typea { $formals.add($ida.text); $types.add($ty.ast); } )* ')'
+ //           body=exp
+ //       {$ast = new LambdaExp($formals, $types, $body.ast); }
+ //       ;
 
  callexp returns [CallExp ast] 
         locals [ArrayList<Exp> arguments = new ArrayList<Exp>();  ] :
@@ -297,9 +278,10 @@ pairtype returns [PairT ast] :
  //  - lexical specification rules start with uppercase
 
  Let : 'let' ;
+ IN : 'in' ;
  Match : 'match' ;
  With : 'with' ;
- Fun : 'Fun' ;
+ //Fun : 'Fun' ;
  If : 'if' ; 
  Car : 'car' ; 
  Cdr : 'cdr' ; 
