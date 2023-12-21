@@ -19,6 +19,11 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExpParser#bexp.
+    def visitBexp(self, ctx:ExpParser.BexpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExpParser#posi.
     def visitPosi(self, ctx:ExpParser.PosiContext):
         return self.visitChildren(ctx)
@@ -124,6 +129,16 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExpParser#modexp.
+    def visitModexp(self, ctx:ExpParser.ModexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpParser#expexp.
+    def visitExpexp(self, ctx:ExpParser.ExpexpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExpParser#varexp.
     def visitVarexp(self, ctx:ExpParser.VarexpContext):
         return self.visitChildren(ctx)
@@ -134,18 +149,13 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#definedecl.
-    def visitDefinedecl(self, ctx:ExpParser.DefinedeclContext):
+    # Visit a parse tree produced by ExpParser#matchexp.
+    def visitMatchexp(self, ctx:ExpParser.MatchexpContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by ExpParser#boolexp.
     def visitBoolexp(self, ctx:ExpParser.BoolexpContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#lambdaexp.
-    def visitLambdaexp(self, ctx:ExpParser.LambdaexpContext):
         return self.visitChildren(ctx)
 
 
@@ -174,8 +184,13 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#letrecexp.
-    def visitLetrecexp(self, ctx:ExpParser.LetrecexpContext):
+    # Visit a parse tree produced by ExpParser#andexp.
+    def visitAndexp(self, ctx:ExpParser.AndexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpParser#orexp.
+    def visitOrexp(self, ctx:ExpParser.OrexpContext):
         return self.visitChildren(ctx)
 
 
@@ -189,11 +204,6 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#unittype.
-    def visitUnittype(self, ctx:ExpParser.UnittypeContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExpParser#numtype.
     def visitNumtype(self, ctx:ExpParser.NumtypeContext):
         return self.visitChildren(ctx)
@@ -201,16 +211,6 @@ class ExpVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExpParser#pairtype.
     def visitPairtype(self, ctx:ExpParser.PairtypeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#reft.
-    def visitReft(self, ctx:ExpParser.ReftContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#stringt.
-    def visitStringt(self, ctx:ExpParser.StringtContext):
         return self.visitChildren(ctx)
 
 

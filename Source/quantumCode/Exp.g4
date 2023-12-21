@@ -1,10 +1,7 @@
 grammar Exp;
 
- program returns [Program ast]        
-        locals [ArrayList<DefineDecl> defs, Exp expr]
-        @init { $defs = new ArrayList<DefineDecl>(); $expr = new UnitExp(); } :
-        (defa=definedecl { $defs.add($defa.ast); } )* (e=exp { $expr = $e.ast; } )? 
-        { $ast = new Program($defs, $expr); }
+ program returns [Exp ast]:        
+        e=exp { $ast = $e.ast; } 
         ;
         
         
@@ -16,21 +13,28 @@ vexp returns [VExp ast]:
         | sub=subexp { $ast = $sub.ast; }
         | mul=multexp { $ast = $mul.ast; }
         | div=divexp { $ast = $div.ast; }
+        | mod=modexp { $ast = $mod.ast; }
+        | expa=expexp { $ast = $expa.ast; }
         ;
 
+bexp returns [BExp ast]:
+         less=lessexp { $ast = $less.ast; }
+        | eq=equalexp { $ast = $eq.ast; }
+        | gt=greaterexp { $ast = $gt.ast; }
+        | anda=andexp { $ast = $anda.ast; }
+        | ora=orexp { $ast = $ora.ast; }
+        ;        
+        
+        
 posi returns [PosiExp ast]:
         posii=posiexp {$ast = $posii.ast;};
         
-exp returns [Exp ast]: 
-        vxx=vexp { $ast = $vxx.ast; }
+exp returns [Exp ast]:
+          vb=varexp {$ ast = $vb.ast;} 
         | let=letexp { $ast = $let.ast; }
-        | lam=lambdaexp { $ast = $lam.ast; }
         | call=callexp { $ast = $call.ast; }
         | i=ifexp { $ast = $i.ast; }
-        | less=lessexp { $ast = $less.ast; }
-        | eq=equalexp { $ast = $eq.ast; }
-        | gt=greaterexp { $ast = $gt.ast; }
-        | lrec=letrecexp { $ast = $lrec.ast; }
+ //       | lrec=letrecexp { $ast = $lrec.ast; }
         | skipa=skipexp {$ast = $skipa.ast;}
         | xgate=xgexp {$ast = $xgate.ast;}
         | cu=cuexp {$ast = cu.ast;}
@@ -117,63 +121,60 @@ exp returns [Exp ast]:
         | '-' n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble("-" + $n0.text+"."+$n1.text)); }
         ;       
   
- addexp returns [AddExp ast]
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ addexp returns [AddExp ast]:
         '(' '+'
-            e=exp { $list.add($e.ast); } 
-            ( e=exp { $list.add($e.ast); } )+
-        ')' { $ast = new AddExp($list); }
+            e1=exp e2=exp 
+        ')' { $ast = new AddExp($e1.ast,$e2.ast); }
         ;
  
- subexp returns [SubExp ast]  
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ subexp returns [SubExp ast]: 
         '(' '-'
-            e=exp { $list.add($e.ast); } 
-            ( e=exp { $list.add($e.ast); } )+ 
-        ')' { $ast = new SubExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new SubExp($e1.ast,$e2.ast); }
         ;
 
- multexp returns [MultExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ multexp returns [MultExp ast]:
         '(' '*'
-            e=exp { $list.add($e.ast); } 
-            ( e=exp { $list.add($e.ast); } )+ 
-        ')' { $ast = new MultExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new MultExp($e1.ast,$e2.ast); }
         ;
  
- divexp returns [DivExp ast] 
-        locals [ArrayList<Exp> list]
-        @init { $list = new ArrayList<Exp>(); } :
+ divexp returns [DivExp ast]:
         '(' '/'
-            e=exp { $list.add($e.ast); } 
-            ( e=exp { $list.add($e.ast); } )+ 
-        ')' { $ast = new DivExp($list); }
+            e1=exp e2=exp
+        ')' { $ast = new DivExp($e1.ast,$e2.ast); }
+        ;
+        
+ modexp returns [ModExp ast]:
+        '(' '%'
+            e1=exp e2=exp
+        ')' { $ast = new ModExp($e1.ast,$e2.ast); }
         ;
 
+ expexp returns [ExpExp ast]:
+        '(' '^'
+            e1=exp e2=exp
+        ')' { $ast = new ExpExp($e1.ast,$e2.ast); }
+        ;
+        
  varexp returns [VarExp ast]: 
         ida=Identifier { $ast = new VarExp($ida.text); }
         ;
 
  letexp  returns [LetExp ast] 
-        locals [ArrayList<String> names, ArrayList<Type> types, ArrayList<Exp> value_exps]
-        @init { $names = new ArrayList<String>(); $types=new ArrayList<Type>(); $value_exps = new ArrayList<Exp>(); } :
-        '(' Let 
-            '(' ( '(' ida=Identifier ':' t=typea e=exp ')' { $names.add($ida.text);$types.add($t.ast); $value_exps.add($e.ast); } )+  ')'
-            body=exp 
-            ')' { $ast = new LetExp($names, $types, $value_exps, $body.ast); }
+        locals [ArrayList<String> names, ArrayList<Type> types]
+        @init { $names = new ArrayList<String>(); $types=new ArrayList<Type>(); } :
+        Let ( '(' ida=Identifier ':' t=typea ')' { $names.add($ida.text);$types.add($t.ast); } )+
+            e=exp IN body=exp 
+        { $ast = new LetExp($names, $types, $e.ast, $body.ast); }
 ;
 
-
- definedecl returns [DefineDecl ast] :
-        '(' Define 
-            ida=Identifier':' t=typea
-            e=exp
-            ')' { $ast = new DefineDecl($ida.text, $t.ast, $e.ast); }
-        ;
-        
+ matchexp  returns [MatchExp ast] 
+        locals [ArrayList<Pair<Exp,Exp>> value_exps]
+        @init { $value_exps = new ArrayList<Pair<Exp,Exp>>(); } :
+        Match e=exp With ( '|' e1=exp '=>' e2=exp { Pair<Exp,Exp> tmp = new Pair<Exp,Exp>($e1.ast,$e2.ast); $value_exps.add(tmp); } )+
+        { $ast = new MatchExp($e.ast, $value_exps); }
+;
 
  //strexp returns [StrExp ast] :
  //       s=StrLiteral { $ast = new StrExp($s.text); } 
@@ -186,25 +187,25 @@ exp returns [Exp ast]:
 
 
 
-  lambdaexp returns [LambdaExp ast] 
-        locals [ArrayList<String> formals, ArrayList<Type> types  ]
-        @init { $formals = new ArrayList<String>(); $types = new ArrayList<Type>(); } :
-        '(' Lambda 
-            '(' (ida=Identifier ':' ty=typea { $formals.add($ida.text); $types.add($ty.ast); } )* ')'
-            body=exp
-        ')' {$ast = new LambdaExp($formals, $types, $body.ast); }
-        ;
+ // lambdaexp returns [LambdaExp ast] 
+ //       locals [ArrayList<String> formals, ArrayList<Type> types  ]
+ //       @init { $formals = new ArrayList<String>(); $types = new ArrayList<Type>(); } :
+ //       Fun 
+ //       '(' (ida=Identifier ':' ty=typea { $formals.add($ida.text); $types.add($ty.ast); } )* ')'
+ //           body=exp
+ //       {$ast = new LambdaExp($formals, $types, $body.ast); }
+ //       ;
 
  callexp returns [CallExp ast] 
         locals [ArrayList<Exp> arguments = new ArrayList<Exp>();  ] :
         '(' f=exp 
-            ( e=exp { $arguments.add($e.ast); } )* 
+            ( e=exp { $arguments.add($e.ast); } )
         ')' { $ast = new CallExp($f.ast,$arguments); }
         ;
 
  ifexp returns [IfExp ast] :
         '(' If 
-            e1=exp 
+            e1=bexp 
             e2=exp 
             e3=exp 
         ')' { $ast = new IfExp($e1.ast,$e2.ast,$e3.ast); }
@@ -231,14 +232,18 @@ exp returns [Exp ast]:
         ')' { $ast = new GreaterExp($e1.ast,$e2.ast); }
         ;
 
+ andexp returns [AndExp ast] :
+        '(' '&&' 
+            e1=exp 
+            e2=exp 
+        ')' { $ast = new LessExp($e1.ast,$e2.ast); }
+        ;
 
- 
- letrecexp returns [LetrecExp ast] 
-        locals [ArrayList<String> ids = new ArrayList<String>(),ArrayList<Type> types = new ArrayList<Type>(), ArrayList<Exp> funs = new ArrayList<Exp>(); ] :
-        '(' Letrec 
-            '(' ( '(' ida=Identifier':' t=typea  fun=exp ')' { $ids.add($ida.text); $types.add($t.ast);$funs.add($fun.ast); } )+  ')'
-            body=exp 
-        ')' { $ast = new LetrecExp($ids, $types, $funs, $body.ast); }
+ orexp returns [OrExp ast] :
+        '(' '||' 
+            e1=exp 
+            e2=exp 
+        ')' { $ast = new EqualExp($e1.ast,$e2.ast); }
         ;
 
 
@@ -247,17 +252,10 @@ typea returns [Type ast]:
         |f=funct  { $ast = $f.ast; }
         |n=numtype { $ast = $n.ast; }
         |p=pairtype { $ast = $p.ast; }
-        |s=stringt { $ast = $s.ast; }
-        |r=reft { $ast = $r.ast; }
-        |u=unittype { $ast = $u.ast; }
         ;
 
 booleantype returns [BoolT ast] :
         'bool' { $ast = new BoolT(); }
-        ;
-
-unittype returns [UnitT ast] :
-        'unit' { $ast = new UnitT(); }
         ;
 
 numtype returns [NumT ast] :
@@ -266,14 +264,6 @@ numtype returns [NumT ast] :
         
 pairtype returns [PairT ast] :
         '(' fst = typea ',' snd= typea ')' { $ast = new PairT($fst.ast, $snd.ast); }
-        ;
-        
-reft returns [RefT ast] :
-        'Ref' ret = typea  { $ast = new RefT($ret.ast); }
-        ;
-
-stringt returns [StringT ast] :
-         'Str'{  $ast = new StringT(); }
         ;
 
  funct returns [FuncT ast] 
@@ -287,16 +277,14 @@ stringt returns [StringT ast] :
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
 
- Define : 'define' ;
  Let : 'let' ;
- Letrec : 'letrec' ;
- Lambda : 'lambda' ;
+ IN : 'in' ;
+ Match : 'match' ;
+ With : 'with' ;
+ //Fun : 'Fun' ;
  If : 'if' ; 
  Car : 'car' ; 
  Cdr : 'cdr' ; 
- Cons : 'cons' ; 
- List : 'list' ; 
- Null : 'null?' ; 
  Less : '<' ;
  Equal : '=' ;
  Greater : '>' ;
@@ -328,7 +316,6 @@ stringt returns [StringT ast] :
  //Send : 'send' ;
  //Stop : 'stop' ;
 
- Self : 'self' ;
  Dot : '.' ;
 
  Number : DIGIT+ ;
