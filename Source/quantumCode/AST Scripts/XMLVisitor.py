@@ -19,6 +19,13 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Vexp>\n"
 
+    def visitBexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Bexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Bexp>\n"
+    
     def visitPosi(self, ctx):
         self.xml_output += "  " * self.indentation + "<Posi>\n"
         self.indentation += 1
@@ -165,10 +172,146 @@ class XMLVisitor(ExpVisitor):
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Divexp>\n"
+        
+    def visitModexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Modexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Modexp>\n"
+
+    def visitExpexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Expexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Expexp>\n"
+
+    def visitVarexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Varexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Varexp>\n"
+
+    def visitLetexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Letexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Letexp>\n"
+
+    def visitMatchexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Matchexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Matchexp>\n"
+        
+    def visitBoolexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Boolexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Boolexp>\n"
+
+    def visitCallexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Callexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Callexp>\n"
+
+    def visitIfexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Ifexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Ifexp>\n"
+
+    def visitLessexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Lessexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Lessexp>\n"
+
+    def visitEqualexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Equalexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Equalexp>\n"
+        
+    def visitGreaterexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Greaterexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Greaterexp>\n"
+
+    def visitAndexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Andexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Andexp>\n"
+
+    def visitOrexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Orexp>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Orexp>\n"
+
+    def visitTypea(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Typea>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Typea>\n"
+
+    def visitBooleantype(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Booleantype>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Booleantype>\n"
+        
+    def visitNumtype(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Numtype>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Numtype>\n"
+
+    def visitPairtype(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Pairtype>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Pairtype>\n"
+
+    def visitFunct(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Funct>\n"
+        self.indentation += 1
+        self.visitChildren(ctx)
+        self.indentation -= 1
+        self.xml_output += "  " * self.indentation + "</Funct>\n"
+        
+    def visitChildren(self, ctx):
+        for child in ctx.children:
+            self.visit(child)
 
     def visitTerminal(self, node):
         # For leaf nodes 
         self.xml_output += f'{"  " * self.indentation}<{node.getSymbol().type}>{node.getText()}</{node.getSymbol().type}>\n'
+        
+    def visit(self, ctx):
+        if ctx.getChildCount() > 0:
+            self.visitChildren(ctx)
+        else:
+            self.visitTerminal(ctx)
 
-    def get_xml_output(self):
+    def getXML(self):
         return self.xml_output
