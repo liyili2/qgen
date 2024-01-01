@@ -1,16 +1,20 @@
 class rz_val:
     pass
 
+
 class coq_val:
     def __init__(self, b, r):
         self.b = b
         self.r = r
 
+
 def addto(r, n, rmax):
-    return ((r + (rmax - n)) % (rmax * rmax))
+    return (r + (rmax - n)) % (rmax * rmax)
+
 
 def addto_n(r, n, rmax):
-    return (((r + rmax) - (rmax - n)) % (rmax * rmax))
+    return ((r + rmax) - (rmax - n)) % (rmax * rmax)
+
 
 def get_state(p, f):
     if p in f:
@@ -18,17 +22,20 @@ def get_state(p, f):
     else:
         return coq_val(False, 0)
 
+
 def exchange(v):
     if isinstance(v, coq_val):
         return coq_val(not v.b, v.r)
     else:
         return v
 
+
 def get_cua(v):
     if isinstance(v, coq_val):
         return v.b
     else:
         return False
+
 
 def get_cus(n, f, x, i):
     if i < n:
@@ -40,14 +47,17 @@ def get_cus(n, f, x, i):
     else:
         return allfalse(i)
 
+
 def get_r(v):
     if isinstance(v, coq_val):
         return v.r
     else:
         return v
 
+
 def rotate(r, q, rmax):
     return addto(r, q, rmax)
+
 
 def times_rotate(v, q, rmax):
     if isinstance(v, coq_val):
@@ -58,8 +68,10 @@ def times_rotate(v, q, rmax):
     else:
         return v
 
+
 def r_rotate(r, q, rmax):
     return addto_n(r, q, rmax)
+
 
 def times_r_rotate(v, q, rmax):
     if isinstance(v, coq_val):
@@ -69,6 +81,7 @@ def times_r_rotate(v, q, rmax):
             return coq_val(v.b, v.r)
     else:
         return v
+
 
 def sr_rotate_prime(st, x, n, size, rmax):
     def fO():
@@ -81,22 +94,26 @@ def sr_rotate_prime(st, x, n, size, rmax):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def sr_rotate(st, x, n, rmax):
     return sr_rotate_prime(st, x, n + 1, n + 1, rmax)
+
 
 def srr_rotate_prime(st, x, n, size, rmax):
     def fO():
         return st
 
-    def fS(m):
+    def fS(M):
         return srr_rotate_prime(
-            M.add((x, m), times_r_rotate(get_state((x, m), st), max(0, size - m), rmax), st), x, m, size, rmax
+            M + ((x, M), times_r_rotate(get_state((x, M), st), max(0, size - M), rmax), st), x, M, size, rmax
         )
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def srr_rotate(st, x, n, rmax):
     return srr_rotate_prime(st, x, n + 1, n + 1, rmax)
+
 
 def lshift_prime(n, size, f, x):
     def fO():
@@ -107,8 +124,10 @@ def lshift_prime(n, size, f, x):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def lshift(f, x, n):
     return lshift_prime(n if n > 0 else 0, n + 1 if n > 0 else 1, f, x)
+
 
 def rshift_prime(n, size, f, x):
     def fO():
@@ -119,8 +138,10 @@ def rshift_prime(n, size, f, x):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def rshift(f, x, n):
     return rshift_prime(n if n > 0 else 0, n + 1 if n > 0 else 1, f, x)
+
 
 def reverse_prime(f, x, n, i, f_prime):
     def fO():
@@ -133,8 +154,10 @@ def reverse_prime(f, x, n, i, f_prime):
 
     return fO() if i == 0 else fS(max(0, i - 1))
 
+
 def reverse(f, x, n):
     return reverse_prime(f, x, n, n, f)
+
 
 def up_h(v, rmax):
     if isinstance(v, coq_val):
@@ -144,6 +167,7 @@ def up_h(v, rmax):
             return Coq_qval(v.r, 0)
     else:
         return Coq_nval((rmax ** 2) <= v.r, v.r)
+
 
 def assign_h(f, x, n, i, rmax):
     def fO():
@@ -156,11 +180,13 @@ def assign_h(f, x, n, i, rmax):
 
     return fO() if i == 0 else fS(max(0, i - 1))
 
+
 def up_qft(v, f):
     if isinstance(v, Coq_nval):
         return Coq_qval(v.r, f)
     else:
         return v
+
 
 def a_nat2fb_prime(f, n, acc):
     def fO():
@@ -171,8 +197,10 @@ def a_nat2fb_prime(f, n, acc):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def a_nat2fb(f, n):
     return a_nat2fb_prime(f, n, 0)
+
 
 def assign_r(f, x, r, n, size, rmax):
     def fO():
@@ -190,6 +218,7 @@ def assign_r(f, x, r, n, size, rmax):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def turn_qft(f, x, n, rmax):
     return assign_h(
         assign_r(
@@ -199,6 +228,7 @@ def turn_qft(f, x, n, rmax):
         ),
         x, n, max(0, rmax - n), rmax
     )
+
 
 def assign_seq(f, x, vals, size, n):
     def fO():
@@ -212,6 +242,7 @@ def assign_seq(f, x, vals, size, n):
 
     return fO() if n == 0 else fS(max(0, n - 1))
 
+
 def get_r_qft(f, x, n, rmax):
     state_x_0 = get_state((x, 0), f)
     if isinstance(state_x_0, Coq_nval):
@@ -220,8 +251,10 @@ def get_r_qft(f, x, n, rmax):
         g = state_x_0.r
         return fbrev(n, nat2fb(g // ((succ(succ(0))) ** max(0, rmax - n))))
 
+
 def turn_rqft(st, x, n, rmax):
     return assign_h(assign_seq(st, x, get_r_qft(st, x, n, rmax), n, rmax), x, n, max(0, rmax - n), rmax)
+
 
 def exp_sem(env, rmax, e, st):
     if e == 'SKIP':
