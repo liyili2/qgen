@@ -1,30 +1,10 @@
-from AST_Scripts import ExpVisitor
 from AST_Scripts.ExpParser import *
-
-
-class rz_val:
-    pass
 
 
 class coq_val:
     def __init__(self, b, r):
         self.b = b
         self.r = r
-
-
-def addto(r, n, rmax):
-    return (r + (rmax - n)) % (rmax * rmax)
-
-
-def addto_n(r, n, rmax):
-    return ((r + rmax) - (rmax - n)) % (rmax * rmax)
-
-
-def get_state(p, f):
-    if p in f:
-        return f[p]
-    else:
-        return coq_val(False, 0)
 
 
 def exchange(v):
@@ -34,6 +14,13 @@ def exchange(v):
         return v
 
 
+def get_state(p, f):
+    if p in f:
+        return f[p]
+    else:
+        return coq_val(False, 0)
+
+
 def get_cua(v):
     if isinstance(v, coq_val):
         return v.b
@@ -41,22 +28,8 @@ def get_cua(v):
         return False
 
 
-def get_cus(n, f, x, i):
-    if i < n:
-        v = get_state((x, i), f)
-        if isinstance(v, coq_val):
-            return v.b
-        else:
-            return False
-    else:
-        return allfalse(i)
-
-
-def get_r(v):
-    if isinstance(v, coq_val):
-        return v.r
-    else:
-        return v
+def addto(r, n, rmax):
+    return (r + (rmax - n)) % (rmax * rmax)
 
 
 def rotate(r, q, rmax):
@@ -71,6 +44,10 @@ def times_rotate(v, q, rmax):
             return coq_val(v.b, v.r)
     else:
         return v
+
+
+def addto_n(r, n, rmax):
+    return ((r + rmax) - (rmax - n)) % (rmax * rmax)
 
 
 def r_rotate(r, q, rmax):
@@ -107,9 +84,9 @@ def srr_rotate_prime(st, x, n, size, rmax):
     def fO():
         return st
 
-    def fS(M):
+    def fS(m):
         return srr_rotate_prime(
-            M + ((x, M), times_r_rotate(get_state((x, M), st), max(0, size - M), rmax), st), x, M, size, rmax
+            M.add((x, m), times_r_rotate(get_state((x, m), st), max(0, size - m), rmax), st), x, m, size, rmax
         )
 
     return fO() if n == 0 else fS(max(0, n - 1))
@@ -117,34 +94,6 @@ def srr_rotate_prime(st, x, n, size, rmax):
 
 def srr_rotate(st, x, n, rmax):
     return srr_rotate_prime(st, x, n + 1, n + 1, rmax)
-
-
-def lshift_prime(n, size, f, x):
-    def fO():
-        return M.add((x, 0), get_state((x, size), f), f)
-
-    def fS(m):
-        return M.add((x, n), get_state((x, m), f), lshift_prime(m, size, f, x))
-
-    return fO() if n == 0 else fS(max(0, n - 1))
-
-
-def lshift(f, x, n):
-    return lshift_prime(n if n > 0 else 0, n + 1 if n > 0 else 1, f, x)
-
-
-def rshift_prime(n, size, f, x):
-    def fO():
-        return M.add((x, size), get_state((x, 0), f), f)
-
-    def fS(m):
-        return M.add((x, m), get_state((x, n), f), rshift_prime(m, size, f, x))
-
-    return fO() if n == 0 else fS(max(0, n - 1))
-
-
-def rshift(f, x, n):
-    return rshift_prime(n if n > 0 else 0, n + 1 if n > 0 else 1, f, x)
 
 
 def reverse_prime(f, x, n, i, f_prime):
@@ -192,20 +141,6 @@ def up_qft(v, f):
         return v
 
 
-def a_nat2fb_prime(f, n, acc):
-    def fO():
-        return acc
-
-    def fS(m):
-        return a_nat2fb_prime(f, m, acc + (f(m) * ((succ(succ(0))) ** m)))
-
-    return fO() if n == 0 else fS(max(0, n - 1))
-
-
-def a_nat2fb(f, n):
-    return a_nat2fb_prime(f, n, 0)
-
-
 def assign_r(f, x, r, n, size, rmax):
     def fO():
         return f
@@ -223,6 +158,20 @@ def assign_r(f, x, r, n, size, rmax):
     return fO() if n == 0 else fS(max(0, n - 1))
 
 
+def a_nat2fb_prime(f, n, acc):
+    def fO():
+        return acc
+
+    def fS(m):
+        return a_nat2fb_prime(f, m, acc + (f(m) * ((succ(succ(0))) ** m)))
+
+    return fO() if n == 0 else fS(max(0, n - 1))
+
+
+def a_nat2fb(f, n):
+    return a_nat2fb_prime(f, n, 0)
+
+
 def turn_qft(f, x, n, rmax):
     return assign_h(
         assign_r(
@@ -232,6 +181,22 @@ def turn_qft(f, x, n, rmax):
         ),
         x, n, max(0, rmax - n), rmax
     )
+
+
+def get_r(v):
+    if isinstance(v, coq_val):
+        return v.r
+    else:
+        return v
+
+
+def get_r_qft(f, x, n, rmax):
+    state_x_0 = get_state((x, 0), f)
+    if isinstance(state_x_0, Coq_nval):
+        return allfalse()
+    else:
+        g = state_x_0.r
+        return fbrev(n, nat2fb(g // ((succ(succ(0))) ** max(0, rmax - n))))
 
 
 def assign_seq(f, x, vals, size, n):
@@ -247,57 +212,85 @@ def assign_seq(f, x, vals, size, n):
     return fO() if n == 0 else fS(max(0, n - 1))
 
 
-def get_r_qft(f, x, n, rmax):
-    state_x_0 = get_state((x, 0), f)
-    if isinstance(state_x_0, Coq_nval):
-        return allfalse()
-    else:
-        g = state_x_0.r
-        return fbrev(n, nat2fb(g // ((succ(succ(0))) ** max(0, rmax - n))))
-
-
 def turn_rqft(st, x, n, rmax):
     return assign_h(assign_seq(st, x, get_r_qft(st, x, n, rmax), n, rmax), x, n, max(0, rmax - n), rmax)
 
 
-def exp_sem(env, rmax, e, st):
-    if e == 'SKIP':
+# Copying verbatim code from Testing.ml
+# Instead of an expression e, we pass in a context (ctx)
+#   which contains at least one expression, e
+
+def visitSkipexp(self, ctx: SkipexpContext, st):
+    return st
+
+
+# TODO: XgexpContext does not currently exist.
+def visitXgexp(self, ctx: XgexpContext, st, env, rmax):
+    p = ctx.e
+    return M.add(p, exchange(get_state(p, st)), st)
+
+
+# TODO: find out why `p` is giving a warning
+def visitCUexp(self, ctx: CuexpContext, st, env, rmax):
+    p = ctx.e1
+    e2 = ctx.e2
+    if get_cua(get_state(p, st)):
+        pass
+    else:
         return st
-    elif e == 'X':
-        return M.add(e.p, exchange(get_state(e.p, st)), st)
-    elif e == 'CU':
-        state_p = get_state(e.p, st)
-        if get_cua(state_p):
-            return exp_sem(env, rmax, e.e_, st)
-        else:
-            return st
-    elif e == 'RZ':
-        return M.add(e.p, times_rotate(get_state(e.p, st), e.q, rmax), st)
-    elif e == 'RRZ':
-        return M.add(e.p, times_r_rotate(get_state(e.p, st), e.q, rmax), st)
-    elif e == 'SR':
-        return sr_rotate(st, e.x, e.n, rmax)
-    elif e == 'SRR':
-        return srr_rotate(st, e.x, e.n, rmax)
-    elif e == 'Lshift':
-        return lshift(st, e.x, env(e.x))
-    elif e == 'Rshift':
-        return rshift(st, e.x, env(e.x))
-    elif e == 'Rev':
-        return reverse(st, e.x, env(e.x))
-    elif e == 'QFT':
-        return turn_qft(st, e.x, env(e.x), rmax)
-    elif e == 'RQFT':
-        return turn_rqft(st, e.x, env(e.x), rmax)
-    elif e == 'Seq':
-        return exp_sem(env, rmax, e.e2, exp_sem(env, rmax, e.e1, st))
 
 
-class Simulator(ExpVisitor):
+# TODO implement M
+def visitRzexp(self, ctx: RzexpContext, st, env, rmax):
+    q = ctx.e1
+    p = ctx.e2
+    M.add(p, times_rotate(get_state(p, st), q, rmax), st)
 
-    def visitSkipexp(self, ctx: SkipexpContext):
-        return ctx.invokingState
 
-    def visitXgexp(self, ctx: XgexpContext):
-        p = ctx.e
-        return M.add(p, exchange(get_state(p, ctx.invokingState)), ctx.invokingState)
+def visitRrzexp(self, ctx: RrzexpContext, st, env, rmax):
+    q = ctx.e1
+    p = ctx.e2
+    M.add(p, times_r_rotate(get_state(p, st), q, rmax), st)
+
+
+def visitSrexp(self, ctx: SrexpContext, st, env, rmax):
+    n = e1
+    x = e2
+    return sr_rotate(st, x, n, rmax)
+
+
+def visitSrrexp(self, ctx: SrrexpContext, st, env, rmax):
+    n = ctx.e1
+    x = ctx.e2
+    return srr_rotate(st, x, n, rmax)
+
+
+def visitLshiftexp(self, ctx: LshiftexpContext, st, env, rmax):
+    x = ctx.e1
+    return lshift(st, x, env(x))  # TODO verify this matches VQO code
+
+
+def visitRshiftexp(self, ctx: RshiftexpContext, st, env, rmax):
+    x = ctx.e1
+    return rshift(st, x, env(x))
+
+
+def visitRevexp(self, ctx: RevexpContext, st, env, rmax):
+    x = ctx.e1
+    return reverse(st, x, env(x))
+
+
+def visitQftexp(self, ctx: QftexpContext, st, env, rmax):
+    x = ctx.e1
+    return turn_qft(st, x, env(x), rmax)
+
+
+def visitRqftexp(self, ctx: RqftexpContext, st, env, rmax):
+    x = ctx.e1
+    return turn_rqft(st, x, env(x), rmax)
+
+
+def visitSeqexp(self, ctx: SeqexpContext, st, env, rmax):
+    e1 = ctx.e1
+    e2 = ctx.e2
+    pass
