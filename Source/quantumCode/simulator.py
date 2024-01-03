@@ -1,3 +1,7 @@
+from AST_Scripts import ExpVisitor
+from AST_Scripts.ExpParser import *
+
+
 class rz_val:
     pass
 
@@ -287,3 +291,13 @@ def exp_sem(env, rmax, e, st):
         return turn_rqft(st, e.x, env(e.x), rmax)
     elif e == 'Seq':
         return exp_sem(env, rmax, e.e2, exp_sem(env, rmax, e.e1, st))
+
+
+class Simulator(ExpVisitor):
+
+    def visitSkipexp(self, ctx: SkipexpContext):
+        return ctx.invokingState
+
+    def visitXgexp(self, ctx: XgexpContext):
+        p = ctx.e
+        return M.add(p, exchange(get_state(p, ctx.invokingState)), ctx.invokingState)
