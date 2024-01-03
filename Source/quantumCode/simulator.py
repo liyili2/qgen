@@ -1,5 +1,9 @@
 from AST_Scripts.ExpParser import *
 
+"""
+Helper Functions
+"""
+
 
 class coq_val:
     def __init__(self, b, r):
@@ -216,9 +220,13 @@ def turn_rqft(st, x, n, rmax):
     return assign_h(assign_seq(st, x, get_r_qft(st, x, n, rmax), n, rmax), x, n, max(0, rmax - n), rmax)
 
 
-# Copying verbatim code from Testing.ml
-# Instead of an expression e, we pass in a context (ctx)
-#   which contains at least one expression, e
+"""
+Visitor Functions
+Essentially, this whole file should copy the logic of Testing.ml identically,
+  specifically exp_sem.
+Implemented using visitor pattern.
+"""
+
 
 def visitSkipexp(self, ctx: SkipexpContext, st):
     return st
