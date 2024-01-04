@@ -1,4 +1,5 @@
 from AST_Scripts.ExpParser import *
+from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
 
 """
 Helper Functions
@@ -221,84 +222,80 @@ def turn_rqft(st, x, n, rmax):
 
 
 """
-Visitor Functions
-Essentially, this whole file should copy the logic of Testing.ml identically,
-  specifically exp_sem.
-Implemented using visitor pattern.
+Simulator class
+  This class extends ExpVisitor, and is essentially an interpreter
+  for the OCAML (COQ?) code that we will be testing.
+  Follows visitor pattern.
 """
 
 
-def visitSkipexp(self, ctx: SkipexpContext, st):
-    return st
+# TODO verify logic
 
+class Simulator(ExpVisitor):
 
-# TODO: XgexpContext does not currently exist.
-def visitXgexp(self, ctx: XgexpContext, st, env, rmax):
-    p = ctx.e
-    return M.add(p, exchange(get_state(p, st)), st)
+    def __init__(self, st, env, rmax):
+        self.st = st
+        self.env = env
+        self.rmax = rmax
 
+    def visitSkipexp(self, ctx: SkipexpContext):
+        return self.st
 
-# TODO: find out why `p` is giving a warning
-def visitCUexp(self, ctx: CuexpContext, st, env, rmax):
-    p = ctx.e1
-    e2 = ctx.e2
-    if get_cua(get_state(p, st)):
+    # TODO: XgexpContext does not currently exist.
+    def visitXgexp(self, ctx: XgexpContext):
+        p = ctx.e
+        return M.add(p, exchange(get_state(p, self.st)), self.st)
+
+    def visitCUexp(self, ctx: CuexpContext):
+        p = ctx.e1
+        e2 = ctx.e2
+        if get_cua(get_state(p, self.st)):
+            pass
+        else:
+            return self.st
+
+    # TODO implement M
+    def visitRzexp(self, ctx: RzexpContext):
+        q = ctx.e1
+        p = ctx.e2
+        M.add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
+
+    def visitRrzexp(self, ctx: RrzexpContext):
+        q = ctx.e1
+        p = ctx.e2
+        M.add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
+
+    def visitSrexp(self, ctx: SrexpContext):
+        n = ctx.e1
+        x = ctx.e2
+        return sr_rotate(self.st, x, n, self.rmax)
+
+    def visitSrrexp(self, ctx: SrrexpContext):
+        n = ctx.e1
+        x = ctx.e2
+        return srr_rotate(self.st, x, n, self.rmax)
+
+    def visitLshiftexp(self, ctx: LshiftexpContext):
+        x = ctx.e1
+        return lshift(self.st, x, self.env(x))
+
+    def visitRshiftexp(self, ctx: RshiftexpContext):
+        x = ctx.e1
+        return rshift(self.st, x, self.env(x))
+
+    def visitRevexp(self, ctx: RevexpContext):
+        x = ctx.e1
+        return reverse(self.st, x, self.env(x))
+
+    def visitQftexp(self, ctx: QftexpContext):
+        x = ctx.e1
+        return turn_qft(self.st, x, self.env(x), self.rmax)
+
+    def visitRqftexp(self, ctx: RqftexpContext):
+        x = ctx.e1
+        return turn_rqft(self.st, x, self.env(x), self.rmax)
+
+    def visitSeqexp(self, ctx: SeqexpContext):
+        e1 = ctx.e1
+        e2 = ctx.e2
         pass
-    else:
-        return st
-
-
-# TODO implement M
-def visitRzexp(self, ctx: RzexpContext, st, env, rmax):
-    q = ctx.e1
-    p = ctx.e2
-    M.add(p, times_rotate(get_state(p, st), q, rmax), st)
-
-
-def visitRrzexp(self, ctx: RrzexpContext, st, env, rmax):
-    q = ctx.e1
-    p = ctx.e2
-    M.add(p, times_r_rotate(get_state(p, st), q, rmax), st)
-
-
-def visitSrexp(self, ctx: SrexpContext, st, env, rmax):
-    n = e1
-    x = e2
-    return sr_rotate(st, x, n, rmax)
-
-
-def visitSrrexp(self, ctx: SrrexpContext, st, env, rmax):
-    n = ctx.e1
-    x = ctx.e2
-    return srr_rotate(st, x, n, rmax)
-
-
-def visitLshiftexp(self, ctx: LshiftexpContext, st, env, rmax):
-    x = ctx.e1
-    return lshift(st, x, env(x))  # TODO verify this matches VQO code
-
-
-def visitRshiftexp(self, ctx: RshiftexpContext, st, env, rmax):
-    x = ctx.e1
-    return rshift(st, x, env(x))
-
-
-def visitRevexp(self, ctx: RevexpContext, st, env, rmax):
-    x = ctx.e1
-    return reverse(st, x, env(x))
-
-
-def visitQftexp(self, ctx: QftexpContext, st, env, rmax):
-    x = ctx.e1
-    return turn_qft(st, x, env(x), rmax)
-
-
-def visitRqftexp(self, ctx: RqftexpContext, st, env, rmax):
-    x = ctx.e1
-    return turn_rqft(st, x, env(x), rmax)
-
-
-def visitSeqexp(self, ctx: SeqexpContext, st, env, rmax):
-    e1 = ctx.e1
-    e2 = ctx.e2
-    pass
