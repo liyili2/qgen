@@ -15,12 +15,10 @@ def update_map(M: collections.ChainMap, key, value):
 """
 Simulator class
   This class extends ExpVisitor, and is essentially an interpreter
-  for the OCAML (COQ?) code that we will be testing.
+  for the OCAML code that we will be testing.
   Follows visitor pattern.
 """
 
-
-# TODO verify logic
 
 class Simulator(ExpVisitor):
 
@@ -75,7 +73,7 @@ class Simulator(ExpVisitor):
     # TODO verify that lshift is correct method
     def visitLshiftexp(self, ctx: LshiftexpContext):
         x = ctx.e1
-        lshift(self.st, x, self.env(x)) # TODO verify that env is a method
+        lshift(self.st, x, self.env(x))  # TODO verify that env is a method
 
     # TODO verify that rshift is correct method
     def visitRshiftexp(self, ctx: RshiftexpContext):
@@ -100,4 +98,4 @@ class Simulator(ExpVisitor):
     def visitSeqexp(self, ctx: SeqexpContext):
         e1 = ctx.e1
         e2 = ctx.e2
-        pass # TODO visit e1 and e2
+        pass  # TODO visit e1 and e2
