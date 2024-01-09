@@ -38,7 +38,7 @@ def exchange(v: coq_val):
 
 
 def get_state(p, f):
-    pass  # TODO
+    pass  # TODO implement
 
 
 def get_cua(v):
@@ -93,13 +93,15 @@ def sr_rotate_prime(st, x, n, size, rmax):
         return st
     else:
         m = 0 if 0 > n - 1 else n - 1
-        return sr_rotate_prime() # TODO
+        return sr_rotate_prime()  # TODO finish
 
 
 def sr_rotate(st, x, n, rmax):
-    return sr_rotate_prime(st, x, n+1, n+1, rmax)
+    return sr_rotate_prime(st, x, n + 1, n + 1, rmax)
 
 
+# Essentially works as M.add from Testing.ml
+# TODO ensure we aren't losing any behavior
 def update_map(M: collections.ChainMap, key, value):
     M.maps[0][key] = value
 
@@ -132,7 +134,7 @@ class Simulator(ExpVisitor):
         p = ctx.e1
         e_prime = ctx.e2
         if get_cua(get_state(p, self.st)):
-            pass  # TODO visit on e_prime
+            self.visit(e_prime)
         else:
             return self.st
 
@@ -185,4 +187,43 @@ class Simulator(ExpVisitor):
     def visitSeqexp(self, ctx: SeqexpContext):
         e1 = ctx.e1
         e2 = ctx.e2
-        pass  # TODO visit e1 and e2
+        self.visit(e1)
+        self.visit(e2)
+
+    def visit(self, ctx: ParserRuleContext):
+        if ctx.getChildCount() > 0:
+            self.visitChildren(ctx)
+        else:
+            self.visitTerminal(ctx)
+
+    def visitChildren(self, ctx: ParserRuleContext):
+        for child in ctx.children:
+            self.visit(child)
+
+    def visitTerminal(self, node: ParserRuleContext):
+        if isinstance(node, SkipexpContext):
+            self.visitSkipexp(node)
+        elif isinstance(node, XgexpContext):
+            self.visitXgexp(node)
+        elif isinstance(node, CuexpContext):
+            self.visitCUexp(node)
+        elif isinstance(node, RzexpContext):
+            self.visitRzexp(node)
+        elif isinstance(node, RrzexpContext):
+            self.visitRrzexp(node)
+        elif isinstance(node, SrexpContext):
+            self.visitSrexp(node)
+        elif isinstance(node, SrrexpContext):
+            self.visitSrrexp(node)
+        elif isinstance(node, LshiftexpContext):
+            self.visitLshiftexp(node)
+        elif isinstance(node, RshiftexpContext):
+            self.visitRshiftexp(node)
+        elif isinstance(node, RevexpContext):
+            self.visitRevexp(node)
+        elif isinstance(node, QftexpContext):
+            self.visitQftexp(node)
+        elif isinstance(node, RqftexpContext):
+            self.visitRqftexp(node)
+        elif isinstance(node, SeqexpContext):
+            self.visitSeqexp(node)
