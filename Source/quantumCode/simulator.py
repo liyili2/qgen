@@ -4,8 +4,100 @@ from AST_Scripts.ExpParser import *
 from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
 
 """
+Types
+"""
+
+
+class coq_val:
+    pass
+
+
+class Coq_nval(coq_val):
+
+    def __init__(self, b: bool, r: int):
+        self.b = b
+        self.r = r
+
+
+class Coq_qval(coq_val):
+
+    def __init__(self, r1: int, r2: int):
+        self.r1 = r1
+        self.r2 = r2
+
+
+"""
 Helper Functions
 """
+
+
+def exchange(v: coq_val):
+    if isinstance(v, Coq_nval):
+        return Coq_nval(not v.b, v.r)
+    return v
+
+
+def get_state(p, f):
+    pass  # TODO
+
+
+def get_cua(v):
+    if isinstance(v, Coq_nval):
+        return v.b
+    else:
+        return False
+
+
+def times_rotate(v, q, rmax):
+    if isinstance(v, Coq_nval):
+        if v.b:
+            return Coq_nval(v.b, rotate(v.r, q, rmax))
+        else:
+            return Coq_nval(v.b, v.r)
+    else:
+        return Coq_qval(v.r1, rotate(v.r2, q, rmax))
+
+
+def addto(r, n, rmax):
+    return (r + 2 ** addto_helper(rmax, n)) % 2 ** rmax
+
+
+def addto_helper(x, y):
+    return x - y if x - y > 0 else 0
+
+
+def rotate(r, n, rmax):
+    return addto(r, n, rmax)
+
+
+def addto_n(r, n, rmax):
+    return addto_helper(r + 2 ** rmax, 2 ** addto_helper(rmax, n)) % 2 ** rmax
+
+
+def r_rotate(r, n, rmax):
+    return addto_n(r, n, rmax)
+
+
+def times_r_rotate(v, q, rmax):
+    if isinstance(v, Coq_nval):
+        if v.b:
+            return Coq_nval(v.b, r_rotate(v.r, q, rmax))
+        else:
+            return Coq_nval(v.b, v.r)
+    else:
+        return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
+
+
+def sr_rotate_prime(st, x, n, size, rmax):
+    if n == 0:
+        return st
+    else:
+        m = 0 if 0 > n - 1 else n - 1
+        return sr_rotate_prime() # TODO
+
+
+def sr_rotate(st, x, n, rmax):
+    return sr_rotate_prime(st, x, n+1, n+1, rmax)
 
 
 def update_map(M: collections.ChainMap, key, value):
@@ -32,12 +124,10 @@ class Simulator(ExpVisitor):
         return self.st
 
     # TODO: XgexpContext does not currently exist.
-    # TODO: implement exchange and get_state
     def visitXgexp(self, ctx: XgexpContext):
         p = ctx.e
         update_map(self.M, p, exchange(get_state(p, self.st)))
 
-    # TODO implement get_cua
     def visitCUexp(self, ctx: CuexpContext):
         p = ctx.e1
         e_prime = ctx.e2
@@ -46,19 +136,16 @@ class Simulator(ExpVisitor):
         else:
             return self.st
 
-    # TODO implement times_rotate
     def visitRzexp(self, ctx: RzexpContext):
         q = ctx.e1
         p = ctx.e2
         update_map(self.M, p, times_rotate(get_state(p, self.st), q, self.rmax))
 
-    # TODO implement times_r_rotate
     def visitRrzexp(self, ctx: RrzexpContext):
         q = ctx.e1
         p = ctx.e2
         update_map(self.M, p, times_r_rotate(get_state(p, self.st), q, self.rmax))
 
-    # TODO implement sr_rotate
     def visitSrexp(self, ctx: SrexpContext):
         n = ctx.e1
         x = ctx.e2
