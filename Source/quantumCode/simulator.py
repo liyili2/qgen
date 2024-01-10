@@ -1,6 +1,11 @@
-import collections
+from collections import ChainMap
+from types import NoneType
 
-from AST_Scripts.ExpParser import *
+from antlr4 import ParserRuleContext
+
+from Source.quantumCode.AST_Scripts.ExpParser import SkipexpContext, CuexpContext, RzexpContext, RrzexpContext, \
+    SrexpContext, SrrexpContext, LshiftexpContext, RshiftexpContext, RevexpContext, QftexpContext, RqftexpContext, \
+    SeqexpContext
 from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
 
 """
@@ -38,7 +43,11 @@ def exchange(v: coq_val):
 
 
 def get_state(p, f):
-    pass  # TODO implement
+    x = M_find(p, f)
+    if isinstance(x, NoneType):
+        return Coq_nval(False, 0)
+    else:
+        return x
 
 
 def get_cua(v):
@@ -88,22 +97,44 @@ def times_r_rotate(v, q, rmax):
         return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
 
 
+# TODO implement
 def sr_rotate_prime(st, x, n, size, rmax):
-    if n == 0:
-        return st
-    else:
-        m = 0 if 0 > n - 1 else n - 1
-        return sr_rotate_prime()  # TODO finish
+    pass
 
 
 def sr_rotate(st, x, n, rmax):
     return sr_rotate_prime(st, x, n + 1, n + 1, rmax)
 
 
-# Essentially works as M.add from Testing.ml
-# TODO ensure we aren't losing any behavior
-def update_map(M: collections.ChainMap, key, value):
-    M.maps[0][key] = value
+def M_add(k, x, s: ChainMap):
+    if len(s.maps) == 0:
+        return ChainMap({k: x})
+    else:
+        p = s.maps[0]
+        k_prime, y = next(iter(p.items()))
+        if k < k_prime:
+            return ChainMap({k: x}, s)
+        elif k == k_prime:
+            s.__delitem__(k_prime)
+            return ChainMap({k: x}, s)
+        else:
+            s.__delitem__(k_prime)
+            return ChainMap({k_prime: y}, M_add(k, x, s))
+
+
+def M_find(k, M: ChainMap):
+    if len(M.maps) == 0:
+        return None
+    else:
+        p = M.maps[0]
+        k_prime, x = next(iter(p.items()))
+        if k < k_prime:
+            return None
+        elif k == k_prime:
+            return x
+        else:
+            M.__delitem__(k_prime)
+            return M_find(k, M)
 
 
 """
@@ -116,11 +147,10 @@ Simulator class
 
 class Simulator(ExpVisitor):
 
-    def __init__(self, st, env, rmax, M: collections.ChainMap):
+    def __init__(self, st: ChainMap, env, rmax):
         self.st = st
         self.env = env
         self.rmax = rmax
-        self.M = M
 
     def visitSkipexp(self, ctx: SkipexpContext):
         return self.st
@@ -128,7 +158,7 @@ class Simulator(ExpVisitor):
     # TODO: XgexpContext does not currently exist.
     def visitXgexp(self, ctx: XgexpContext):
         p = ctx.e
-        update_map(self.M, p, exchange(get_state(p, self.st)))
+        M_add(p, exchange(get_state(p, self.st)), self.st)
 
     def visitCUexp(self, ctx: CuexpContext):
         p = ctx.e1
@@ -141,12 +171,12 @@ class Simulator(ExpVisitor):
     def visitRzexp(self, ctx: RzexpContext):
         q = ctx.e1
         p = ctx.e2
-        update_map(self.M, p, times_rotate(get_state(p, self.st), q, self.rmax))
+        M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitRrzexp(self, ctx: RrzexpContext):
         q = ctx.e1
         p = ctx.e2
-        update_map(self.M, p, times_r_rotate(get_state(p, self.st), q, self.rmax))
+        M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitSrexp(self, ctx: SrexpContext):
         n = ctx.e1
