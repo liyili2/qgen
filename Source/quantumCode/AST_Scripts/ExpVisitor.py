@@ -2,7 +2,7 @@
 from antlr4 import *
 
 if "." in __name__:
-    from ExpParser import ExpParser
+    from .ExpParser import ExpParser
 else:
     from ExpParser import ExpParser
 
