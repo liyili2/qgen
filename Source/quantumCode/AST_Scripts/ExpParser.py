@@ -3,6 +3,9 @@
 from antlr4 import *
 from io import StringIO
 import sys
+
+from antlr4 import ParseTreeVisitor, ParseTreeListener
+
 if sys.version_info[1] > 5:
 	from typing import TextIO
 else:
@@ -347,7 +350,7 @@ class ExpParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 84
             localctx.e = self.exp()
-             localctx.ast =  localctx.e.ast 
+            localctx.ast =  localctx.e.ast
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -442,63 +445,63 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 87
                 localctx.va = self.varexp()
-                 localctx.ast =  localctx.va.ast 
+                localctx.ast =  localctx.va.ast
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 90
                 localctx.num = self.numexp()
-                 localctx.ast =  localctx.num.ast 
+                localctx.ast =  localctx.num.ast
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 93
                 localctx.bl = self.boolexp()
-                 localctx.ast =  localctx.bl.ast 
+                localctx.ast =  localctx.bl.ast
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 96
                 localctx.add = self.addexp()
-                 localctx.ast =  localctx.add.ast 
+                localctx.ast =  localctx.add.ast
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 99
                 localctx.sub = self.subexp()
-                 localctx.ast =  localctx.sub.ast 
+                localctx.ast =  localctx.sub.ast
                 pass
 
             elif la_ == 6:
                 self.enterOuterAlt(localctx, 6)
                 self.state = 102
                 localctx.mul = self.multexp()
-                 localctx.ast =  localctx.mul.ast 
+                localctx.ast =  localctx.mul.ast
                 pass
 
             elif la_ == 7:
                 self.enterOuterAlt(localctx, 7)
                 self.state = 105
                 localctx.div = self.divexp()
-                 localctx.ast =  localctx.div.ast 
+                localctx.ast =  localctx.div.ast
                 pass
 
             elif la_ == 8:
                 self.enterOuterAlt(localctx, 8)
                 self.state = 108
                 localctx.mod = self.modexp()
-                 localctx.ast =  localctx.mod.ast 
+                localctx.ast =  localctx.mod.ast
                 pass
 
             elif la_ == 9:
                 self.enterOuterAlt(localctx, 9)
                 self.state = 111
                 localctx.expa = self.expexp()
-                 localctx.ast =  localctx.expa.ast 
+                localctx.ast =  localctx.expa.ast
                 pass
 
 
@@ -576,35 +579,35 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 116
                 localctx.less = self.lessexp()
-                 localctx.ast =  localctx.less.ast 
+                localctx.ast =  localctx.less.ast
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 119
                 localctx.eq = self.equalexp()
-                 localctx.ast =  localctx.eq.ast 
+                localctx.ast =  localctx.eq.ast
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 122
                 localctx.gt = self.greaterexp()
-                 localctx.ast =  localctx.gt.ast 
+                localctx.ast =  localctx.gt.ast
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 125
                 localctx.anda = self.andexp()
-                 localctx.ast =  localctx.anda.ast 
+                localctx.ast =  localctx.anda.ast
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 128
                 localctx.ora = self.orexp()
-                 localctx.ast =  localctx.ora.ast 
+                localctx.ast =  localctx.ora.ast
                 pass
 
 
@@ -800,21 +803,21 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 2)
                 self.state = 139
                 localctx.let = self.letexp()
-                 localctx.ast =  localctx.let.ast 
+                localctx.ast =  localctx.let.ast
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 142
                 localctx.call = self.callexp()
-                 localctx.ast =  localctx.call.ast 
+                localctx.ast =  localctx.call.ast
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 145
                 localctx.i = self.ifexp()
-                 localctx.ast =  localctx.i.ast 
+                localctx.ast =  localctx.i.ast
                 pass
 
             elif la_ == 5:
@@ -964,7 +967,7 @@ class ExpParser ( Parser ):
             self.match(ExpParser.SKIPEXP)
             self.state = 190
             localctx.e1 = self.posiexp()
-             localctx.ast =  new SkipExp(e1) 
+            localctx.ast =  new SkipExp(e1)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1027,7 +1030,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.vexp()
             self.state = 197
             self.match(ExpParser.T__2)
-             localctx.ast =  new PosiExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new PosiExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1037,8 +1040,7 @@ class ExpParser ( Parser ):
         return localctx
 
 
-    class \
-            Context(ParserRuleContext):
+    class XgexpContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -1320,9 +1322,6 @@ class ExpParser ( Parser ):
                 return visitor.visitSrexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def srexp(self):
 
@@ -1814,7 +1813,7 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 256
                 localctx.n0 = self.match(ExpParser.Number)
-                 localctx.ast =  new NumExp(Integer.parseInt((None if localctx.n0 is None else localctx.n0.text))) 
+                localctx.ast =  new NumExp(Integer.parseInt((None if localctx.n0 is None else localctx.n0.text)))
                 pass
 
             elif la_ == 2:
@@ -1823,7 +1822,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.T__3)
                 self.state = 259
                 localctx.n0 = self.match(ExpParser.Number)
-                 localctx.ast =  new NumExp(-Integer.parseInt((None if localctx.n0 is None else localctx.n0.text))) 
+                localctx.ast =  new NumExp(-Integer.parseInt((None if localctx.n0 is None else localctx.n0.text)))
                 pass
 
             elif la_ == 3:
@@ -1834,7 +1833,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.Dot)
                 self.state = 263
                 localctx.n1 = self.match(ExpParser.Number)
-                 localctx.ast =  new NumExp(Double.parseDouble((None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text))) 
+                localctx.ast =  new NumExp(Double.parseDouble((None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
                 pass
 
             elif la_ == 4:
@@ -1847,7 +1846,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.Dot)
                 self.state = 268
                 localctx.n1 = self.match(ExpParser.Number)
-                 localctx.ast =  new NumExp(Double.parseDouble("-" + (None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text))) 
+                localctx.ast =  new NumExp(Double.parseDouble("-" + (None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
                 pass
 
 
@@ -1913,7 +1912,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 276
             self.match(ExpParser.T__2)
-             localctx.ast =  new AddExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new AddExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1976,7 +1975,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 283
             self.match(ExpParser.T__2)
-             localctx.ast =  new SubExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new SubExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2039,7 +2038,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 290
             self.match(ExpParser.T__2)
-             localctx.ast =  new MultExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new MultExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2102,7 +2101,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 297
             self.match(ExpParser.T__2)
-             localctx.ast =  new DivExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new DivExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2165,7 +2164,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 304
             self.match(ExpParser.T__2)
-             localctx.ast =  new ModExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new ModExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2228,7 +2227,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 311
             self.match(ExpParser.T__2)
-             localctx.ast =  new ExpExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new ExpExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2278,7 +2277,7 @@ class ExpParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 314
             localctx.ida = self.match(ExpParser.Identifier)
-             localctx.ast =  new VarExp((None if localctx.ida is None else localctx.ida.text)) 
+            localctx.ast =  new VarExp((None if localctx.ida is None else localctx.ida.text))
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2352,7 +2351,7 @@ class ExpParser ( Parser ):
 
         localctx = ExpParser.LetexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_letexp)
-         localctx.names =  new ArrayList<String>() localctx.types = new ArrayList<Type>() 
+        localctx.names =  new ArrayList<String>() localctx.types = new ArrayList<Type>()
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 317
@@ -2372,7 +2371,7 @@ class ExpParser ( Parser ):
                     localctx.t = self.typea()
                     self.state = 322
                     self.match(ExpParser.T__2)
-                     localctx.names.add((None if localctx.ida is None else localctx.ida.text));localctx.types.add(localctx.t.ast); 
+                    localctx.names.add((None if localctx.ida is None else localctx.ida.text));localctx.types.add(localctx.t.ast);
 
                 else:
                     raise NoViableAltException(self)
@@ -2386,7 +2385,8 @@ class ExpParser ( Parser ):
             self.match(ExpParser.IN)
             self.state = 331
             localctx.body = self.exp()
-             localctx.ast =  new LetExp(localctx.names, localctx.types, localctx.e.ast, localctx.body.ast) 
+            localctx.ast =  new LetExp(localctx.names, localctx.types, localctx.e.ast, localctx.body.ast)
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2445,7 +2445,7 @@ class ExpParser ( Parser ):
 
         localctx = ExpParser.MatchexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 56, self.RULE_matchexp)
-         localctx.value_exps =  new ArrayList<Pair<Exp,Exp>>() 
+        localctx.value_exps =  new ArrayList<Pair<Exp,Exp>>()
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2467,7 +2467,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.T__11)
                 self.state = 340
                 localctx.e2 = self.exp()
-                 Pair<Exp,Exp> tmp = new Pair<Exp,Exp>(localctx.e1.ast,localctx.e2.ast); localctx.value_exps.add(tmp); 
+                Pair<Exp,Exp> tmp = new Pair<Exp,Exp>(localctx.e1.ast,localctx.e2.ast); localctx.value_exps.add(tmp);
                 self.state = 345 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
@@ -2530,13 +2530,13 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 349
                 self.match(ExpParser.TrueLiteral)
-                 localctx.ast =  new BoolExp(true) 
+                localctx.ast =  new BoolExp(true)
                 pass
             elif token in [29]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 351
                 self.match(ExpParser.FalseLiteral)
-                 localctx.ast =  new BoolExp(false) 
+                localctx.ast =  new BoolExp(false)
                 pass
             else:
                 raise NoViableAltException(self)
@@ -2601,10 +2601,10 @@ class ExpParser ( Parser ):
 
             self.state = 357
             localctx.e = self.exp()
-             localctx.arguments.add(localctx.e.ast); 
+            localctx.arguments.add(localctx.e.ast);
             self.state = 360
             self.match(ExpParser.T__2)
-             localctx.ast =  new CallExp(localctx.f.ast,localctx.arguments) 
+            localctx.ast =  new CallExp(localctx.f.ast,localctx.arguments)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2677,7 +2677,7 @@ class ExpParser ( Parser ):
             localctx.e3 = self.exp()
             self.state = 368
             self.match(ExpParser.T__2)
-             localctx.ast =  new IfExp(localctx.e1.ast,localctx.e2.ast,localctx.e3.ast) 
+            localctx.ast =  new IfExp(localctx.e1.ast,localctx.e2.ast,localctx.e3.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2743,7 +2743,7 @@ class ExpParser ( Parser ):
             localctx.e2 = self.exp()
             self.state = 375
             self.match(ExpParser.T__2)
-             localctx.ast =  new LessExp(localctx.e1.ast,localctx.e2.ast) 
+            localctx.ast =  new LessExp(localctx.e1.ast,localctx.e2.ast)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

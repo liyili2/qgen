@@ -5,7 +5,7 @@ from antlr4 import ParserRuleContext
 
 from Source.quantumCode.AST_Scripts.ExpParser import SkipexpContext, CuexpContext, RzexpContext, RrzexpContext, \
     SrexpContext, SrrexpContext, LshiftexpContext, RshiftexpContext, RevexpContext, QftexpContext, RqftexpContext, \
-    SeqexpContext
+    SeqexpContext, XgexpContext
 from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
 
 """
