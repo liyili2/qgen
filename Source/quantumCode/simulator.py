@@ -68,11 +68,11 @@ def times_rotate(v, q, rmax):
 
 
 def addto(r, n, rmax):
-    return (r + 2 ** addto_helper(rmax, n)) % 2 ** rmax
+    return (r + 2 ** max_helper(rmax, n)) % 2 ** rmax
 
 
-def addto_helper(x, y):
-    return x - y if x - y > 0 else 0
+def max_helper(x, y):
+    return max(x - y, 0)
 
 
 def rotate(r, n, rmax):
@@ -80,7 +80,7 @@ def rotate(r, n, rmax):
 
 
 def addto_n(r, n, rmax):
-    return addto_helper(r + 2 ** rmax, 2 ** addto_helper(rmax, n)) % 2 ** rmax
+    return max_helper(r + 2 ** rmax, 2 ** max_helper(rmax, n)) % 2 ** rmax
 
 
 def r_rotate(r, n, rmax):
@@ -97,13 +97,158 @@ def times_r_rotate(v, q, rmax):
         return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
 
 
-# TODO implement
 def sr_rotate_prime(st, x, n, size, rmax):
-    pass
+    if n == 0:
+        return st
+    else:
+        m = max(0, n - 1)
+        return sr_rotate_prime(
+            M_add(
+                {x: m},
+                times_rotate(get_state({x: m}, st), max_helper(size, m), rmax),
+                st
+            ),
+            x, m, size, rmax
+        )
 
 
 def sr_rotate(st, x, n, rmax):
     return sr_rotate_prime(st, x, n + 1, n + 1, rmax)
+
+
+def srr_rotate_prime(st, x, n, size, rmax):
+    if n == 0:
+        return st
+    else:
+        m = max(0, n - 1)
+        return srr_rotate_prime(
+            M_add(
+                {x: m},
+                times_r_rotate(get_state({x: m}, st), max_helper(size, m), rmax),
+                st
+            ),
+            x, m, size, rmax
+        )
+
+
+def srr_rotate(st, x, n, rmax):
+    return srr_rotate_prime(st, x, n + 1, n + 1, rmax)
+
+
+def lshift_prime(n, size, f, x):
+    if n == 0:
+        return M_add({x: 0}, get_state({x: size}, f), f)
+    else:
+        m = max(0, n - 1)
+        return M_add({x: n}, get_state({x: m}, f), lshift_prime(m, size, f, x))
+
+
+def lshift(f, x, n):
+    return lshift_prime(max_helper(n, 1), max_helper(n, 1), f, x)
+
+
+def rshift_prime(n, size, f, x):
+    if n == 0:
+        return M_add({x: size}, get_state({x: 0}, f), f)
+    else:
+        m = max(0, n - 1)
+        return M_add({x: m}, get_state({x: n}, f), rshift_prime(m, size, f, x))
+
+
+def rshift(f, x, n):
+    return rshift_prime(max_helper(n, 1), max_helper(n, 1), f, x)
+
+
+def reverse_prime(f, x, n, i, f_prime):
+    if n == 0:
+        return f_prime
+    else:
+        i_prime = max(0, n - 1)
+        return reverse_prime(f, x, n, i_prime,
+                             M_add(
+                                 {x: i_prime},
+                                 get_state({x: max_helper(n, i)}, f),
+                                 f_prime)
+                             )
+
+
+def reverse(f, x, n):
+    return reverse_prime(f, x, n, n, f)
+
+
+def up_h(v, rmax):
+    if isinstance(v, Coq_nval):
+        b = v.b
+        r = v.r
+        if b:
+            return Coq_qval(
+                r,
+                rotate(0, 1, rmax)
+            )
+        else:
+            return Coq_qval(r, 0)
+    else:
+        r = v.r1
+        f = v.r2
+        return Coq_nval(
+            2 ** max_helper(rmax, 1) <= f,
+            r
+        )
+
+
+def assign_h(f, x, n, i, rmax):
+    if n == 0:
+        return f
+    else:
+        m = max(0, n - 1)
+        return assign_h(
+            M_add(
+                {x: n + m},
+                up_h(get_state({x: n + m}, f), rmax),
+                f
+            ),
+            x, n, m, rmax
+        )
+
+
+# TODO
+def assign_r(f, x, r, n, size, rmax):
+    pass
+
+
+# TODO
+def a_nat2fb_prime(f, n, acc):
+    pass
+
+
+def a_nat2fb(f, n):
+    return a_nat2fb_prime(f, n, 0)
+
+
+# TODO
+def fbrev(n, param):
+    pass
+
+
+# TODO
+def get_cus(n, f, x):
+    pass
+
+
+def turn_qft(f, x, n, rmax):
+    assign_h(
+        assign_r(
+            f, x,
+            (2 ** max_helper(rmax, n)) * a_nat2fb(fbrev(n, get_cus(n, f, x)), n),
+            n, n, rmax
+        ),
+        x, n, max_helper(rmax, n), rmax
+    )
+
+
+# TODO implement
+def turn_rqft(st, x, n, rmax):
+    pass
 
 
 def M_add(k, x, s: ChainMap):
@@ -155,7 +300,6 @@ class Simulator(ExpVisitor):
     def visitSkipexp(self, ctx: SkipexpContext):
         return self.st
 
-    # TODO: XgexpContext does not currently exist.
     def visitXgexp(self, ctx: XgexpContext):
         p = ctx.e
         M_add(p, exchange(get_state(p, self.st)), self.st)
@@ -183,33 +327,27 @@ class Simulator(ExpVisitor):
         x = ctx.e2
         sr_rotate(self.st, x, n, self.rmax)
 
-    # TODO implement srr_rotate
     def visitSrrexp(self, ctx: SrrexpContext):
         n = ctx.e1
         x = ctx.e2
         srr_rotate(self.st, x, n, self.rmax)
 
-    # TODO verify that lshift is correct method
     def visitLshiftexp(self, ctx: LshiftexpContext):
         x = ctx.e1
-        lshift(self.st, x, self.env(x))  # TODO verify that env is a method
+        lshift(self.st, x, self.env(x))
 
-    # TODO verify that rshift is correct method
     def visitRshiftexp(self, ctx: RshiftexpContext):
         x = ctx.e1
         rshift(self.st, x, self.env(x))
 
-    # TODO implement reverse()
     def visitRevexp(self, ctx: RevexpContext):
         x = ctx.e1
         reverse(self.st, x, self.env(x))
 
-    # TODO implement turn_qft()
     def visitQftexp(self, ctx: QftexpContext):
         x = ctx.e1
         turn_qft(self.st, x, self.env(x), self.rmax)
 
-    # TODO implement turn_rqft()
     def visitRqftexp(self, ctx: RqftexpContext):
         x = ctx.e1
         turn_rqft(self.st, x, self.env(x), self.rmax)
