@@ -1,4 +1,1 @@
 X (x,0) ; CU (y,0) (RZ (y,1)) // applying X gate, and then a control gate of a single RZ gate, x and y are quantum arrays. (x,0) is a position at the zero of array x.
-QFT x 0; SR x 10; RQFT x 0 //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
-QFT x 0; SRR x 10; RQFT x 0 //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for - 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
-X (x,0) ; CU (x,0) (CU (x,1) (X (y,1))) // applying X gate, and then a CCX gate controlling at (x,0) and (x,1) and flip of (y,1)
