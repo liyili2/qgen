@@ -301,6 +301,7 @@ class ExpParser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
+        self._la = None
         self.checkVersion("4.13.1")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
@@ -377,39 +378,39 @@ class ExpParser ( Parser ):
             self.expa = None # ExpexpContext
 
         def varexp(self):
-            return self.getTypedRuleContext(VarexpContext,0)
+            return self.getTypedRuleContext(ExpParser.VarexpContext,0)
 
 
         def numexp(self):
-            return self.getTypedRuleContext(NumexpContext,0)
+            return self.getTypedRuleContext(ExpParser.NumexpContext,0)
 
 
         def boolexp(self):
-            return self.getTypedRuleContext(BoolexpContext,0)
+            return self.getTypedRuleContext(ExpParser.BoolexpContext,0)
 
 
         def addexp(self):
-            return self.getTypedRuleContext(AddexpContext,0)
+            return self.getTypedRuleContext(ExpParser.AddexpContext,0)
 
 
         def subexp(self):
-            return self.getTypedRuleContext(SubexpContext,0)
+            return self.getTypedRuleContext(ExpParser.SubexpContext,0)
 
 
         def multexp(self):
-            return self.getTypedRuleContext(MultexpContext,0)
+            return self.getTypedRuleContext(ExpParser.MultexpContext,0)
 
 
         def divexp(self):
-            return self.getTypedRuleContext(DivexpContext,0)
+            return self.getTypedRuleContext(ExpParser.DivexpContext,0)
 
 
         def modexp(self):
-            return self.getTypedRuleContext(ModexpContext,0)
+            return self.getTypedRuleContext(ExpParser.ModexpContext,0)
 
 
         def expexp(self):
-            return self.getTypedRuleContext(ExpexpContext,0)
+            return self.getTypedRuleContext(ExpParser.ExpexpContext,0)
 
 
         def getRuleIndex(self):
@@ -444,63 +445,63 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 87
                 localctx.va = self.varexp()
-                localctx.ast =  localctx.va.ast
+                localctx.ast = localctx.va.ast
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 90
                 localctx.num = self.numexp()
-                localctx.ast =  localctx.num.ast
+                localctx.ast = localctx.num.ast
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 93
                 localctx.bl = self.boolexp()
-                localctx.ast =  localctx.bl.ast
+                localctx.ast = localctx.bl.ast
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 96
                 localctx.add = self.addexp()
-                localctx.ast =  localctx.add.ast
+                localctx.ast = localctx.add.ast
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 99
                 localctx.sub = self.subexp()
-                localctx.ast =  localctx.sub.ast
+                localctx.ast = localctx.sub.ast
                 pass
 
             elif la_ == 6:
                 self.enterOuterAlt(localctx, 6)
                 self.state = 102
                 localctx.mul = self.multexp()
-                localctx.ast =  localctx.mul.ast
+                localctx.ast = localctx.mul.ast
                 pass
 
             elif la_ == 7:
                 self.enterOuterAlt(localctx, 7)
                 self.state = 105
                 localctx.div = self.divexp()
-                localctx.ast =  localctx.div.ast
+                localctx.ast = localctx.div.ast
                 pass
 
             elif la_ == 8:
                 self.enterOuterAlt(localctx, 8)
                 self.state = 108
                 localctx.mod = self.modexp()
-                localctx.ast =  localctx.mod.ast
+                localctx.ast = localctx.mod.ast
                 pass
 
             elif la_ == 9:
                 self.enterOuterAlt(localctx, 9)
                 self.state = 111
                 localctx.expa = self.expexp()
-                localctx.ast =  localctx.expa.ast
+                localctx.ast = localctx.expa.ast
                 pass
 
 
@@ -527,23 +528,23 @@ class ExpParser ( Parser ):
             self.ora = None # OrexpContext
 
         def lessexp(self):
-            return self.getTypedRuleContext(LessexpContext,0)
+            return self.getTypedRuleContext(ExpParser.LessexpContext,0)
 
 
         def equalexp(self):
-            return self.getTypedRuleContext(EqualexpContext,0)
+            return self.getTypedRuleContext(ExpParser.EqualexpContext,0)
 
 
         def greaterexp(self):
-            return self.getTypedRuleContext(GreaterexpContext,0)
+            return self.getTypedRuleContext(ExpParser.GreaterexpContext,0)
 
 
         def andexp(self):
-            return self.getTypedRuleContext(AndexpContext,0)
+            return self.getTypedRuleContext(ExpParser.AndexpContext,0)
 
 
         def orexp(self):
-            return self.getTypedRuleContext(OrexpContext,0)
+            return self.getTypedRuleContext(ExpParser.OrexpContext,0)
 
 
         def getRuleIndex(self):
@@ -585,14 +586,14 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 2)
                 self.state = 119
                 localctx.eq = self.equalexp()
-                localctx.ast =  localctx.eq.ast
+                localctx.ast = localctx.eq.ast
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 122
                 localctx.gt = self.greaterexp()
-                localctx.ast =  localctx.gt.ast
+                localctx.ast = localctx.gt.ast
                 pass
 
             elif la_ == 4:
@@ -696,27 +697,27 @@ class ExpParser ( Parser ):
             self.seq = None # SeqexpContext
 
         def varexp(self):
-            return self.getTypedRuleContext(VarexpContext,0)
+            return self.getTypedRuleContext(ExpParser.VarexpContext,0)
 
 
         def letexp(self):
-            return self.getTypedRuleContext(LetexpContext,0)
+            return self.getTypedRuleContext(ExpParser.LetexpContext,0)
 
 
         def callexp(self):
-            return self.getTypedRuleContext(CallexpContext,0)
+            return self.getTypedRuleContext(ExpParser.CallexpContext,0)
 
 
         def ifexp(self):
-            return self.getTypedRuleContext(IfexpContext,0)
+            return self.getTypedRuleContext(ExpParser.IfexpContext,0)
 
 
         def skipexp(self):
-            return self.getTypedRuleContext(SkipexpContext,0)
+            return self.getTypedRuleContext(ExpParser.SkipexpContext,0)
 
 
         def xgexp(self):
-            return self.getTypedRuleContext(XgexpContext,0)
+            return self.getTypedRuleContext(ExpParser.XgexpContext,0)
 
 
         def cuexp(self):
@@ -837,77 +838,77 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 7)
                 self.state = 154
                 localctx.cu = self.cuexp()
-                localctx.ast =  cu.ast
+                localctx.ast = localctx.cu.ast
                 pass
 
             elif la_ == 8:
                 self.enterOuterAlt(localctx, 8)
                 self.state = 157
                 localctx.rz = self.rzexp()
-                localctx.ast =  rz.ast
+                localctx.ast = localctx.rz.ast
                 pass
 
             elif la_ == 9:
                 self.enterOuterAlt(localctx, 9)
                 self.state = 160
                 localctx.rrz = self.rrzexp()
-                localctx.ast =  rrz.ast
+                localctx.ast = localctx.rrz.ast
                 pass
 
             elif la_ == 10:
                 self.enterOuterAlt(localctx, 10)
                 self.state = 163
                 localctx.sr = self.srexp()
-                localctx.ast =  sr.ast
+                localctx.ast = localctx.sr.ast
                 pass
 
             elif la_ == 11:
                 self.enterOuterAlt(localctx, 11)
                 self.state = 166
                 localctx.srr = self.srrexp()
-                localctx.ast =  srr.ast
+                localctx.ast = localctx.srr.ast
                 pass
 
             elif la_ == 12:
                 self.enterOuterAlt(localctx, 12)
                 self.state = 169
                 localctx.lshift = self.lshiftexp()
-                localctx.ast =  lshift.ast
+                localctx.ast = localctx.lshift.ast
                 pass
 
             elif la_ == 13:
                 self.enterOuterAlt(localctx, 13)
                 self.state = 172
                 localctx.rshift = self.rshiftexp()
-                localctx.ast =  rshift.ast
+                localctx.ast = localctx.rshift.ast
                 pass
 
             elif la_ == 14:
                 self.enterOuterAlt(localctx, 14)
                 self.state = 175
                 localctx.rev = self.revexp()
-                localctx.ast =  rev.ast
+                localctx.ast = localctx.rev.ast
                 pass
 
             elif la_ == 15:
                 self.enterOuterAlt(localctx, 15)
                 self.state = 178
                 localctx.qft = self.qftexp()
-                localctx.ast =  qft.ast
+                localctx.ast = localctx.qft.ast
                 pass
 
             elif la_ == 16:
                 self.enterOuterAlt(localctx, 16)
                 self.state = 181
                 localctx.rqft = self.rqftexp()
-                localctx.ast =  rqft.ast
+                localctx.ast = localctx.rqft.ast
                 pass
 
             elif la_ == 17:
                 self.enterOuterAlt(localctx, 17)
                 self.state = 184
                 localctx.seq = self.seqexp()
-                localctx.ast =  seq.ast
+                localctx.ast = localctx.seq.ast
                 pass
 
 
@@ -984,7 +985,7 @@ class ExpParser ( Parser ):
             self.parser = parser
             self.ast = None
             self.e1 = None # VexpContext
-             self.e2 = None # VexpContext
+            self.e2 = None # VexpContext
 
         def vexp(self, i:int=None):
             if i is None:
@@ -1077,7 +1078,7 @@ class ExpParser ( Parser ):
 
     def xgexp(self):
 
-        localctx = XgexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.XgexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 14, self.RULE_xgexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1138,7 +1139,7 @@ class ExpParser ( Parser ):
 
     def cuexp(self):
 
-        localctx = CuexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.CuexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_cuexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1201,7 +1202,7 @@ class ExpParser ( Parser ):
 
     def rzexp(self):
 
-        localctx = RzexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.RzexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_rzexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1264,7 +1265,7 @@ class ExpParser ( Parser ):
 
     def rrzexp(self):
 
-        localctx = RrzexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.RrzexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_rrzexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1324,7 +1325,7 @@ class ExpParser ( Parser ):
 
     def srexp(self):
 
-        localctx = SrexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.SrexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 22, self.RULE_srexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1387,7 +1388,7 @@ class ExpParser ( Parser ):
 
     def srrexp(self):
 
-        localctx = SrrexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.SrrexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 24, self.RULE_srrexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1445,7 +1446,7 @@ class ExpParser ( Parser ):
 
     def lshiftexp(self):
 
-        localctx = LshiftexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.LshiftexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 26, self.RULE_lshiftexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1501,7 +1502,7 @@ class ExpParser ( Parser ):
 
     def rshiftexp(self):
 
-        localctx = RshiftexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.RshiftexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 28, self.RULE_rshiftexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1557,7 +1558,7 @@ class ExpParser ( Parser ):
 
     def revexp(self):
 
-        localctx = RevexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.RevexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 30, self.RULE_revexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1617,7 +1618,7 @@ class ExpParser ( Parser ):
 
     def qftexp(self):
 
-        localctx = QftexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.QftexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 32, self.RULE_qftexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1679,7 +1680,7 @@ class ExpParser ( Parser ):
 
     def rqftexp(self):
 
-        localctx = RqftexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.RqftexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 34, self.RULE_rqftexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1741,7 +1742,7 @@ class ExpParser ( Parser ):
 
     def seqexp(self):
 
-        localctx = SeqexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.SeqexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 36, self.RULE_seqexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1802,7 +1803,7 @@ class ExpParser ( Parser ):
 
     def numexp(self):
 
-        localctx = NumexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.NumexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 38, self.RULE_numexp)
         try:
             self.state = 270
@@ -1812,7 +1813,7 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 256
                 localctx.n0 = self.match(ExpParser.Number)
-                localctx.ast =  new NumExp(Integer.parseInt((None if localctx.n0 is None else localctx.n0.text)))
+                localctx.ast =  new NumExp(int((None if localctx.n0 is None else localctx.n0.text)))
                 pass
 
             elif la_ == 2:
@@ -1821,7 +1822,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.T__3)
                 self.state = 259
                 localctx.n0 = self.match(ExpParser.Number)
-                localctx.ast =  new NumExp(-Integer.parseInt((None if localctx.n0 is None else localctx.n0.text)))
+                localctx.ast =  new NumExp(int((None if localctx.n0 is None else localctx.n0.text)))
                 pass
 
             elif la_ == 3:
@@ -1832,7 +1833,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.Dot)
                 self.state = 263
                 localctx.n1 = self.match(ExpParser.Number)
-                localctx.ast =  new NumExp(Double.parseDouble((None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
+                localctx.ast =  new NumExp(float((None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
                 pass
 
             elif la_ == 4:
@@ -1845,7 +1846,7 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.Dot)
                 self.state = 268
                 localctx.n1 = self.match(ExpParser.Number)
-                localctx.ast =  new NumExp(Double.parseDouble("-" + (None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
+                localctx.ast =  new NumExp(float("-" + (None if localctx.n0 is None else localctx.n0.text)+"."+(None if localctx.n1 is None else localctx.n1.text)))
                 pass
 
 
@@ -1897,7 +1898,7 @@ class ExpParser ( Parser ):
 
     def addexp(self):
 
-        localctx = AddexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.AddexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 40, self.RULE_addexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -1960,7 +1961,7 @@ class ExpParser ( Parser ):
 
     def subexp(self):
 
-        localctx = SubexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.SubexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 42, self.RULE_subexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2023,7 +2024,7 @@ class ExpParser ( Parser ):
 
     def multexp(self):
 
-        localctx = MultexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.MultexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 44, self.RULE_multexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2086,7 +2087,7 @@ class ExpParser ( Parser ):
 
     def divexp(self):
 
-        localctx = DivexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.DivexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 46, self.RULE_divexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2149,7 +2150,7 @@ class ExpParser ( Parser ):
 
     def modexp(self):
 
-        localctx = ModexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.ModexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 48, self.RULE_modexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2212,7 +2213,7 @@ class ExpParser ( Parser ):
 
     def expexp(self):
 
-        localctx = ExpexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.ExpexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 50, self.RULE_expexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2270,7 +2271,7 @@ class ExpParser ( Parser ):
 
     def varexp(self):
 
-        localctx = VarexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.VarexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 52, self.RULE_varexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2321,9 +2322,9 @@ class ExpParser ( Parser ):
 
         def typea(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(TypeaContext)
+                return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(TypeaContext,i)
+                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
 
 
         def getRuleIndex(self):
@@ -2348,9 +2349,10 @@ class ExpParser ( Parser ):
 
     def letexp(self):
 
-        localctx = LetexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.LetexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_letexp)
-        localctx.names =  new ArrayList<String>() localctx.types = new ArrayList<Type>()
+        localctx.names = []
+        localctx.types = []
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 317
@@ -2370,7 +2372,8 @@ class ExpParser ( Parser ):
                     localctx.t = self.typea()
                     self.state = 322
                     self.match(ExpParser.T__2)
-                    localctx.names.add((None if localctx.ida is None else localctx.ida.text));localctx.types.add(localctx.t.ast);
+                    localctx.names.append((None if localctx.ida is None else localctx.ida.text))
+                    localctx.types.append(localctx.t.ast)
 
                 else:
                     raise NoViableAltException(self)
@@ -2442,9 +2445,9 @@ class ExpParser ( Parser ):
 
     def matchexp(self):
 
-        localctx = MatchexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.MatchexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 56, self.RULE_matchexp)
-        localctx.value_exps =  new ArrayList<Pair<Exp,Exp>>()
+        localctx.value_exps = []
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2466,14 +2469,15 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.T__11)
                 self.state = 340
                 localctx.e2 = self.exp()
-                Pair<Exp,Exp> tmp = new Pair<Exp,Exp>(localctx.e1.ast,localctx.e2.ast); localctx.value_exps.add(tmp);
+                tmp = new Pair<Exp,Exp>(localctx.e1.ast,localctx.e2.ast)
+                localctx.value_exps.append(tmp)
                 self.state = 345 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==11):
                     break
 
-             localctx.ast =  new MatchExp(localctx.e.ast, localctx.value_exps) 
+             localctx.ast = new MatchExp(localctx.e.ast, localctx.value_exps)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2519,7 +2523,7 @@ class ExpParser ( Parser ):
 
     def boolexp(self):
 
-        localctx = BoolexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.BoolexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 58, self.RULE_boolexp)
         try:
             self.state = 353
@@ -2556,7 +2560,7 @@ class ExpParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
             self.ast = None
-            self.arguments = new ArrayList<Exp>();
+            self.arguments = []
             self.f = None # ExpContext
             self.e = None # ExpContext
 
@@ -2589,7 +2593,7 @@ class ExpParser ( Parser ):
 
     def callexp(self):
 
-        localctx = CallexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.CallexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 60, self.RULE_callexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2600,7 +2604,7 @@ class ExpParser ( Parser ):
 
             self.state = 357
             localctx.e = self.exp()
-            localctx.arguments.add(localctx.e.ast);
+            localctx.arguments.append(localctx.e.ast)
             self.state = 360
             self.match(ExpParser.T__2)
             localctx.ast =  new CallExp(localctx.f.ast,localctx.arguments)
@@ -2660,7 +2664,7 @@ class ExpParser ( Parser ):
 
     def ifexp(self):
 
-        localctx = IfexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.IfexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 62, self.RULE_ifexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2728,7 +2732,7 @@ class ExpParser ( Parser ):
 
     def lessexp(self):
 
-        localctx = LessexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.LessexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 64, self.RULE_lessexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2794,7 +2798,7 @@ class ExpParser ( Parser ):
 
     def equalexp(self):
 
-        localctx = EqualexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.EqualexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 66, self.RULE_equalexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2860,7 +2864,7 @@ class ExpParser ( Parser ):
 
     def greaterexp(self):
 
-        localctx = GreaterexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.GreaterexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 68, self.RULE_greaterexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2923,7 +2927,7 @@ class ExpParser ( Parser ):
 
     def andexp(self):
 
-        localctx = AndexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.AndexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 70, self.RULE_andexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -2986,7 +2990,7 @@ class ExpParser ( Parser ):
 
     def orexp(self):
 
-        localctx = OrexpContext(self, self._ctx, self.state)
+        localctx = ExpParser.OrexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 72, self.RULE_orexp)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -3023,19 +3027,19 @@ class ExpParser ( Parser ):
             self.p = None # PairtypeContext
 
         def booleantype(self):
-            return self.getTypedRuleContext(BooleantypeContext,0)
+            return self.getTypedRuleContext(ExpParser.BooleantypeContext,0)
 
 
         def funct(self):
-            return self.getTypedRuleContext(FunctContext,0)
+            return self.getTypedRuleContext(ExpParser.FunctContext,0)
 
 
         def numtype(self):
-            return self.getTypedRuleContext(NumtypeContext,0)
+            return self.getTypedRuleContext(ExpParser.NumtypeContext,0)
 
 
         def pairtype(self):
-            return self.getTypedRuleContext(PairtypeContext,0)
+            return self.getTypedRuleContext(ExpParser.PairtypeContext,0)
 
 
         def getRuleIndex(self):
@@ -3060,7 +3064,7 @@ class ExpParser ( Parser ):
 
     def typea(self):
 
-        localctx = TypeaContext(self, self._ctx, self.state)
+        localctx = ExpParser.TypeaContext(self, self._ctx, self.state)
         self.enterRule(localctx, 74, self.RULE_typea)
         try:
             self.state = 418
@@ -3135,7 +3139,7 @@ class ExpParser ( Parser ):
 
     def booleantype(self):
 
-        localctx = BooleantypeContext(self, self._ctx, self.state)
+        localctx = ExpParser.BooleantypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 76, self.RULE_booleantype)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -3182,7 +3186,7 @@ class ExpParser ( Parser ):
 
     def numtype(self):
 
-        localctx = NumtypeContext(self, self._ctx, self.state)
+        localctx = ExpParser.NumtypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 78, self.RULE_numtype)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -3210,9 +3214,9 @@ class ExpParser ( Parser ):
 
         def typea(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(TypeaContext)
+                return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(TypeaContext,i)
+                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
 
 
         def getRuleIndex(self):
@@ -3237,7 +3241,7 @@ class ExpParser ( Parser ):
 
     def pairtype(self):
 
-        localctx = PairtypeContext(self, self._ctx, self.state)
+        localctx = ExpParser.PairtypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 80, self.RULE_pairtype)
         try:
             self.enterOuterAlt(localctx, 1)
@@ -3274,9 +3278,9 @@ class ExpParser ( Parser ):
 
         def typea(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(TypeaContext)
+                return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(TypeaContext,i)
+                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
 
 
         def getRuleIndex(self):
@@ -3301,9 +3305,9 @@ class ExpParser ( Parser ):
 
     def funct(self):
 
-        localctx = FunctContext(self, self._ctx, self.state)
+        localctx = ExpParser.FunctContext(self, self._ctx, self.state)
         self.enterRule(localctx, 82, self.RULE_funct)
-        localctx.formals =  new ArrayList<Type>()
+        localctx.formals = []
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
@@ -3315,7 +3319,7 @@ class ExpParser ( Parser ):
             while (_la & ~0x3f) == 0 and ((1 << _la) & 98306) != 0:
                 self.state = 434
                 localctx.e = self.typea()
-                localctx.formals.add(localctx.e.ast);
+                localctx.formals.append(localctx.e.ast)
                 self.state = 441
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
@@ -3334,8 +3338,3 @@ class ExpParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
-
-
-
-
-
