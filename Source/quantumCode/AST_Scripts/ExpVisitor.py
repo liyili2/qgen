@@ -9,8 +9,8 @@ else:
 
 class ExpVisitor(ParseTreeVisitor):
 
-    # Visit a parse tree produced by ExpParser#program.
-    def visitProgram(self, ctx:ExpParser.ProgramContext):
+    # Visit a parse tree produced by ExpParser#exp.
+    def visitExp(self, ctx:ExpParser.ExpContext):
         return self.visitChildren(ctx)
 
 
@@ -24,23 +24,13 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#posi.
-    def visitPosi(self, ctx:ExpParser.PosiContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#exp.
-    def visitExp(self, ctx:ExpParser.ExpContext):
+    # Visit a parse tree produced by ExpParser#posiexp.
+    def visitPosiexp(self, ctx:ExpParser.PosiexpContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by ExpParser#skipexp.
     def visitSkipexp(self, ctx:ExpParser.SkipexpContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#posiexp.
-    def visitPosiexp(self, ctx:ExpParser.PosiexpContext):
         return self.visitChildren(ctx)
 
 
@@ -99,11 +89,6 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#seqexp.
-    def visitSeqexp(self, ctx:ExpParser.SeqexpContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExpParser#numexp.
     def visitNumexp(self, ctx:ExpParser.NumexpContext):
         return self.visitChildren(ctx)
@@ -136,11 +121,6 @@ class ExpVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExpParser#expexp.
     def visitExpexp(self, ctx:ExpParser.ExpexpContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#varexp.
-    def visitVarexp(self, ctx:ExpParser.VarexpContext):
         return self.visitChildren(ctx)
 
 

@@ -8,12 +8,12 @@ else:
 # This class defines a complete listener for a parse tree produced by ExpParser.
 class ExpListener(ParseTreeListener):
 
-    # Enter a parse tree produced by ExpParser#program.
-    def enterProgram(self, ctx:ExpParser.ProgramContext):
+    # Enter a parse tree produced by ExpParser#exp.
+    def enterExp(self, ctx:ExpParser.ExpContext):
         pass
 
-    # Exit a parse tree produced by ExpParser#program.
-    def exitProgram(self, ctx:ExpParser.ProgramContext):
+    # Exit a parse tree produced by ExpParser#exp.
+    def exitExp(self, ctx:ExpParser.ExpContext):
         pass
 
 
@@ -35,21 +35,12 @@ class ExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ExpParser#posi.
-    def enterPosi(self, ctx:ExpParser.PosiContext):
+    # Enter a parse tree produced by ExpParser#posiexp.
+    def enterPosiexp(self, ctx:ExpParser.PosiexpContext):
         pass
 
-    # Exit a parse tree produced by ExpParser#posi.
-    def exitPosi(self, ctx:ExpParser.PosiContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpParser#exp.
-    def enterExp(self, ctx:ExpParser.ExpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#exp.
-    def exitExp(self, ctx:ExpParser.ExpContext):
+    # Exit a parse tree produced by ExpParser#posiexp.
+    def exitPosiexp(self, ctx:ExpParser.PosiexpContext):
         pass
 
 
@@ -59,15 +50,6 @@ class ExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExpParser#skipexp.
     def exitSkipexp(self, ctx:ExpParser.SkipexpContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpParser#posiexp.
-    def enterPosiexp(self, ctx:ExpParser.PosiexpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#posiexp.
-    def exitPosiexp(self, ctx:ExpParser.PosiexpContext):
         pass
 
 
@@ -170,15 +152,6 @@ class ExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ExpParser#seqexp.
-    def enterSeqexp(self, ctx:ExpParser.SeqexpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#seqexp.
-    def exitSeqexp(self, ctx:ExpParser.SeqexpContext):
-        pass
-
-
     # Enter a parse tree produced by ExpParser#numexp.
     def enterNumexp(self, ctx:ExpParser.NumexpContext):
         pass
@@ -239,15 +212,6 @@ class ExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExpParser#expexp.
     def exitExpexp(self, ctx:ExpParser.ExpexpContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpParser#varexp.
-    def enterVarexp(self, ctx:ExpParser.VarexpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#varexp.
-    def exitVarexp(self, ctx:ExpParser.VarexpContext):
         pass
 
 
