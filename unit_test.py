@@ -26,7 +26,7 @@ for txt_file in txt_files:
     xml_format = xml_engine.visit(program)
 
     # Print out the XML format
-    print(f"XML Format for {file_name}:\n{xml_format}")
+    print("XML Format for {file_name}:\n{xml_format}")
 
     # Pass the XML to QProgram
     qprogram = QProblem(xml_format)
