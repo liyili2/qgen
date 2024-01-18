@@ -1,7 +1,6 @@
 from jmetal.core.problem import Problem
 from jmetal.core.solution import Solution
-from . import QProgram, Operators
-from .qpatch import QPatch
+from Source.repairCode.patch import QPatch
 from pyggi.base.edit import AbstractEdit
 from pyggi.tree import XmlEngine
 import random
