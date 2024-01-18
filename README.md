@@ -1,4 +1,4 @@
-#Quantum Genetic Programming
+# Quantum Genetic Programming
 
 This project uses Pyggi to synthesize quantum programs.
 
