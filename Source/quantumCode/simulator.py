@@ -299,89 +299,96 @@ class Simulator(ExpVisitor):
         return self.st
 
     def visitXgexp(self, ctx: ExpParser.XgexpContext):
-        p = ctx.e
-        M_add(p, exchange(get_state(p, self.st)), self.st)
+        p = self.visit(ctx)
+        return M_add(p, exchange(get_state(p, self.st)), self.st)
 
     def visitCUexp(self, ctx: ExpParser.CuexpContext):
-        p = ctx.e1
-        e_prime = ctx.e2
+        out = self.visit(ctx)
+        p = out[0]
+        e_prime = out[1]
         if get_cua(get_state(p, self.st)):
-            self.visit(e_prime)
+            return self.visit(e_prime)
         else:
             return self.st
 
     def visitRzexp(self, ctx: ExpParser.RzexpContext):
-        q = ctx.e1
-        p = ctx.e2
-        M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        out = self.visit(ctx)
+        q = out[0]
+        p = out[1]
+        return M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
-        q = ctx.e1
-        p = ctx.e2
-        M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        out = self.visit(ctx)
+        q = out[0]
+        p = out[1]
+        return M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
-        n = ctx.e1
-        x = ctx.e2
-        sr_rotate(self.st, x, n, self.rmax)
+        out = self.visit(ctx)
+        n = out[0]
+        x = out[1]
+        return sr_rotate(self.st, x, n, self.rmax)
 
     def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
-        n = ctx.e1
-        x = ctx.e2
-        srr_rotate(self.st, x, n, self.rmax)
+        out = self.visit(ctx)
+        n = out[0]
+        x = out[1]
+        return srr_rotate(self.st, x, n, self.rmax)
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
-        x = ctx.e1
-        lshift(self.st, x, self.env(x))
+        x = self.visit(ctx)
+        return lshift(self.st, x, self.env(x))
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
-        x = ctx.e1
-        rshift(self.st, x, self.env(x))
+        x = self.visit(ctx)
+        return rshift(self.st, x, self.env(x))
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
-        x = ctx.e1
-        reverse(self.st, x, self.env(x))
+        x = self.visit(ctx)
+        return reverse(self.st, x, self.env(x))
 
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
-        x = ctx.e1
-        turn_qft(self.st, x, self.env(x), self.rmax)
+        x = self.visit(ctx)
+        return turn_qft(self.st, x, self.env(x), self.rmax)
 
     def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
-        x = ctx.e1
-        turn_rqft(self.st, x, self.env(x), self.rmax)
+        x = self.visit(ctx)
+        return turn_rqft(self.st, x, self.env(x), self.rmax)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
-            self.visitChildren(ctx)
+            return self.visitChildren(ctx)
         else:
-            self.visitTerminal(ctx)
+            return self.visitTerminal(ctx)
 
     def visitChildren(self, ctx: ParserRuleContext):
+        out = []
         for child in ctx.children:
-            self.visit(child)
+            out.append(self.visit(child))
+        return out
 
     def visitTerminal(self, node: ParserRuleContext):
         if isinstance(node, ExpParser.SkipexpContext):
-            self.visitSkipexp(node)
+            return self.visitSkipexp(node)
         elif isinstance(node, ExpParser.XgexpContext):
-            self.visitXgexp(node)
+            return self.visitXgexp(node)
         elif isinstance(node, ExpParser.CuexpContext):
-            self.visitCUexp(node)
+            return self.visitCUexp(node)
         elif isinstance(node, ExpParser.RzexpContext):
-            self.visitRzexp(node)
+            return self.visitRzexp(node)
         elif isinstance(node, ExpParser.RrzexpContext):
-            self.visitRrzexp(node)
+            return self.visitRrzexp(node)
         elif isinstance(node, ExpParser.SrexpContext):
-            self.visitSrexp(node)
+            return self.visitSrexp(node)
         elif isinstance(node, ExpParser.SrrexpContext):
-            self.visitSrrexp(node)
+            return self.visitSrrexp(node)
         elif isinstance(node, ExpParser.LshiftexpContext):
-            self.visitLshiftexp(node)
+            return self.visitLshiftexp(node)
         elif isinstance(node, ExpParser.RshiftexpContext):
-            self.visitRshiftexp(node)
+            return self.visitRshiftexp(node)
         elif isinstance(node, ExpParser.RevexpContext):
-            self.visitRevexp(node)
+            return self.visitRevexp(node)
         elif isinstance(node, ExpParser.QftexpContext):
-            self.visitQftexp(node)
+            return self.visitQftexp(node)
         elif isinstance(node, ExpParser.RqftexpContext):
-            self.visitRqftexp(node)
+            return self.visitRqftexp(node)
