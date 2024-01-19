@@ -1,5 +1,6 @@
 import ast
 
+
 class VariableDeclarationCollector(ast.NodeVisitor):
     def __init__(self):
         self.variable_declarations = []
@@ -55,6 +56,7 @@ def generate_ocaml_code_for_expression(node):
     else:
         # Handle other cases as needed
         return ""
+
 
 # Example usage:
 python_code = """
