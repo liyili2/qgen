@@ -3,9 +3,7 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from Source.quantumCode.AST_Scripts.ExpParser import SkipexpContext, CuexpContext, RzexpContext, RrzexpContext, \
-    SrexpContext, SrrexpContext, LshiftexpContext, RshiftexpContext, RevexpContext, QftexpContext, RqftexpContext, \
-    SeqexpContext, XgexpContext
+from Source.quantumCode.AST_Scripts.ExpParser import ExpParser
 from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
 
 """
@@ -14,7 +12,7 @@ Types
 
 
 class coq_val:
-    pass
+    pass # TODO
 
 
 class Coq_nval(coq_val):
@@ -297,14 +295,14 @@ class Simulator(ExpVisitor):
         self.env = env
         self.rmax = rmax
 
-    def visitSkipexp(self, ctx: SkipexpContext):
+    def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
         return self.st
 
-    def visitXgexp(self, ctx: XgexpContext):
+    def visitXgexp(self, ctx: ExpParser.XgexpContext):
         p = ctx.e
         M_add(p, exchange(get_state(p, self.st)), self.st)
 
-    def visitCUexp(self, ctx: CuexpContext):
+    def visitCUexp(self, ctx: ExpParser.CuexpContext):
         p = ctx.e1
         e_prime = ctx.e2
         if get_cua(get_state(p, self.st)):
@@ -312,47 +310,47 @@ class Simulator(ExpVisitor):
         else:
             return self.st
 
-    def visitRzexp(self, ctx: RzexpContext):
+    def visitRzexp(self, ctx: ExpParser.RzexpContext):
         q = ctx.e1
         p = ctx.e2
         M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
-    def visitRrzexp(self, ctx: RrzexpContext):
+    def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
         q = ctx.e1
         p = ctx.e2
         M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
-    def visitSrexp(self, ctx: SrexpContext):
+    def visitSrexp(self, ctx: ExpParser.SrexpContext):
         n = ctx.e1
         x = ctx.e2
         sr_rotate(self.st, x, n, self.rmax)
 
-    def visitSrrexp(self, ctx: SrrexpContext):
+    def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
         n = ctx.e1
         x = ctx.e2
         srr_rotate(self.st, x, n, self.rmax)
 
-    def visitLshiftexp(self, ctx: LshiftexpContext):
+    def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
         x = ctx.e1
         lshift(self.st, x, self.env(x))
 
-    def visitRshiftexp(self, ctx: RshiftexpContext):
+    def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
         x = ctx.e1
         rshift(self.st, x, self.env(x))
 
-    def visitRevexp(self, ctx: RevexpContext):
+    def visitRevexp(self, ctx: ExpParser.RevexpContext):
         x = ctx.e1
         reverse(self.st, x, self.env(x))
 
-    def visitQftexp(self, ctx: QftexpContext):
+    def visitQftexp(self, ctx: ExpParser.QftexpContext):
         x = ctx.e1
         turn_qft(self.st, x, self.env(x), self.rmax)
 
-    def visitRqftexp(self, ctx: RqftexpContext):
+    def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
         x = ctx.e1
         turn_rqft(self.st, x, self.env(x), self.rmax)
 
-    def visitSeqexp(self, ctx: SeqexpContext):
+    def visitSeqexp(self, ctx: ExpParser.SeqexpContext):
         e1 = ctx.e1
         e2 = ctx.e2
         self.visit(e1)
@@ -369,29 +367,29 @@ class Simulator(ExpVisitor):
             self.visit(child)
 
     def visitTerminal(self, node: ParserRuleContext):
-        if isinstance(node, SkipexpContext):
+        if isinstance(node, ExpParser.SkipexpContext):
             self.visitSkipexp(node)
-        elif isinstance(node, XgexpContext):
+        elif isinstance(node, ExpParser.XgexpContext):
             self.visitXgexp(node)
-        elif isinstance(node, CuexpContext):
+        elif isinstance(node, ExpParser.CuexpContext):
             self.visitCUexp(node)
-        elif isinstance(node, RzexpContext):
+        elif isinstance(node, ExpParser.RzexpContext):
             self.visitRzexp(node)
-        elif isinstance(node, RrzexpContext):
+        elif isinstance(node, ExpParser.RrzexpContext):
             self.visitRrzexp(node)
-        elif isinstance(node, SrexpContext):
+        elif isinstance(node, ExpParser.SrexpContext):
             self.visitSrexp(node)
-        elif isinstance(node, SrrexpContext):
+        elif isinstance(node, ExpParser.SrrexpContext):
             self.visitSrrexp(node)
-        elif isinstance(node, LshiftexpContext):
+        elif isinstance(node, ExpParser.LshiftexpContext):
             self.visitLshiftexp(node)
-        elif isinstance(node, RshiftexpContext):
+        elif isinstance(node, ExpParser.RshiftexpContext):
             self.visitRshiftexp(node)
-        elif isinstance(node, RevexpContext):
+        elif isinstance(node, ExpParser.RevexpContext):
             self.visitRevexp(node)
-        elif isinstance(node, QftexpContext):
+        elif isinstance(node, ExpParser.QftexpContext):
             self.visitQftexp(node)
-        elif isinstance(node, RqftexpContext):
+        elif isinstance(node, ExpParser.RqftexpContext):
             self.visitRqftexp(node)
-        elif isinstance(node, SeqexpContext):
+        elif isinstance(node, ExpParser.SeqexpContext):
             self.visitSeqexp(node)

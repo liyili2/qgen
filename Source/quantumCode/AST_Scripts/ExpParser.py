@@ -792,7 +792,7 @@ class ExpParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 136
                 localctx.vb = self.varexp()
-                $ ast = localctx.vb.ast;
+                localctx.ast = localctx.vb.ast
                 pass
 
             elif la_ == 2:
@@ -963,7 +963,7 @@ class ExpParser ( Parser ):
             self.match(ExpParser.SKIPEXP)
             self.state = 190
             localctx.e1 = self.posiexp()
-            localctx.ast =  new SkipExp(e1)
+            localctx.ast = SkipExp(e1)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
