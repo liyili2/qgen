@@ -2,8 +2,9 @@
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
+from typing import TextIO
 import sys
+
 
 def serializedATN():
     with StringIO() as buf:
@@ -123,37 +124,36 @@ def serializedATN():
         return buf.getvalue()
 
 
-class ExpParser ( Parser ):
-
+class ExpParser(Parser):
     grammarFileName = "Exp.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'('", "','", "')'", "'-'", "'+'", "'*'", 
-                     "'/'", "'%'", "'^'", "':'", "'|'", "'=>'", "'&&'", 
-                     "'||'", "'bool'", "'num'", "'->'", "'app'", "'then'", 
-                     "'else'", "'let'", "'in'", "'match'", "'with'", "'if'", 
-                     "'car'", "'cdr'", "'<'", "'='", "'>'", "'#t'", "'#f'", 
-                     "'SKIP'", "'X'", "'CU'", "'RZ'", "'RRZ'", "'SR'", "'SRR'", 
-                     "'Lshift'", "'Rshift'", "'Rev'", "'QFT'", "'RQFT'", 
-                     "';'", "'.'", "<INVALID>", "<INVALID>", "<INVALID>", 
-                     "<INVALID>", "<INVALID>", "'@'", "'...'" ]
+    literalNames = ["<INVALID>", "'('", "','", "')'", "'-'", "'+'", "'*'",
+                    "'/'", "'%'", "'^'", "':'", "'|'", "'=>'", "'&&'",
+                    "'||'", "'bool'", "'num'", "'->'", "'app'", "'then'",
+                    "'else'", "'let'", "'in'", "'match'", "'with'", "'if'",
+                    "'car'", "'cdr'", "'<'", "'='", "'>'", "'#t'", "'#f'",
+                    "'SKIP'", "'X'", "'CU'", "'RZ'", "'RRZ'", "'SR'", "'SRR'",
+                    "'Lshift'", "'Rshift'", "'Rev'", "'QFT'", "'RQFT'",
+                    "';'", "'.'", "<INVALID>", "<INVALID>", "<INVALID>",
+                    "<INVALID>", "<INVALID>", "'@'", "'...'"]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "App", "Then", "Else", "Let", 
-                      "IN", "Match", "With", "If", "Car", "Cdr", "Less", 
-                      "Equal", "Greater", "TrueLiteral", "FalseLiteral", 
-                      "SKIPEXP", "Xgate", "CU", "RZ", "RRZ", "SR", "SRR", 
-                      "Lshift", "Rshift", "Rev", "QFT", "RQFT", "Seq", "Dot", 
-                      "Number", "Identifier", "Letter", "LetterOrDigit", 
-                      "StrLiteral", "AT", "ELLIPSIS", "WS", "Comment", "Line_Comment" ]
+    symbolicNames = ["<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "App", "Then", "Else", "Let",
+                     "IN", "Match", "With", "If", "Car", "Cdr", "Less",
+                     "Equal", "Greater", "TrueLiteral", "FalseLiteral",
+                     "SKIPEXP", "Xgate", "CU", "RZ", "RRZ", "SR", "SRR",
+                     "Lshift", "Rshift", "Rev", "QFT", "RQFT", "Seq", "Dot",
+                     "Number", "Identifier", "Letter", "LetterOrDigit",
+                     "StrLiteral", "AT", "ELLIPSIS", "WS", "Comment", "Line_Comment"]
 
     RULE_exp = 0
     RULE_vexp = 1
@@ -194,83 +194,82 @@ class ExpParser ( Parser ):
     RULE_pairtype = 36
     RULE_funct = 37
 
-    ruleNames =  [ "exp", "vexp", "bexp", "posiexp", "skipexp", "xgexp", 
-                   "cuexp", "rzexp", "rrzexp", "srexp", "srrexp", "lshiftexp", 
-                   "rshiftexp", "revexp", "qftexp", "rqftexp", "numexp", 
-                   "addexp", "subexp", "multexp", "divexp", "modexp", "expexp", 
-                   "letexp", "matchexp", "boolexp", "callexp", "ifexp", 
-                   "lessexp", "equalexp", "greaterexp", "andexp", "orexp", 
-                   "typea", "booleantype", "numtype", "pairtype", "funct" ]
+    ruleNames = ["exp", "vexp", "bexp", "posiexp", "skipexp", "xgexp",
+                 "cuexp", "rzexp", "rrzexp", "srexp", "srrexp", "lshiftexp",
+                 "rshiftexp", "revexp", "qftexp", "rqftexp", "numexp",
+                 "addexp", "subexp", "multexp", "divexp", "modexp", "expexp",
+                 "letexp", "matchexp", "boolexp", "callexp", "ifexp",
+                 "lessexp", "equalexp", "greaterexp", "andexp", "orexp",
+                 "typea", "booleantype", "numtype", "pairtype", "funct"]
 
     EOF = Token.EOF
-    T__0=1
-    T__1=2
-    T__2=3
-    T__3=4
-    T__4=5
-    T__5=6
-    T__6=7
-    T__7=8
-    T__8=9
-    T__9=10
-    T__10=11
-    T__11=12
-    T__12=13
-    T__13=14
-    T__14=15
-    T__15=16
-    T__16=17
-    App=18
-    Then=19
-    Else=20
-    Let=21
-    IN=22
-    Match=23
-    With=24
-    If=25
-    Car=26
-    Cdr=27
-    Less=28
-    Equal=29
-    Greater=30
-    TrueLiteral=31
-    FalseLiteral=32
-    SKIPEXP=33
-    Xgate=34
-    CU=35
-    RZ=36
-    RRZ=37
-    SR=38
-    SRR=39
-    Lshift=40
-    Rshift=41
-    Rev=42
-    QFT=43
-    RQFT=44
-    Seq=45
-    Dot=46
-    Number=47
-    Identifier=48
-    Letter=49
-    LetterOrDigit=50
-    StrLiteral=51
-    AT=52
-    ELLIPSIS=53
-    WS=54
-    Comment=55
-    Line_Comment=56
+    T__0 = 1
+    T__1 = 2
+    T__2 = 3
+    T__3 = 4
+    T__4 = 5
+    T__5 = 6
+    T__6 = 7
+    T__7 = 8
+    T__8 = 9
+    T__9 = 10
+    T__10 = 11
+    T__11 = 12
+    T__12 = 13
+    T__13 = 14
+    T__14 = 15
+    T__15 = 16
+    T__16 = 17
+    App = 18
+    Then = 19
+    Else = 20
+    Let = 21
+    IN = 22
+    Match = 23
+    With = 24
+    If = 25
+    Car = 26
+    Cdr = 27
+    Less = 28
+    Equal = 29
+    Greater = 30
+    TrueLiteral = 31
+    FalseLiteral = 32
+    SKIPEXP = 33
+    Xgate = 34
+    CU = 35
+    RZ = 36
+    RRZ = 37
+    SR = 38
+    SRR = 39
+    Lshift = 40
+    Rshift = 41
+    Rev = 42
+    QFT = 43
+    RQFT = 44
+    Seq = 45
+    Dot = 46
+    Number = 47
+    Identifier = 48
+    Letter = 49
+    LetterOrDigit = 50
+    StrLiteral = 51
+    AT = 52
+    ELLIPSIS = 53
+    WS = 54
+    Comment = 55
+    Line_Comment = 56
 
-    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+    def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
+        self._la = None
         self.checkVersion("4.7.2")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
-
-
     class ExpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -278,71 +277,55 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Identifier, 0)
 
         def letexp(self):
-            return self.getTypedRuleContext(ExpParser.LetexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.LetexpContext, 0)
 
         def callexp(self):
-            return self.getTypedRuleContext(ExpParser.CallexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.CallexpContext, 0)
 
         def ifexp(self):
-            return self.getTypedRuleContext(ExpParser.IfexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.IfexpContext, 0)
 
         def skipexp(self):
-            return self.getTypedRuleContext(ExpParser.SkipexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.SkipexpContext, 0)
 
         def xgexp(self):
-            return self.getTypedRuleContext(ExpParser.XgexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.XgexpContext, 0)
 
         def cuexp(self):
-            return self.getTypedRuleContext(ExpParser.CuexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.CuexpContext, 0)
 
         def rzexp(self):
-            return self.getTypedRuleContext(ExpParser.RzexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.RzexpContext, 0)
 
         def rrzexp(self):
-            return self.getTypedRuleContext(ExpParser.RrzexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.RrzexpContext, 0)
 
         def srexp(self):
-            return self.getTypedRuleContext(ExpParser.SrexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.SrexpContext, 0)
 
         def srrexp(self):
-            return self.getTypedRuleContext(ExpParser.SrrexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.SrrexpContext, 0)
 
         def lshiftexp(self):
-            return self.getTypedRuleContext(ExpParser.LshiftexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.LshiftexpContext, 0)
 
         def rshiftexp(self):
-            return self.getTypedRuleContext(ExpParser.RshiftexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.RshiftexpContext, 0)
 
         def revexp(self):
-            return self.getTypedRuleContext(ExpParser.RevexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.RevexpContext, 0)
 
         def qftexp(self):
-            return self.getTypedRuleContext(ExpParser.QftexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.QftexpContext, 0)
 
         def rqftexp(self):
-            return self.getTypedRuleContext(ExpParser.RqftexpContext,0)
+            return self.getTypedRuleContext(ExpParser.RqftexpContext, 0)
 
-
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def Seq(self):
             return self.getToken(ExpParser.Seq, 0)
@@ -350,23 +333,21 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_exp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterExp"):
                 listener.enterExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitExp"):
                 listener.exitExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExp"):
                 return visitor.visitExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def exp(self, _p:int=0):
+    def exp(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = ExpParser.ExpContext(self, self._ctx, _parentState)
@@ -448,9 +429,9 @@ class ExpParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 100
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 1, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
@@ -463,10 +444,10 @@ class ExpParser ( Parser ):
                     self.state = 96
                     self.match(ExpParser.Seq)
                     self.state = 97
-                    self.exp(2) 
+                    self.exp(2)
                 self.state = 102
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,1,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 1, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -478,7 +459,7 @@ class ExpParser ( Parser ):
 
     class VexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -486,56 +467,45 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Identifier, 0)
 
         def numexp(self):
-            return self.getTypedRuleContext(ExpParser.NumexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.NumexpContext, 0)
 
         def boolexp(self):
-            return self.getTypedRuleContext(ExpParser.BoolexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.BoolexpContext, 0)
 
         def addexp(self):
-            return self.getTypedRuleContext(ExpParser.AddexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.AddexpContext, 0)
 
         def subexp(self):
-            return self.getTypedRuleContext(ExpParser.SubexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.SubexpContext, 0)
 
         def multexp(self):
-            return self.getTypedRuleContext(ExpParser.MultexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.MultexpContext, 0)
 
         def divexp(self):
-            return self.getTypedRuleContext(ExpParser.DivexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.DivexpContext, 0)
 
         def modexp(self):
-            return self.getTypedRuleContext(ExpParser.ModexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ModexpContext, 0)
 
         def expexp(self):
-            return self.getTypedRuleContext(ExpParser.ExpexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_vexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterVexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterVexp"):
                 listener.enterVexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitVexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitVexp"):
                 listener.exitVexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitVexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitVexp"):
                 return visitor.visitVexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def vexp(self):
 
@@ -544,7 +514,7 @@ class ExpParser ( Parser ):
         try:
             self.state = 112
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 2, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 103
@@ -599,7 +569,6 @@ class ExpParser ( Parser ):
                 self.expexp()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -610,49 +579,41 @@ class ExpParser ( Parser ):
 
     class BexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def lessexp(self):
-            return self.getTypedRuleContext(ExpParser.LessexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.LessexpContext, 0)
 
         def equalexp(self):
-            return self.getTypedRuleContext(ExpParser.EqualexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.EqualexpContext, 0)
 
         def greaterexp(self):
-            return self.getTypedRuleContext(ExpParser.GreaterexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.GreaterexpContext, 0)
 
         def andexp(self):
-            return self.getTypedRuleContext(ExpParser.AndexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.AndexpContext, 0)
 
         def orexp(self):
-            return self.getTypedRuleContext(ExpParser.OrexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.OrexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_bexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBexp"):
                 listener.enterBexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBexp"):
                 listener.exitBexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBexp"):
                 return visitor.visitBexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def bexp(self):
 
@@ -661,7 +622,7 @@ class ExpParser ( Parser ):
         try:
             self.state = 119
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,3,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 3, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 114
@@ -692,7 +653,6 @@ class ExpParser ( Parser ):
                 self.orexp()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -703,36 +663,32 @@ class ExpParser ( Parser ):
 
     class PosiexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def vexp(self, i:int=None):
+        def vexp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.VexpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.VexpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.VexpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_posiexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPosiexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPosiexp"):
                 listener.enterPosiexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPosiexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPosiexp"):
                 listener.exitPosiexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPosiexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPosiexp"):
                 return visitor.visitPosiexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def posiexp(self):
 
@@ -760,7 +716,7 @@ class ExpParser ( Parser ):
 
     class SkipexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -768,28 +724,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.SKIPEXP, 0)
 
         def posiexp(self):
-            return self.getTypedRuleContext(ExpParser.PosiexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.PosiexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_skipexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSkipexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSkipexp"):
                 listener.enterSkipexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSkipexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSkipexp"):
                 listener.exitSkipexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSkipexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSkipexp"):
                 return visitor.visitSkipexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def skipexp(self):
 
@@ -811,7 +763,7 @@ class ExpParser ( Parser ):
 
     class XgexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -819,28 +771,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Xgate, 0)
 
         def posiexp(self):
-            return self.getTypedRuleContext(ExpParser.PosiexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.PosiexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_xgexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterXgexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterXgexp"):
                 listener.enterXgexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitXgexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitXgexp"):
                 listener.exitXgexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitXgexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitXgexp"):
                 return visitor.visitXgexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def xgexp(self):
 
@@ -862,7 +810,7 @@ class ExpParser ( Parser ):
 
     class CuexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -870,32 +818,27 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.CU, 0)
 
         def posiexp(self):
-            return self.getTypedRuleContext(ExpParser.PosiexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.PosiexpContext, 0)
 
         def exp(self):
-            return self.getTypedRuleContext(ExpParser.ExpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_cuexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCuexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCuexp"):
                 listener.enterCuexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCuexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCuexp"):
                 listener.exitCuexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCuexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCuexp"):
                 return visitor.visitCuexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def cuexp(self):
 
@@ -919,7 +862,7 @@ class ExpParser ( Parser ):
 
     class RzexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -927,32 +870,27 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.RZ, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def exp(self):
-            return self.getTypedRuleContext(ExpParser.ExpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_rzexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRzexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRzexp"):
                 listener.enterRzexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRzexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRzexp"):
                 listener.exitRzexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRzexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRzexp"):
                 return visitor.visitRzexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def rzexp(self):
 
@@ -976,7 +914,7 @@ class ExpParser ( Parser ):
 
     class RrzexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -984,32 +922,27 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.RRZ, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def exp(self):
-            return self.getTypedRuleContext(ExpParser.ExpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_rrzexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRrzexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRrzexp"):
                 listener.enterRrzexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRrzexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRrzexp"):
                 listener.exitRrzexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRrzexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRrzexp"):
                 return visitor.visitRrzexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def rrzexp(self):
 
@@ -1033,7 +966,7 @@ class ExpParser ( Parser ):
 
     class SrexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1041,26 +974,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.SR, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def exp(self):
-            return self.getTypedRuleContext(ExpParser.ExpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_srexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSrexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSrexp"):
                 listener.enterSrexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSrexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSrexp"):
                 listener.exitSrexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSrexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSrexp"):
                 return visitor.visitSrexp(self)
             else:
                 return visitor.visitChildren(self)
@@ -1087,7 +1018,7 @@ class ExpParser ( Parser ):
 
     class SrrexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1095,32 +1026,27 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.SRR, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def exp(self):
-            return self.getTypedRuleContext(ExpParser.ExpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.ExpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_srrexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSrrexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSrrexp"):
                 listener.enterSrrexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSrrexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSrrexp"):
                 listener.exitSrrexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSrrexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSrrexp"):
                 return visitor.visitSrrexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def srrexp(self):
 
@@ -1144,7 +1070,7 @@ class ExpParser ( Parser ):
 
     class LshiftexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1152,28 +1078,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Lshift, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_lshiftexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLshiftexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterLshiftexp"):
                 listener.enterLshiftexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLshiftexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitLshiftexp"):
                 listener.exitLshiftexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitLshiftexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLshiftexp"):
                 return visitor.visitLshiftexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def lshiftexp(self):
 
@@ -1195,7 +1117,7 @@ class ExpParser ( Parser ):
 
     class RshiftexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1203,28 +1125,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Rshift, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_rshiftexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRshiftexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRshiftexp"):
                 listener.enterRshiftexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRshiftexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRshiftexp"):
                 listener.exitRshiftexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRshiftexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRshiftexp"):
                 return visitor.visitRshiftexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def rshiftexp(self):
 
@@ -1246,7 +1164,7 @@ class ExpParser ( Parser ):
 
     class RevexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1254,28 +1172,24 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.Rev, 0)
 
         def vexp(self):
-            return self.getTypedRuleContext(ExpParser.VexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.VexpContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_revexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRevexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRevexp"):
                 listener.enterRevexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRevexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRevexp"):
                 listener.exitRevexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRevexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRevexp"):
                 return visitor.visitRevexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def revexp(self):
 
@@ -1297,39 +1211,35 @@ class ExpParser ( Parser ):
 
     class QftexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def QFT(self):
             return self.getToken(ExpParser.QFT, 0)
 
-        def vexp(self, i:int=None):
+        def vexp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.VexpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.VexpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.VexpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_qftexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterQftexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterQftexp"):
                 listener.enterQftexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitQftexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitQftexp"):
                 listener.exitQftexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitQftexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitQftexp"):
                 return visitor.visitQftexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def qftexp(self):
 
@@ -1353,39 +1263,35 @@ class ExpParser ( Parser ):
 
     class RqftexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def RQFT(self):
             return self.getToken(ExpParser.RQFT, 0)
 
-        def vexp(self, i:int=None):
+        def vexp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.VexpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.VexpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.VexpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_rqftexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRqftexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRqftexp"):
                 listener.enterRqftexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRqftexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRqftexp"):
                 listener.exitRqftexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRqftexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRqftexp"):
                 return visitor.visitRqftexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def rqftexp(self):
 
@@ -1409,11 +1315,11 @@ class ExpParser ( Parser ):
 
     class NumexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def Number(self, i:int=None):
+        def Number(self, i: int = None):
             if i is None:
                 return self.getTokens(ExpParser.Number)
             else:
@@ -1425,22 +1331,19 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_numexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNumexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterNumexp"):
                 listener.enterNumexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNumexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitNumexp"):
                 listener.exitNumexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNumexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitNumexp"):
                 return visitor.visitNumexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def numexp(self):
 
@@ -1449,7 +1352,7 @@ class ExpParser ( Parser ):
         try:
             self.state = 180
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 4, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 170
@@ -1486,7 +1389,6 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.Number)
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1497,36 +1399,32 @@ class ExpParser ( Parser ):
 
     class AddexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_addexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAddexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterAddexp"):
                 listener.enterAddexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAddexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitAddexp"):
                 listener.exitAddexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAddexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAddexp"):
                 return visitor.visitAddexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def addexp(self):
 
@@ -1550,36 +1448,32 @@ class ExpParser ( Parser ):
 
     class SubexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_subexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSubexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSubexp"):
                 listener.enterSubexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSubexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSubexp"):
                 listener.exitSubexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSubexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSubexp"):
                 return visitor.visitSubexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def subexp(self):
 
@@ -1603,36 +1497,32 @@ class ExpParser ( Parser ):
 
     class MultexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_multexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMultexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMultexp"):
                 listener.enterMultexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMultexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMultexp"):
                 listener.exitMultexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMultexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMultexp"):
                 return visitor.visitMultexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def multexp(self):
 
@@ -1656,36 +1546,32 @@ class ExpParser ( Parser ):
 
     class DivexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_divexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDivexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDivexp"):
                 listener.enterDivexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDivexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDivexp"):
                 listener.exitDivexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDivexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDivexp"):
                 return visitor.visitDivexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def divexp(self):
 
@@ -1709,36 +1595,32 @@ class ExpParser ( Parser ):
 
     class ModexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_modexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterModexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterModexp"):
                 listener.enterModexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitModexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitModexp"):
                 listener.exitModexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitModexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitModexp"):
                 return visitor.visitModexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def modexp(self):
 
@@ -1762,36 +1644,32 @@ class ExpParser ( Parser ):
 
     class ExpexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_expexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExpexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterExpexp"):
                 listener.enterExpexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExpexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitExpexp"):
                 listener.exitExpexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExpexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExpexp"):
                 return visitor.visitExpexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def expexp(self):
 
@@ -1815,66 +1693,61 @@ class ExpParser ( Parser ):
 
     class LetexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def Let(self):
             return self.getToken(ExpParser.Let, 0)
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def IN(self):
             return self.getToken(ExpParser.IN, 0)
 
-        def Identifier(self, i:int=None):
+        def Identifier(self, i: int = None):
             if i is None:
                 return self.getTokens(ExpParser.Identifier)
             else:
                 return self.getToken(ExpParser.Identifier, i)
 
-        def typea(self, i:int=None):
+        def typea(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
-
+                return self.getTypedRuleContext(ExpParser.TypeaContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_letexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLetexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterLetexp"):
                 listener.enterLetexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLetexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitLetexp"):
                 listener.exitLetexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitLetexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLetexp"):
                 return visitor.visitLetexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def letexp(self):
 
         localctx = ExpParser.LetexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 46, self.RULE_letexp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 206
             self.match(ExpParser.Let)
-            self.state = 213 
+            self.state = 213
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -1888,10 +1761,10 @@ class ExpParser ( Parser ):
                 self.typea()
                 self.state = 211
                 self.match(ExpParser.T__2)
-                self.state = 215 
+                self.state = 215
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ExpParser.T__0):
+                if not (_la == ExpParser.T__0):
                     break
 
             self.state = 217
@@ -1910,19 +1783,18 @@ class ExpParser ( Parser ):
 
     class MatchexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def Match(self):
             return self.getToken(ExpParser.Match, 0)
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def With(self):
             return self.getToken(ExpParser.With, 0)
@@ -1930,28 +1802,25 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_matchexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMatchexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMatchexp"):
                 listener.enterMatchexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMatchexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMatchexp"):
                 listener.exitMatchexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMatchexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMatchexp"):
                 return visitor.visitMatchexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def matchexp(self):
 
         localctx = ExpParser.MatchexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 48, self.RULE_matchexp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 221
@@ -1960,7 +1829,7 @@ class ExpParser ( Parser ):
             self.exp(0)
             self.state = 223
             self.match(ExpParser.With)
-            self.state = 229 
+            self.state = 229
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -1972,10 +1841,10 @@ class ExpParser ( Parser ):
                 self.match(ExpParser.T__11)
                 self.state = 227
                 self.exp(0)
-                self.state = 231 
+                self.state = 231
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==ExpParser.T__10):
+                if not (_la == ExpParser.T__10):
                     break
 
         except RecognitionException as re:
@@ -1988,7 +1857,7 @@ class ExpParser ( Parser ):
 
     class BoolexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2001,33 +1870,30 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_boolexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBoolexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBoolexp"):
                 listener.enterBoolexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBoolexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBoolexp"):
                 listener.exitBoolexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBoolexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBoolexp"):
                 return visitor.visitBoolexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def boolexp(self):
 
         localctx = ExpParser.BoolexpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 50, self.RULE_boolexp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 233
             _la = self._input.LA(1)
-            if not(_la==ExpParser.TrueLiteral or _la==ExpParser.FalseLiteral):
+            if not (_la == ExpParser.TrueLiteral or _la == ExpParser.FalseLiteral):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2042,39 +1908,35 @@ class ExpParser ( Parser ):
 
     class CallexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def App(self):
             return self.getToken(ExpParser.App, 0)
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_callexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCallexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCallexp"):
                 listener.enterCallexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCallexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCallexp"):
                 listener.exitCallexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCallexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCallexp"):
                 return visitor.visitCallexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def callexp(self):
 
@@ -2098,7 +1960,7 @@ class ExpParser ( Parser ):
 
     class IfexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2106,18 +1968,16 @@ class ExpParser ( Parser ):
             return self.getToken(ExpParser.If, 0)
 
         def bexp(self):
-            return self.getTypedRuleContext(ExpParser.BexpContext,0)
-
+            return self.getTypedRuleContext(ExpParser.BexpContext, 0)
 
         def Then(self):
             return self.getToken(ExpParser.Then, 0)
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def Else(self):
             return self.getToken(ExpParser.Else, 0)
@@ -2125,22 +1985,19 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_ifexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIfexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterIfexp"):
                 listener.enterIfexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIfexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitIfexp"):
                 listener.exitIfexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIfexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitIfexp"):
                 return visitor.visitIfexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def ifexp(self):
 
@@ -2170,16 +2027,15 @@ class ExpParser ( Parser ):
 
     class LessexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def Less(self):
             return self.getToken(ExpParser.Less, 0)
@@ -2187,22 +2043,19 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_lessexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLessexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterLessexp"):
                 listener.enterLessexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLessexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitLessexp"):
                 listener.exitLessexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitLessexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLessexp"):
                 return visitor.visitLessexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def lessexp(self):
 
@@ -2226,16 +2079,15 @@ class ExpParser ( Parser ):
 
     class EqualexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def Equal(self):
             return self.getToken(ExpParser.Equal, 0)
@@ -2243,22 +2095,19 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_equalexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEqualexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEqualexp"):
                 listener.enterEqualexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEqualexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEqualexp"):
                 listener.exitEqualexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEqualexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEqualexp"):
                 return visitor.visitEqualexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def equalexp(self):
 
@@ -2282,16 +2131,15 @@ class ExpParser ( Parser ):
 
     class GreaterexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def Greater(self):
             return self.getToken(ExpParser.Greater, 0)
@@ -2299,22 +2147,19 @@ class ExpParser ( Parser ):
         def getRuleIndex(self):
             return ExpParser.RULE_greaterexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterGreaterexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterGreaterexp"):
                 listener.enterGreaterexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitGreaterexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitGreaterexp"):
                 listener.exitGreaterexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitGreaterexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitGreaterexp"):
                 return visitor.visitGreaterexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def greaterexp(self):
 
@@ -2338,36 +2183,32 @@ class ExpParser ( Parser ):
 
     class AndexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_andexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAndexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterAndexp"):
                 listener.enterAndexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAndexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitAndexp"):
                 listener.exitAndexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAndexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAndexp"):
                 return visitor.visitAndexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def andexp(self):
 
@@ -2391,36 +2232,32 @@ class ExpParser ( Parser ):
 
     class OrexpContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def exp(self, i:int=None):
+        def exp(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.ExpContext)
             else:
-                return self.getTypedRuleContext(ExpParser.ExpContext,i)
-
+                return self.getTypedRuleContext(ExpParser.ExpContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_orexp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterOrexp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterOrexp"):
                 listener.enterOrexp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitOrexp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitOrexp"):
                 listener.exitOrexp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOrexp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOrexp"):
                 return visitor.visitOrexp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def orexp(self):
 
@@ -2444,45 +2281,38 @@ class ExpParser ( Parser ):
 
     class TypeaContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def booleantype(self):
-            return self.getTypedRuleContext(ExpParser.BooleantypeContext,0)
-
+            return self.getTypedRuleContext(ExpParser.BooleantypeContext, 0)
 
         def funct(self):
-            return self.getTypedRuleContext(ExpParser.FunctContext,0)
-
+            return self.getTypedRuleContext(ExpParser.FunctContext, 0)
 
         def numtype(self):
-            return self.getTypedRuleContext(ExpParser.NumtypeContext,0)
-
+            return self.getTypedRuleContext(ExpParser.NumtypeContext, 0)
 
         def pairtype(self):
-            return self.getTypedRuleContext(ExpParser.PairtypeContext,0)
-
+            return self.getTypedRuleContext(ExpParser.PairtypeContext, 0)
 
         def getRuleIndex(self):
             return ExpParser.RULE_typea
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTypea" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTypea"):
                 listener.enterTypea(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTypea" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTypea"):
                 listener.exitTypea(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTypea" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypea"):
                 return visitor.visitTypea(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def typea(self):
 
@@ -2491,7 +2321,7 @@ class ExpParser ( Parser ):
         try:
             self.state = 270
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 7, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 266
@@ -2516,7 +2346,6 @@ class ExpParser ( Parser ):
                 self.pairtype()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2527,30 +2356,26 @@ class ExpParser ( Parser ):
 
     class BooleantypeContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return ExpParser.RULE_booleantype
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBooleantype" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBooleantype"):
                 listener.enterBooleantype(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBooleantype" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBooleantype"):
                 listener.exitBooleantype(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBooleantype" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBooleantype"):
                 return visitor.visitBooleantype(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def booleantype(self):
 
@@ -2570,30 +2395,26 @@ class ExpParser ( Parser ):
 
     class NumtypeContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return ExpParser.RULE_numtype
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNumtype" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterNumtype"):
                 listener.enterNumtype(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNumtype" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitNumtype"):
                 listener.exitNumtype(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNumtype" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitNumtype"):
                 return visitor.visitNumtype(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def numtype(self):
 
@@ -2613,36 +2434,32 @@ class ExpParser ( Parser ):
 
     class PairtypeContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def typea(self, i:int=None):
+        def typea(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
-
+                return self.getTypedRuleContext(ExpParser.TypeaContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_pairtype
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPairtype" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPairtype"):
                 listener.enterPairtype(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPairtype" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPairtype"):
                 listener.exitPairtype(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPairtype" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPairtype"):
                 return visitor.visitPairtype(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def pairtype(self):
 
@@ -2670,36 +2487,32 @@ class ExpParser ( Parser ):
 
     class FunctContext(ParserRuleContext):
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def typea(self, i:int=None):
+        def typea(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ExpParser.TypeaContext)
             else:
-                return self.getTypedRuleContext(ExpParser.TypeaContext,i)
-
+                return self.getTypedRuleContext(ExpParser.TypeaContext, i)
 
         def getRuleIndex(self):
             return ExpParser.RULE_funct
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunct" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFunct"):
                 listener.enterFunct(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunct" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFunct"):
                 listener.exitFunct(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFunct" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFunct"):
                 return visitor.visitFunct(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def funct(self):
 
@@ -2725,10 +2538,8 @@ class ExpParser ( Parser ):
             self.exitRule()
         return localctx
 
-
-
-    def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
-        if self._predicates == None:
+    def sempred(self, localctx: RuleContext, ruleIndex: int, predIndex: int):
+        if self._predicates is None:
             self._predicates = dict()
         self._predicates[0] = self.exp_sempred
         pred = self._predicates.get(ruleIndex, None)
@@ -2737,11 +2548,6 @@ class ExpParser ( Parser ):
         else:
             return pred(localctx, predIndex)
 
-    def exp_sempred(self, localctx:ExpContext, predIndex:int):
-            if predIndex == 0:
-                return self.precpred(self._ctx, 1)
-         
-
-
-
-
+    def exp_sempred(self, localctx: ExpContext, predIndex: int):
+        if predIndex == 0:
+            return self.precpred(self._ctx, 1)

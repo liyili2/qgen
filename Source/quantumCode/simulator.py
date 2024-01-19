@@ -12,7 +12,7 @@ Types
 
 
 class coq_val:
-    pass # TODO
+    pass  # TODO
 
 
 class Coq_nval(coq_val):
@@ -350,12 +350,6 @@ class Simulator(ExpVisitor):
         x = ctx.e1
         turn_rqft(self.st, x, self.env(x), self.rmax)
 
-    def visitSeqexp(self, ctx: ExpParser.SeqexpContext):
-        e1 = ctx.e1
-        e2 = ctx.e2
-        self.visit(e1)
-        self.visit(e2)
-
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
             self.visitChildren(ctx)
@@ -391,5 +385,3 @@ class Simulator(ExpVisitor):
             self.visitQftexp(node)
         elif isinstance(node, ExpParser.RqftexpContext):
             self.visitRqftexp(node)
-        elif isinstance(node, ExpParser.SeqexpContext):
-            self.visitSeqexp(node)
