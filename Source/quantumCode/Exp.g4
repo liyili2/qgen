@@ -1,282 +1,92 @@
 grammar Exp;
 
- program returns [Exp ast]:        
-        e=exp { $ast = $e.ast; } 
-        ;
+exp: Identifier | letexp | callexp | ifexp | skipexp | xgexp | cuexp 
+   | rzexp | rrzexp | srexp | srrexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | exp Seq exp ;
         
+vexp: Identifier | numexp | boolexp | addexp | subexp | multexp | divexp | modexp | expexp;
+
+bexp: lessexp | equalexp | greaterexp | andexp | orexp;        
         
-vexp returns [VExp ast]:
-        va=varexp { $ast = $va.ast; }
-        | num=numexp { $ast = $num.ast; }
-        | bl=boolexp { $ast = $bl.ast; }
-        | add=addexp { $ast = $add.ast; }
-        | sub=subexp { $ast = $sub.ast; }
-        | mul=multexp { $ast = $mul.ast; }
-        | div=divexp { $ast = $div.ast; }
-        | mod=modexp { $ast = $mod.ast; }
-        | expa=expexp { $ast = $expa.ast; }
-        ;
+posiexp : '(' vexp ','  vexp  ')' ;
 
-bexp returns [BExp ast]:
-         less=lessexp { $ast = $less.ast; }
-        | eq=equalexp { $ast = $eq.ast; }
-        | gt=greaterexp { $ast = $gt.ast; }
-        | anda=andexp { $ast = $anda.ast; }
-        | ora=orexp { $ast = $ora.ast; }
-        ;        
-        
-        
-posi returns [PosiExp ast]:
-        posii=posiexp {$ast = $posii.ast;};
-        
-exp returns [Exp ast]:
-          vb=varexp {$ ast = $vb.ast;} 
-        | let=letexp { $ast = $let.ast; }
-        | call=callexp { $ast = $call.ast; }
-        | i=ifexp { $ast = $i.ast; }
- //       | lrec=letrecexp { $ast = $lrec.ast; }
-        | skipa=skipexp {$ast = $skipa.ast;}
-        | xgate=xgexp {$ast = $xgate.ast;}
-        | cu=cuexp {$ast = cu.ast;}
-        | rz=rzexp {$ast = rz.ast;}
-        | rrz=rrzexp {$ast = rrz.ast;}
-        | sr=srexp {$ast = sr.ast;}
-        | srr=srrexp {$ast = srr.ast;}
-        | lshift=lshiftexp {$ast = lshift.ast;}
-        | rshift=rshiftexp {$ast = rshift.ast;}
-        | rev=revexp {$ast = rev.ast;}
-        | qft=qftexp {$ast = qft.ast;}
-        | rqft=rqftexp {$ast = rqft.ast;}
-        | seq=seqexp {$ast = seq.ast;} 
- 
-      //  | ref=refexp { $ast = $ref.ast; }
-     //   | deref=derefexp { $ast = $deref.ast; }
-    //    | assign=assignexp { $ast = $assign.ast; }
-  //      | free=freeexp { $ast = $free.ast; }
-        ;
+skipexp: SKIPEXP posiexp;
 
-
-
- skipexp returns [SkipExp ast] :
-        SKIPEXP e1=posiexp { $ast = new SkipExp(e1); }
-        ;
-        
-
-
- posiexp returns [PosiExp ast] :
-        '(' e1=vexp
-        ',' 
-            e2=vexp 
-        ')' { $ast = new PosiExp($e1.ast,$e2.ast); }
-        ;
- xgexp returns [XExp ast]:
-       Xgate e = posiexp {$ast = new XExp($e.ast)} ;
+xgexp: Xgate posiexp;
        
+cuexp: CU posiexp exp;
        
+rzexp: RZ vexp exp;
        
+rrzexp: RRZ vexp exp;
 
- cuexp returns [CUExp ast]:
-       CU e1=posiexp e2=exp {$ast = new CUExp($e1.ast, $e2.ast)} ;
+srexp: SR vexp exp;
        
+srrexp: SRR vexp exp;
+
+lshiftexp: Lshift vexp;
+
+rshiftexp: Rshift vexp;
+
+revexp: Rev vexp;
+
+qftexp: QFT vexp vexp;
        
-
- rzexp returns [RZExp ast]:
-       RZ e1=vexp e2=exp {$ast = new RZExp($e1.ast, $e2.ast)} ;
-       
-
- rrzexp returns [RRZExp ast]:
-       RRZ e1=vexp e2=exp {$ast = new RRZExp($e1.ast, $e2.ast)} ;
-       
-
- srexp returns [SRExp ast]:
-       SR e1=vexp e2=exp {$ast = new SRExp($e1.ast, $e2.ast)} ;
-       
- srrexp returns [SRRExp ast]:
-       SRR e1=vexp e2=exp {$ast = new SRRExp($e1.ast, $e2.ast)} ;
-
- lshiftexp returns [LshExp ast]:
-       Lshift e1=vexp {$ast = new LshExp($e1.ast)} ;
-
-
- rshiftexp returns [RshExp ast]:
-       Rshift e1=vexp {$ast = new RshExp($e1.ast)} ;
-
- revexp returns [RevExp ast]:
-       Rev e1=vexp {$ast = new RevExp($e1.ast)} ;
-
- qftexp returns [QFTExp ast]:
-       QFT e1=vexp e2=vexp {$ast = new QFTExp($e1.ast, $e2.ast)} ;
-       
-
- rqftexp returns [QFTExp ast]:
-       RQFT e1=vexp e2=vexp {$ast = new RQFTExp($e1.ast, $e2.ast)} ;
-
- seqexp returns [SeqExp ast]:
-      Seq e1=exp e2=exp {$ast = new SeqExp($e1.ast, $e2.ast)} ;
+rqftexp: RQFT vexp vexp;
                                             
- numexp returns [NumExp ast]:
-        n0=Number { $ast = new NumExp(Integer.parseInt($n0.text)); } 
-        | '-' n0=Number { $ast = new NumExp(-Integer.parseInt($n0.text)); }
-        | n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble($n0.text+"."+$n1.text)); }
-        | '-' n0=Number Dot n1=Number { $ast = new NumExp(Double.parseDouble("-" + $n0.text+"."+$n1.text)); }
-        ;       
+numexp: Number | '-' Number | Number Dot Number | '-' Number Dot Number;       
   
- addexp returns [AddExp ast]:
-        '(' '+'
-            e1=exp e2=exp 
-        ')' { $ast = new AddExp($e1.ast,$e2.ast); }
-        ;
+addexp:  exp '+' exp;
  
- subexp returns [SubExp ast]: 
-        '(' '-'
-            e1=exp e2=exp
-        ')' { $ast = new SubExp($e1.ast,$e2.ast); }
-        ;
+subexp: exp '-' exp;
 
- multexp returns [MultExp ast]:
-        '(' '*'
-            e1=exp e2=exp
-        ')' { $ast = new MultExp($e1.ast,$e2.ast); }
-        ;
+multexp: exp '*'  exp;
  
- divexp returns [DivExp ast]:
-        '(' '/'
-            e1=exp e2=exp
-        ')' { $ast = new DivExp($e1.ast,$e2.ast); }
-        ;
+divexp: exp '/' exp;
         
- modexp returns [ModExp ast]:
-        '(' '%'
-            e1=exp e2=exp
-        ')' { $ast = new ModExp($e1.ast,$e2.ast); }
-        ;
+modexp: exp '%' exp;
 
- expexp returns [ExpExp ast]:
-        '(' '^'
-            e1=exp e2=exp
-        ')' { $ast = new ExpExp($e1.ast,$e2.ast); }
-        ;
+expexp: exp '^' exp;
+
+
+letexp: Let  ( '(' Identifier ':' typea ')' )+ exp IN exp;
+
+matchexp: Match exp With ( '|' exp '=>' exp )+;
+
+boolexp: TrueLiteral | FalseLiteral;
+
+callexp: App exp exp;
+
+ifexp: If bexp Then exp Else exp;
+
+lessexp: exp Less exp;
+
+equalexp: exp Equal exp;
+
+greaterexp: exp Greater exp;
+
+
+andexp: exp '&&'  exp;
+
+orexp: exp '||' exp;
+
+
+typea: booleantype | funct | numtype | pairtype;
+
+booleantype: 'bool';
+
+numtype: 'num';
         
- varexp returns [VarExp ast]: 
-        ida=Identifier { $ast = new VarExp($ida.text); }
-        ;
-
- letexp  returns [LetExp ast] 
-        locals [ArrayList<String> names, ArrayList<Type> types]
-        @init { $names = new ArrayList<String>(); $types=new ArrayList<Type>(); } :
-        Let ( '(' ida=Identifier ':' t=typea ')' { $names.add($ida.text);$types.add($t.ast); } )+
-            e=exp IN body=exp 
-        { $ast = new LetExp($names, $types, $e.ast, $body.ast); }
-;
-
- matchexp  returns [MatchExp ast] 
-        locals [ArrayList<Pair<Exp,Exp>> value_exps]
-        @init { $value_exps = new ArrayList<Pair<Exp,Exp>>(); } :
-        Match e=exp With ( '|' e1=exp '=>' e2=exp { Pair<Exp,Exp> tmp = new Pair<Exp,Exp>($e1.ast,$e2.ast); $value_exps.add(tmp); } )+
-        { $ast = new MatchExp($e.ast, $value_exps); }
-;
-
- //strexp returns [StrExp ast] :
- //       s=StrLiteral { $ast = new StrExp($s.text); } 
-  //      ;
-
- boolexp returns [BoolExp ast] :
-        TrueLiteral { $ast = new BoolExp(true); } 
-        | FalseLiteral { $ast = new BoolExp(false); } 
-        ;
+pairtype: '(' typea ',' typea ')';
 
 
-
- // lambdaexp returns [LambdaExp ast] 
- //       locals [ArrayList<String> formals, ArrayList<Type> types  ]
- //       @init { $formals = new ArrayList<String>(); $types = new ArrayList<Type>(); } :
- //       Fun 
- //       '(' (ida=Identifier ':' ty=typea { $formals.add($ida.text); $types.add($ty.ast); } )* ')'
- //           body=exp
- //       {$ast = new LambdaExp($formals, $types, $body.ast); }
- //       ;
-
- callexp returns [CallExp ast] 
-        locals [ArrayList<Exp> arguments = new ArrayList<Exp>();  ] :
-        '(' f=exp 
-            ( e=exp { $arguments.add($e.ast); } )
-        ')' { $ast = new CallExp($f.ast,$arguments); }
-        ;
-
- ifexp returns [IfExp ast] :
-        '(' If 
-            e1=bexp 
-            e2=exp 
-            e3=exp 
-        ')' { $ast = new IfExp($e1.ast,$e2.ast,$e3.ast); }
-        ;
-
- lessexp returns [LessExp ast] :
-        '(' Less 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new LessExp($e1.ast,$e2.ast); }
-        ;
-
- equalexp returns [EqualExp ast] :
-        '(' Equal 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new EqualExp($e1.ast,$e2.ast); }
-        ;
-
- greaterexp returns [GreaterExp ast] :
-        '(' Greater 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new GreaterExp($e1.ast,$e2.ast); }
-        ;
-
- andexp returns [AndExp ast] :
-        '(' '&&' 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new LessExp($e1.ast,$e2.ast); }
-        ;
-
- orexp returns [OrExp ast] :
-        '(' '||' 
-            e1=exp 
-            e2=exp 
-        ')' { $ast = new EqualExp($e1.ast,$e2.ast); }
-        ;
-
-
-typea returns [Type ast]: 
-        b=booleantype { $ast = $b.ast; }
-        |f=funct  { $ast = $f.ast; }
-        |n=numtype { $ast = $n.ast; }
-        |p=pairtype { $ast = $p.ast; }
-        ;
-
-booleantype returns [BoolT ast] :
-        'bool' { $ast = new BoolT(); }
-        ;
-
-numtype returns [NumT ast] :
-        'num' { $ast = new NumT(); }
-        ;
-        
-pairtype returns [PairT ast] :
-        '(' fst = typea ',' snd= typea ')' { $ast = new PairT($fst.ast, $snd.ast); }
-        ;
-
- funct returns [FuncT ast] 
-        locals [ArrayList<Type> formals]
-        @init { $formals = new ArrayList<Type>(); } :
-        '('  
-             (e=typea { $formals.add($e.ast);} )* '->' ret=typea 
-        ')' { $ast = new FuncT($formals, $ret.ast); }
-        ;
+funct: '(' typea '->' typea ')';
         
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
 
+ App: 'app';
+ Then: 'then';
+ Else: 'else';
  Let : 'let' ;
  IN : 'in' ;
  Match : 'match' ;

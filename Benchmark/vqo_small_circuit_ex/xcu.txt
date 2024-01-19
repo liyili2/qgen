@@ -1,0 +1,1 @@
+X (x,0) ; CU (y,0) (RZ (y,1)) // applying X gate, and then a control gate of a single RZ gate, x and y are quantum arrays. (x,0) is a position at the zero of array x.

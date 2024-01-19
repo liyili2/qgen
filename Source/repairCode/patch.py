@@ -3,7 +3,7 @@ This module contains Patch class.
 """
 # import os
 # from copy import deepcopy
-from .constants import PRECISION, INF
+#from constants import PRECISION, INF
 from jmetal.core.solution import Solution
 from pyggi.base import AbstractEdit, Patch
 

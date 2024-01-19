@@ -1,7 +1,6 @@
 from jmetal.core.problem import Problem
 from jmetal.core.solution import Solution
-from . import QProgram, Operators
-from .qpatch import QPatch
+from Source.repairCode.patch import QPatch
 from pyggi.base.edit import AbstractEdit
 from pyggi.tree import XmlEngine
 import random
@@ -41,13 +40,9 @@ class QProblem(Problem[QPatch]):
         return self.number_of_constraints
 
     def evaluate(self, solution: JPPatch) -> JPPatch:
-        entropy, f_rate = self.prg.evaluate_solution(solution, self.prg.build_command)
-        if self.prg.args.somo == "MO":
-            solution.objectives[0] = entropy
-            solution.objectives[1] = f_rate
-        else:
-            solution.fitness = entropy / 2 + f_rate / 2
-            solution.objectives[0] = solution.fitness
+        fitness = self.prg.evaluate_solution(solution, self.prg.build_command)
+        solution.fitness = entropy / 2 + f_rate / 2
+        solution.objectives[0] = solution.fitness
 
         return solution
 
@@ -81,5 +76,4 @@ class QProblem(Problem[QPatch]):
         return solution
 
     def name(self):
-        return 'Q'
-
+        return 'QuantumProblem'
