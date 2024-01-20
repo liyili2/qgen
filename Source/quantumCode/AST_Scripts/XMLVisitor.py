@@ -300,4 +300,4 @@ class XMLVisitor(ExpVisitor):
     #        self.visitTerminal(ctx)
 
     def getXML(self):
-        return self.xml_output
+        return "<program>"+self.xml_output+"</program>"
