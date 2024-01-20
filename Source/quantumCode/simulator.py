@@ -295,65 +295,81 @@ class Simulator(ExpVisitor):
         self.env = env
         self.rmax = rmax
 
+   #define posi to be a pair of string,int
+    def visitPosiexp(self, ctx:ExpParser.PosiexpContext):
+        name = ctx.vexp(0).accept(self)
+        num = int(ctx.vexp(1).accept(self))
+        return name,num
+
+    #should do nothing
     def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
-        return self.st
+        return
 
+   #X posi, changed the following for an example
     def visitXgexp(self, ctx: ExpParser.XgexpContext):
-        p = self.visit(ctx)
-        return M_add(p, exchange(get_state(p, self.st)), self.st)
+        #p = self.visit(ctx) # I doubt this will work. maybe the following
+        p = ctx.posiexp().accept(self) #this will pass the visitor to the child of ctx
+        self.st = M_add(p, exchange(get_state(p, self.st)), self.st)
 
+    #we will first get the position in st and check if the state is 0 or 1,
+    # then decide if we go to recucively call ctx.exp
     def visitCUexp(self, ctx: ExpParser.CuexpContext):
-        out = self.visit(ctx)
-        p = out[0]
-        e_prime = out[1]
+        p = ctx.posiexp().accept(self)
         if get_cua(get_state(p, self.st)):
-            return self.visit(e_prime)
+            ctx.exp().accept(self)
         else:
-            return self.st
+            return # do nothing
 
+    #my previous rz parsing is wrong
+    # it should be RZ q posi
     def visitRzexp(self, ctx: ExpParser.RzexpContext):
-        out = self.visit(ctx)
-        q = out[0]
-        p = out[1]
-        return M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        q = int(ctx.vexp().accept(self)) #I guess then you need to define vexp
+                                         # we can first define the var and integer case
+                                         #I guess Identifier and int are all terminal
+                                         #does it means that we do not need to define anything?
+        p = ctx.posiexp().accept(self)
+        st = M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
-        out = self.visit(ctx)
-        q = out[0]
-        p = out[1]
-        return M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        q = int(ctx.vexp().accept(self))
+        p = ctx.posiexp().accept(self)
+        #p = out[1]
+        st = M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
+    #SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
-        out = self.visit(ctx)
-        n = out[0]
-        x = out[1]
-        return sr_rotate(self.st, x, n, self.rmax)
+        n = int(ctx.vexp(0).accept(self))
+        x = ctx.vexp(1).accept(self)
+        st = sr_rotate(self.st, x, n, self.rmax)
 
     def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
-        out = self.visit(ctx)
-        n = out[0]
-        x = out[1]
+        n = int(ctx.vexp(0).accept(self))
+        x = ctx.vexp(1).accept(self)
         return srr_rotate(self.st, x, n, self.rmax)
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
-        x = self.visit(ctx)
+        x = ctx.vexp().accept(self)
         return lshift(self.st, x, self.env(x))
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
-        x = self.visit(ctx)
+        x = ctx.vexp().accept(self)
         return rshift(self.st, x, self.env(x))
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
-        x = self.visit(ctx)
+        x = ctx.vexp().accept(self)
         return reverse(self.st, x, self.env(x))
 
+    #actually, we need to change the QFT function
+    #the following QFT is only for full QFT, we did not have the case for AQFT
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
-        x = self.visit(ctx)
-        return turn_qft(self.st, x, self.env(x), self.rmax)
+        x = ctx.vexp(0).accept(self)
+        b = int(ctx.vexp(1).accept(self))
+        return turn_qft(self.st, x, b, self.rmax)
 
     def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
-        x = self.visit(ctx)
-        return turn_rqft(self.st, x, self.env(x), self.rmax)
+        x = ctx.vexp(0).accept(self)
+        b = int(ctx.vexp(1).accept(self))
+        return turn_rqft(self.st, x, b, self.rmax)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
@@ -361,34 +377,17 @@ class Simulator(ExpVisitor):
         else:
             return self.visitTerminal(ctx)
 
-    def visitChildren(self, ctx: ParserRuleContext):
-        out = []
-        for child in ctx.children:
-            out.append(self.visit(child))
-        return out
+   # I doubt you need to define the following from the XMLVisitor example
+   # def visitChildren(self, ctx: ParserRuleContext):
+   #     out = []
+   #     for child in ctx.children:
+   #         out.append(self.visit(child))
+   #     return out
 
-    def visitTerminal(self, node: ParserRuleContext):
-        if isinstance(node, ExpParser.SkipexpContext):
-            return self.visitSkipexp(node)
-        elif isinstance(node, ExpParser.XgexpContext):
-            return self.visitXgexp(node)
-        elif isinstance(node, ExpParser.CuexpContext):
-            return self.visitCUexp(node)
-        elif isinstance(node, ExpParser.RzexpContext):
-            return self.visitRzexp(node)
-        elif isinstance(node, ExpParser.RrzexpContext):
-            return self.visitRrzexp(node)
-        elif isinstance(node, ExpParser.SrexpContext):
-            return self.visitSrexp(node)
-        elif isinstance(node, ExpParser.SrrexpContext):
-            return self.visitSrrexp(node)
-        elif isinstance(node, ExpParser.LshiftexpContext):
-            return self.visitLshiftexp(node)
-        elif isinstance(node, ExpParser.RshiftexpContext):
-            return self.visitRshiftexp(node)
-        elif isinstance(node, ExpParser.RevexpContext):
-            return self.visitRevexp(node)
-        elif isinstance(node, ExpParser.QftexpContext):
-            return self.visitQftexp(node)
-        elif isinstance(node, ExpParser.RqftexpContext):
-            return self.visitRqftexp(node)
+    #the only thing that matters will be 48 and 47
+    def visitTerminal(self, node):
+        if node.getSymbol().type == 48:
+            return node.getText()
+        if node.getSymbol().type == 47:
+            return node.getText()
+        return "None"
