@@ -1,4 +1,4 @@
-from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
+from ExpVisitor import ExpVisitor
 
 
 class XMLVisitor(ExpVisitor):
@@ -6,12 +6,8 @@ class XMLVisitor(ExpVisitor):
         self.xml_output = ''
         self.indentation = 0
 
-    def visitProgram(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Program>\n"
-        self.indentation += 1
+    def visitExp(self, ctx):
         self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Program>\n"
 
     def visitVexp(self, ctx):
         self.xml_output += "  " * self.indentation + "<Vexp>\n"
@@ -27,117 +23,96 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Bexp>\n"
 
-    def visitPosi(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Posi>\n"
+    def visitPosiexp(self, ctx):
+        self.xml_output += "  " * self.indentation + "<Pos>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Posi>\n"
-
-    def visitExp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Exp>\n"
-        self.indentation += 1
-        self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Exp>\n"
+        self.xml_output += "  " * self.indentation + "</Pos>\n"
 
     def visitSkipexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Skipexp>\n"
+        self.xml_output += "  " * self.indentation + "<SKIP>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Skipexp>\n"
-
-    def visitPosiexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Posiexp>\n"
-        self.indentation += 1
-        self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Posiexp>\n"
+        self.xml_output += "  " * self.indentation + "</SKIP>\n"
 
     def visitXgexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Xgexp>\n"
+        self.xml_output += "  " * self.indentation + "<X>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Xgexp>\n"
+        self.xml_output += "  " * self.indentation + "</X>\n"
 
     def visitCuexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Cuexp>\n"
+        self.xml_output += "  " * self.indentation + "<CU>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Cuexp>\n"
+        self.xml_output += "  " * self.indentation + "</CU>\n"
 
     def visitRzexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Rzexp>\n"
+        self.xml_output += "  " * self.indentation + "<RZ>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Rzexp>\n"
+        self.xml_output += "  " * self.indentation + "</RZ>\n"
 
     def visitRrzexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Rrzexp>\n"
+        self.xml_output += "  " * self.indentation + "<RRZ>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Rrzexp>\n"
+        self.xml_output += "  " * self.indentation + "</RRZ>\n"
 
     def visitSrexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Srexp>\n"
+        self.xml_output += "  " * self.indentation + "<SR>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Srexp>\n"
+        self.xml_output += "  " * self.indentation + "</SR>\n"
 
     def visitSrrexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Srrexp>\n"
+        self.xml_output += "  " * self.indentation + "<SRR>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Srrexp>\n"
+        self.xml_output += "  " * self.indentation + "</SRR>\n"
 
     def visitLshiftexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Lshiftexp>\n"
+        self.xml_output += "  " * self.indentation + "<Lshift>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Lshiftexp>\n"
+        self.xml_output += "  " * self.indentation + "</Lshift>\n"
 
     def visitRshiftexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Rshiftexp>\n"
+        self.xml_output += "  " * self.indentation + "<Rshift>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Rshiftexp>\n"
+        self.xml_output += "  " * self.indentation + "</Rshift>\n"
 
     def visitRevexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Revexp>\n"
+        self.xml_output += "  " * self.indentation + "<Rev>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Revexp>\n"
+        self.xml_output += "  " * self.indentation + "</Rev>\n"
 
     def visitQftexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Qftexp>\n"
+        self.xml_output += "  " * self.indentation + "<QFT>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Qftexp>\n"
+        self.xml_output += "  " * self.indentation + "</QFT>\n"
 
     def visitRqftexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Rqftexp>\n"
+        self.xml_output += "  " * self.indentation + "<RQFT>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Rqftexp>\n"
-
-    def visitSeqexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<Seqexp>\n"
-        self.indentation += 1
-        self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</Seqexp>\n"
+        self.xml_output += "  " * self.indentation + "</RQFT>\n"
 
     def visitNumexp(self, ctx):
         self.xml_output += "  " * self.indentation + "<Numexp>\n"
@@ -308,11 +283,11 @@ class XMLVisitor(ExpVisitor):
         # For leaf nodes 
         self.xml_output += f'{"  " * self.indentation}<{node.getSymbol().type}>{node.getText()}</{node.getSymbol().type}>\n'
 
-    def visit(self, ctx):
-        if ctx.getChildCount() > 0:
-            self.visitChildren(ctx)
-        else:
-            self.visitTerminal(ctx)
+    #def visit(self, ctx):
+    #    if ctx.getChildCount() > 0:
+    #        self.visitChildren(ctx)
+    #    else:
+    #        self.visitTerminal(ctx)
 
     def getXML(self):
         return self.xml_output

@@ -1,6 +1,18 @@
-import ExpParser
+from antlr4 import *
+from ExpListener import ExpListener
+from ExpLexer import ExpLexer
+from ExpParser import ExpParser
 import XMLVisitor
 
-x = ExpParser.ExpParser("QFT x 0; SR x 10; RQFT x 0 ")
+def main():
+  giveMeInput = input("QFT (x,0); SR (x,10); RQFT (x, 0)\n")
+  i_stream = InputStream(giveMeInput)
+  lexer = ExpLexer(i_stream)
+  t_stream = CommonTokenStream(lexer)
+  parser = ExpParser(t_stream)
+  tree = parser.exp()
+  print(tree.toStringTree(recog=parser))
+#y = XMLVisitor.XMLVisitor()
 
-print(x)
+if __name__ == "__main__":
+    main()
