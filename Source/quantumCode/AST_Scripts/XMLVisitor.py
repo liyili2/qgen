@@ -1,5 +1,5 @@
 from ExpVisitor import ExpVisitor
-
+from ExpParser import ExpParser
 
 class XMLVisitor(ExpVisitor):
 
@@ -287,9 +287,9 @@ class XMLVisitor(ExpVisitor):
 
     def visitTerminal(self, node):
         # For leaf nodes
-        if node.getSymbol().type == 46:
+        if node.getSymbol().type == ExpParser.Identifier:
             self.xml_output += ""f'{node.getText()}\n'""
-        if node.getSymbol().type == 47:
+        if node.getSymbol().type == ExpParser.Number:
             self.xml_output += ""f'{node.getText()}\n'""
         self.xml_output += ""
 

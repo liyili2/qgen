@@ -6,13 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bda30a31-a0c2-46bf-8732-d9abdd25420d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.g4" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.interp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/Exp.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.interp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.interp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.tokens" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpLexer.tokens" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/ExpParser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/XMLVisitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/AST_Scripts/XMLVisitor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/quantumCode/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/simulator.py" afterDir="false" />
     </list>

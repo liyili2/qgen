@@ -386,8 +386,8 @@ class Simulator(ExpVisitor):
 
     #the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
-        if node.getSymbol().type == 46:
+        if node.getSymbol().type == ExpParser.Identifier:
             return node.getText()
-        if node.getSymbol().type == 47:
+        if node.getSymbol().type == ExpParser.Number:
             return node.getText()
         return "None"
