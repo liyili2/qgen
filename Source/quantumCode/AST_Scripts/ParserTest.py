@@ -12,6 +12,7 @@ def main():
   parser = ExpParser(t_stream)
   tree = parser.program()
   print(tree.toStringTree(recog=parser))
+  #walker = ParseTreeWalker()
 #y = XMLVisitor.XMLVisitor()
 
 if __name__ == "__main__":

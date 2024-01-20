@@ -2,9 +2,13 @@ from ExpVisitor import ExpVisitor
 
 
 class XMLVisitor(ExpVisitor):
+
     def __init__(self):
         self.xml_output = ''
         self.indentation = 0
+
+    def visitProgram(self, ctx):
+        self.visitChildren(ctx)
 
     def visitExp(self, ctx):
         self.visitChildren(ctx)
@@ -280,8 +284,12 @@ class XMLVisitor(ExpVisitor):
             self.visit(child)
 
     def visitTerminal(self, node):
-        # For leaf nodes 
-        self.xml_output += f'{"  " * self.indentation}<{node.getSymbol().type}>{node.getText()}</{node.getSymbol().type}>\n'
+        # For leaf nodes
+        if node.getSymbol().type == 48:
+            self.xml_output += ""f'{node.getText()}\n'""
+        if node.getSymbol().type == 47:
+            self.xml_output += ""f'{node.getText()}\n'""
+        self.xml_output += ""
 
     #def visit(self, ctx):
     #    if ctx.getChildCount() > 0:
