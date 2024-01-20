@@ -287,7 +287,7 @@ class XMLVisitor(ExpVisitor):
 
     def visitTerminal(self, node):
         # For leaf nodes
-        if node.getSymbol().type == 48:
+        if node.getSymbol().type == 46:
             self.xml_output += ""f'{node.getText()}\n'""
         if node.getSymbol().type == 47:
             self.xml_output += ""f'{node.getText()}\n'""

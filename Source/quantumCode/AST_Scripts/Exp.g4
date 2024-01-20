@@ -50,7 +50,7 @@ modexp: exp '%' exp;
 expexp: exp '^' exp;
 
 
-letexp: Let  ( '(' Identifier ':' typea ')' )+ exp IN exp;
+letexp: 'let' Identifier ( '(' Identifier ':' typea ')' )+ '=' exp;
 
 matchexp: Match exp With ( '|' exp '=>' exp )+;
 
@@ -89,8 +89,6 @@ funct: '(' typea '->' typea ')';
  App: 'app';
  Then: 'then';
  Else: 'else';
- Let : 'let' ;
- IN : 'in' ;
  Match : 'match' ;
  With : 'with' ;
  //Fun : 'Fun' ;
@@ -118,7 +116,6 @@ funct: '(' typea '->' typea ')';
  Rev : 'Rev';
  QFT : 'QFT';
  RQFT : 'RQFT';
- Seq : ';';
  
  //Free : 'free' ;
  //Fork : 'fork' ;
