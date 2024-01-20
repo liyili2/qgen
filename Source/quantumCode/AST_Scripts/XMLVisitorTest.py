@@ -7,7 +7,7 @@ from XMLVisitor import XMLVisitor
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        i_stream = InputStream("QFT x 0; SR 10 x; RQFT x 0")
+        i_stream = InputStream("X (x,0) ; CU (x,0) (CU (x,1) (X (y,1)))")
         lexer = ExpLexer(i_stream)
         t_stream = CommonTokenStream(lexer)
         parser = ExpParser(t_stream)
