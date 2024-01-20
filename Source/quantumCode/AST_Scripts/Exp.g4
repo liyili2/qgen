@@ -1,6 +1,6 @@
 grammar Exp;
 
-program: program Seq exp | exp ;
+program: exp (';' exp)* ;
 
 exp: Identifier | letexp | callexp | ifexp | skipexp | xgexp | cuexp 
    | rzexp | rrzexp | srexp | srrexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | '(' exp ')' ;

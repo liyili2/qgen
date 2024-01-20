@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bda30a31-a0c2-46bf-8732-d9abdd25420d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/quantumCode/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Source/quantumCode/simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
