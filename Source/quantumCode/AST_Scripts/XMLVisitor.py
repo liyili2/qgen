@@ -279,9 +279,11 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Funct>\n"
 
-    def visitChildren(self, ctx):
-        for child in ctx.children:
-            self.visit(child)
+    #the following visitChildren can be reomved,
+    #Antlr4 has its own implementation of visitChildren
+    #def visitChildren(self, ctx):
+    #    for child in ctx.children:
+    #        self.visit(child)
 
     def visitTerminal(self, node):
         # For leaf nodes
