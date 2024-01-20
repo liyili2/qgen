@@ -5,12 +5,12 @@ from ExpParser import ExpParser
 import XMLVisitor
 
 def main():
-  giveMeInput = input("QFT (x,0); SR (x,10); RQFT (x, 0)\n")
-  i_stream = InputStream(giveMeInput)
+  #giveMeInput = input("(x,0)\n")
+  i_stream = InputStream("X (x,0) ; CU (x,0) (CU (x,1) (X (y,1)))\n")
   lexer = ExpLexer(i_stream)
   t_stream = CommonTokenStream(lexer)
   parser = ExpParser(t_stream)
-  tree = parser.exp()
+  tree = parser.program()
   print(tree.toStringTree(recog=parser))
 #y = XMLVisitor.XMLVisitor()
 

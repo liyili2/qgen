@@ -8,6 +8,15 @@ else:
 # This class defines a complete listener for a parse tree produced by ExpParser.
 class ExpListener(ParseTreeListener):
 
+    # Enter a parse tree produced by ExpParser#program.
+    def enterProgram(self, ctx:ExpParser.ProgramContext):
+        pass
+
+    # Exit a parse tree produced by ExpParser#program.
+    def exitProgram(self, ctx:ExpParser.ProgramContext):
+        pass
+
+
     # Enter a parse tree produced by ExpParser#exp.
     def enterExp(self, ctx:ExpParser.ExpContext):
         pass

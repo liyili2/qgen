@@ -1,7 +1,9 @@
 grammar Exp;
 
+program: exp Seq program | exp ;
+
 exp: Identifier | letexp | callexp | ifexp | skipexp | xgexp | cuexp 
-   | rzexp | rrzexp | srexp | srrexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | exp Seq exp ;
+   | rzexp | rrzexp | srexp | srrexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp ;
         
 vexp: Identifier | numexp | boolexp | addexp | subexp | multexp | divexp | modexp | expexp;
 

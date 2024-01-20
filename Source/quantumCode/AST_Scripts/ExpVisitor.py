@@ -9,6 +9,11 @@ else:
 
 class ExpVisitor(ParseTreeVisitor):
 
+    # Visit a parse tree produced by ExpParser#program.
+    def visitProgram(self, ctx:ExpParser.ProgramContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExpParser#exp.
     def visitExp(self, ctx:ExpParser.ExpContext):
         return self.visitChildren(ctx)
