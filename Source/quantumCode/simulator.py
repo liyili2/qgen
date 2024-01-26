@@ -295,48 +295,47 @@ class Simulator(ExpVisitor):
         self.env = env
         self.rmax = rmax
 
-   #define posi to be a pair of string,int
-    def visitPosiexp(self, ctx:ExpParser.PosiexpContext):
+    # define posi to be a pair of string,int
+    def visitPosiexp(self, ctx: ExpParser.PosiexpContext):
         name = ctx.vexp(0).accept(self)
         num = int(ctx.vexp(1).accept(self))
-        return name,num
+        return name, num
 
-    #should do nothing
+    # should do nothing
     def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
         return
 
-   #X posi, changed the following for an example
+    # X posi, changed the following for an example
     def visitXgexp(self, ctx: ExpParser.XgexpContext):
-        #p = self.visit(ctx) # I doubt this will work. maybe the following
-        p = ctx.posiexp().accept(self) #this will pass the visitor to the child of ctx
+        p = ctx.posiexp().accept(self)  # this will pass the visitor to the child of ctx
         self.st = M_add(p, exchange(get_state(p, self.st)), self.st)
 
-    #we will first get the position in st and check if the state is 0 or 1,
+    # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
     def visitCUexp(self, ctx: ExpParser.CuexpContext):
         p = ctx.posiexp().accept(self)
         if get_cua(get_state(p, self.st)):
             ctx.exp().accept(self)
         else:
-            return # do nothing
+            return  # do nothing
 
-    #my previous rz parsing is wrong
+    # my previous rz parsing is wrong
     # it should be RZ q posi
     def visitRzexp(self, ctx: ExpParser.RzexpContext):
-        q = int(ctx.vexp().accept(self)) #I guess then you need to define vexp
-                                         # we can first define the var and integer case
-                                         #I guess Identifier and int are all terminal
-                                         #does it means that we do not need to define anything?
+        q = int(ctx.vexp().accept(self))  # I guess then you need to define vexp
+        # we can first define the var and integer case
+        # I guess Identifier and int are all terminal
+        # does it means that we do not need to define anything?
         p = ctx.posiexp().accept(self)
         st = M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
     def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
         q = int(ctx.vexp().accept(self))
         p = ctx.posiexp().accept(self)
-        #p = out[1]
+        # p = out[1]
         st = M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
 
-    #SR n x, now variables are all string, are this OK?
+    # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
@@ -359,8 +358,8 @@ class Simulator(ExpVisitor):
         x = ctx.vexp().accept(self)
         return reverse(self.st, x, self.env(x))
 
-    #actually, we need to change the QFT function
-    #the following QFT is only for full QFT, we did not have the case for AQFT
+    # actually, we need to change the QFT function
+    # the following QFT is only for full QFT, we did not have the case for AQFT
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
         x = ctx.vexp(0).accept(self)
         b = int(ctx.vexp(1).accept(self))
@@ -377,14 +376,14 @@ class Simulator(ExpVisitor):
         else:
             return self.visitTerminal(ctx)
 
-   # I doubt you need to define the following from the XMLVisitor example
-   # def visitChildren(self, ctx: ParserRuleContext):
-   #     out = []
-   #     for child in ctx.children:
-   #         out.append(self.visit(child))
-   #     return out
+    # I doubt you need to define the following from the XMLVisitor example
+    # def visitChildren(self, ctx: ParserRuleContext):
+    #     out = []
+    #     for child in ctx.children:
+    #         out.append(self.visit(child))
+    #     return out
 
-    #the only thing that matters will be 48 and 47
+    # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
         if node.getSymbol().type == ExpParser.Identifier:
             return node.getText()
