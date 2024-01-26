@@ -1,24 +1,43 @@
 from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
-from quantumCode.simulator import Simulator
+# from quantumCode.simulator import Simulator
 from repairCode.crossover import QCrossover
 from repairCode.mutation import QMutation
 from repairCode.patch import QPatch
 from repairCode.problem import QProblem
 
 from pyggi.base import AbstractProgram
-from pyggi.algorithms import GA
-from pyggi.atomic import Mutation, Crossover
-from pyggi.utils import Logging
+# from pyggi.algorithms import GA
+# from pyggi.atomic import Mutation, Crossover
+# from pyggi.utils import Logging
+
+from jmetal.core.operator import Mutation
+from jmetal.operator.crossover import Crossover
+
+import unittest
+from antlr4 import *
+from quantumCode.AST_Scripts.ExpListener import ExpListener
+from quantumCode.AST_Scripts.ExpLexer import ExpLexer
+from quantumCode.AST_Scripts.ExpParser import ExpParser
+from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
+
+from argparse import ArgumentParser
+
 
 def main(args):
     # File path to the quantum program
-    quantum_program_path = 'path/quantum_program.py'
+    # quantum_program_path = 'path/quantum_program.py'
 
-    with open(quantum_program_path, 'r') as file:
-        source_code = quantum_program_path.read()
+    # with open(quantum_program_path, 'r') as file:
+    #     source_code = quantum_program_path.read()
 
     # Generate solutions
-    problem_instance = QProblem(source_code)
+    i_stream = InputStream("X (x,0) ; CU (x,0) (CU (x,1) (X (y,1)))")
+    lexer = ExpLexer(i_stream)
+    t_stream = CommonTokenStream(lexer)
+    parser = ExpParser(t_stream)
+    tree = parser.program()
+    xml = XMLVisitor()
+    problem_instance = tree.accept(xml)
 
     # Define genetic operators
     mutation = Mutation(problem_instance, QMutation())
@@ -26,10 +45,9 @@ def main(args):
 
     # Define the genetic algorithm
     algorithm = GA(problem_instance, mutation=mutation, crossover=crossover)
-	# Add if conditionals for other algorithims 
-	
-	
-	#
+    # Add if conditionals for other algorithims
+
+    #
     logging = Logging(problem_instance)
 
     # Run the genetic improvement process
@@ -40,6 +58,7 @@ def main(args):
     # Retrieve the best quantum program
     best_program = best_solution.to_real()
     print(best_program)
+
 
 if __name__ == "__main__":
     """ 
