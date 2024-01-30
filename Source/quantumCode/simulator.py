@@ -288,13 +288,13 @@ class Simulator(ExpVisitor):
 
     def sr_rotate(self, x, n):
         val = get_state(x, self.st)
-        if isinstance(v, Coq_qval):
-            M_add(x, Coq_qval(val.r1, (val.r2 + pow(2, n + 1)) % pow(2, get_state(x, self.env))), self.st)
+        if isinstance(val, Coq_qval):
+            M_add(x, Coq_qval(val.r1, (val.r2 + pow(2,  get_state(x, self.env) - n - 1)) % pow(2, get_state(x, self.env))), self.st)
 
     def srr_rotate(self, x, n):
         val = get_state(x, self.st)
-        if isinstance(v, Coq_qval):
-            M_add(x, Coq_qval(val.r1, natminusmod(val.r2, pow(2, n + 1), get_state(x, self.env))), self.st)
+        if isinstance(val, Coq_qval):
+            M_add(x, Coq_qval(val.r1, natminusmod(val.r2, pow(2, get_state(x, self.env) - n - 1), get_state(x, self.env))), self.st)
 
     # define posi to be a pair of string,int
     def visitPosiexp(self, ctx: ExpParser.PosiexpContext):
@@ -342,24 +342,24 @@ class Simulator(ExpVisitor):
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        sr_rotate(x, n)
+        self.sr_rotate(x, n)
 
     def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        srr_rotate(x, n)
+        self.srr_rotate(x, n)
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
         x = ctx.vexp().accept(self)
-        return lshift(self.st, x, self.env(x))
+        return lshift(self.st, x, get_state(x, self.env))
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
         x = ctx.vexp().accept(self)
-        return rshift(self.st, x, self.env(x))
+        return rshift(self.st, x, get_state(x, self.env))
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
         x = ctx.vexp().accept(self)
-        return reverse(self.st, x, self.env(x))
+        return reverse(self.st, x, get_state(x, self.env))
 
     def turn_qft(self, x, n):
         val = get_state(x, self.st)
@@ -377,14 +377,14 @@ class Simulator(ExpVisitor):
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
         x = ctx.vexp(0).accept(self)
         b = int(ctx.vexp(1).accept(self))
-        turn_qft(x, get_state(x, self.env) - b)
+        self.turn_qft(x, get_state(x, self.env) - b)
 
     # TODO implement
     def turn_rqft(self, x, n):
         val = get_state(x, self.st)
         if isinstance(val, Coq_qval):
             tmp = val.r1
-            tov = chainmap()
+            tov = ChainMap()
             for i in range(n):
                 b = tmp % 2
                 tmp = tmp / 2
@@ -395,7 +395,7 @@ class Simulator(ExpVisitor):
     def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
         x = ctx.vexp(0).accept(self)
         b = int(ctx.vexp(1).accept(self))
-        turn_rqft(x, get_state(x, self_env) - b)
+        self.turn_rqft(x, get_state(x, self.env) - b)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
