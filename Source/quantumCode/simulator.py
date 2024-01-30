@@ -291,6 +291,9 @@ Simulator class
 class Simulator(ExpVisitor):
 
     def __init__(self, st: ChainMap, env, rmax):
+        #128
+        #may array x, y, z, u, v
+        #st: x[0] -> bit / phase n e^{2 pi i * 1/ n}
         self.st = st
         self.env = env
         self.rmax = rmax
