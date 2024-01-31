@@ -1,17 +1,14 @@
 from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
-# from quantumCode.simulator import Simulator
+from quantumCode.simulator import Simulator
 from repairCode.crossover import QCrossover
 from repairCode.mutation import QMutation
 from repairCode.patch import QPatch
 from repairCode.problem import QProblem
 
 from pyggi.base import AbstractProgram
-# from pyggi.algorithms import GA
-# from pyggi.atomic import Mutation, Crossover
-# from pyggi.utils import Logging
-
-from jmetal.core.operator import Mutation
-from jmetal.operator.crossover import Crossover
+from pyggi.algorithms import GA
+from pyggi.atomic import Mutation, Crossover
+from pyggi.utils import Logging
 
 import unittest
 from antlr4 import *
@@ -21,14 +18,61 @@ from quantumCode.AST_Scripts.ExpParser import ExpParser
 from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
 
 from argparse import ArgumentParser
+import pytest
 
+
+# Fixture to provide input_states to tests
+@pytest.fixture
+def input_states_fixture():
+    return input_states
+
+
+# Fixture to provide true_states to tests
+@pytest.fixture
+def true_states_fixture():
+    return true_states
+
+
+class QProgram(AbstractProgram):
+    def __init__(self, arguments):
+        super().__init__(arguments)
+
+    def evaluate_solution(self, solution, build_command):
+        """
+        Evaluate the fitness of a solution.
+
+        Parameters:
+        - solution: QPatch
+            The solution to evaluate.
+        - build_command: str?
+
+        Returns:
+        - float
+            The fitness score.
+        """
+
+        input_states = ...  # need to define input_states
+        true_states = ...  # need to define true_states
+
+        # Simulator class with a method run?
+        simulator = Simulator()
+        output_states = simulator.run(solution, input_states)
+
+        # Compare output_states with true_states and calculate accuracy as fitness
+        correct_predictions = sum(o == t for o, t in zip(output_states, true_states))
+        fitness = correct_predictions / len(output_states)
+
+        return fitness
 
 def main(args):
     # File path to the quantum program
-    # quantum_program_path = 'path/quantum_program.py'
+    quantum_program_path = 'path/quantum_program.py'
 
-    # with open(quantum_program_path, 'r') as file:
-    #     source_code = quantum_program_path.read()
+    with open(quantum_program_path, 'r') as file:
+        source_code = quantum_program_path.read()
+
+    # Generate solutions
+    # problem_instance = QProblem(source_code)
 
     # Generate solutions
     i_stream = InputStream("X (x,0) ; CU (x,0) (CU (x,1) (X (y,1)))")
@@ -45,9 +89,10 @@ def main(args):
 
     # Define the genetic algorithm
     algorithm = GA(problem_instance, mutation=mutation, crossover=crossover)
-    # Add if conditionals for other algorithims
-
-    #
+	# Add if conditionals for other algorithims 
+	
+	
+	#
     logging = Logging(problem_instance)
 
     # Run the genetic improvement process
@@ -58,7 +103,6 @@ def main(args):
     # Retrieve the best quantum program
     best_program = best_solution.to_real()
     print(best_program)
-
 
 if __name__ == "__main__":
     """ 
