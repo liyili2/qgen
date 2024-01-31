@@ -226,6 +226,14 @@ def natminusmod(x, v, a):
     else:
         return x - v
 
+def calInt(v, n):
+    val = 0
+    for i in range(n):
+        va = M_find(i,v)
+        if isinstance(va, Coq_nval):
+            if va.b:
+                val += pow(2,i)
+    return val
 
 """
 Simulator class
@@ -237,6 +245,13 @@ Simulator class
 
 class Simulator(ExpVisitor):
 
+#x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
+#st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
+#st {x : v1} --> Coq_nval case: v1 is a ChainMap of Coq_nval
+# v1 --> 128 length array v1: {0 : Coq_nval, 1 : Coq_nval, 2 : Coq_nval, ...., 127 : Coq_nval}, 2^128
+#x --> v1 --> cal(v1) --> integer
+#Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
+#x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
     def __init__(self, st: ChainMap, env: ChainMap):
         self.st = st
         self.env = env
