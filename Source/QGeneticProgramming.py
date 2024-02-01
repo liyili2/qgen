@@ -1,5 +1,5 @@
 from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
-# from quantumCode.simulator import Simulator
+from quantumCode.simulator import Simulator, Coq_nval, CalInt
 from repairCode.crossover import QCrossover
 from repairCode.mutation import QMutation
 from repairCode.patch import QPatch
@@ -21,7 +21,64 @@ from quantumCode.AST_Scripts.ExpParser import ExpParser
 from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
 
 from argparse import ArgumentParser
+import pytest
+import random
 
+
+# Fixture to provide input_states to tests
+@pytest.fixture
+def input_states_fixture():
+    return input_states
+
+
+# Fixture to provide true_states to tests
+@pytest.fixture
+def true_states_fixture():
+    return true_states
+
+
+class QProgram(AbstractProgram):
+    def __init__(self, arguments):
+        super().__init__(arguments)
+
+    def evaluate_solution(self, solution, build_command):
+        """
+        Evaluate the fitness of a solution.
+
+        Parameters:
+        - solution: QPatch
+            The solution to evaluate.
+        - build_command: str?
+
+        Returns:
+        - float
+            The fitness score.
+        """
+
+        # Number of qubits
+        x = 128
+
+        # Initialize Simulator
+        simulator = Simulator()
+
+        correct_predictions = 0
+
+        for _ in range(x):
+            # Randomly generate a boolean value
+            b = random.choice([True, False])
+
+            # Create an instance of Coq_nval
+            v1 = Coq_nval(b, r=0)
+
+            # Pass the instance to the Simulator
+            v2 = simulator.simulate(v1, x)
+
+            if CalInt(v2, x) == x + pow(2, 10) % pow(2, x):
+                correct_predictions += 1
+
+        fitness = correct_predictions / x
+
+        return fitness
 
 def main(args):
     # File path to the quantum program
