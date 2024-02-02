@@ -40,14 +40,6 @@ def exchange(v: coq_val):
     return v
 
 
-def get_state(p, f):
-    x = M_find(p, f)
-    if isinstance(x, NoneType):
-        return Coq_nval(False, 0)
-    else:
-        return x
-
-
 def get_cua(v):
     if isinstance(v, Coq_nval):
         return v.b
@@ -95,84 +87,40 @@ def times_r_rotate(v, q, rmax):
         return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
 
 
-def sr_rotate_prime(st, x, n, size, rmax):
+def lshift_prime(l, n):
     if n == 0:
-        return st
-    else:
-        m = max(0, n - 1)
-        return sr_rotate_prime(
-            M_add(
-                {x: m},
-                times_rotate(get_state({x: m}, st), max_helper(size, m), rmax),
-                st
-            ),
-            x, m, size, rmax
-        )
+        return
+
+    tmp = M_find(0, l)
+    for i in range(n - 1):
+        M_add(i, M_find(i + 1, l), l)
+
+    M_add(n - 1, tmp, l)
+
+    return l
 
 
-def sr_rotate(st, x, n, rmax):
-    return sr_rotate_prime(st, x, n + 1, n + 1, rmax)
-
-
-def srr_rotate_prime(st, x, n, size, rmax):
+def rshift_prime(l, n):
     if n == 0:
-        return st
-    else:
-        m = max(0, n - 1)
-        return srr_rotate_prime(
-            M_add(
-                {x: m},
-                times_r_rotate(get_state({x: m}, st), max_helper(size, m), rmax),
-                st
-            ),
-            x, m, size, rmax
-        )
+        return
+
+    tmp = M_find(n - 1, l)
+    for i in range(n - 1, -1, -1):
+        M_add(i, M_find(i - 1, l), l)
+
+    M_add(0, tmp, l)
+
+    return l
 
 
-def srr_rotate(st, x, n, rmax):
-    return srr_rotate_prime(st, x, n + 1, n + 1, rmax)
-
-
-def lshift_prime(n, size, f, x):
+def reverse_prime(l, n):
     if n == 0:
-        return M_add({x: 0}, get_state({x: size}, f), f)
-    else:
-        m = max(0, n - 1)
-        return M_add({x: n}, get_state({x: m}, f), lshift_prime(m, size, f, x))
-
-
-def lshift(f, x, n):
-    return lshift_prime(max_helper(n, 1), max_helper(n, 1), f, x)
-
-
-def rshift_prime(n, size, f, x):
-    if n == 0:
-        return M_add({x: size}, get_state({x: 0}, f), f)
-    else:
-        m = max(0, n - 1)
-        return M_add({x: m}, get_state({x: n}, f), rshift_prime(m, size, f, x))
-
-
-def rshift(f, x, n):
-    return rshift_prime(max_helper(n, 1), max_helper(n, 1), f, x)
-
-
-def reverse_prime(f, x, n, i, f_prime):
-    if n == 0:
-        return f_prime
-    else:
-        i_prime = max(0, n - 1)
-        return reverse_prime(f, x, n, i_prime,
-                             M_add(
-                                 {x: i_prime},
-                                 get_state({x: max_helper(n, i)}, f),
-                                 f_prime)
-                             )
-
-
-def reverse(f, x, n):
-    return reverse_prime(f, x, n, n, f)
-
+        return
+    size = n
+    tmp = ChainMap(l)
+    for i in range(n):
+        M_add(i, M_find(size - i, tmp), l)
+    return l
 
 def up_h(v, rmax):
     if isinstance(v, Coq_nval):
@@ -233,20 +181,12 @@ def get_cus(n, f, x):
     pass
 
 
-def turn_qft(f, x, n, rmax):
-    assign_h(
-        assign_r(
-            f, x,
-            (2 ** max_helper(rmax, n)) * a_nat2fb(fbrev(n, get_cus(n, f, x)), n),
-            n, n, rmax
-        ),
-        x, n, max_helper(rmax, n), rmax
-    )
-
-
-# TODO implement
-def turn_rqft(st, x, n, rmax):
-    pass
+def get_nor_state(x, v, f):
+    m = M_find(x, f)
+    if isinstance(m, NoneType):
+        return Coq_nval(False, 0)
+    else:
+        return M_find(v, m)
 
 
 def M_add(k, x, s: ChainMap):
@@ -280,6 +220,21 @@ def M_find(k, M: ChainMap):
             return M_find(k, M)
 
 
+def natminusmod(x, v, a):
+    if x - v < 0:
+        return x - v + a
+    else:
+        return x - v
+
+def calInt(v, n):
+    val = 0
+    for i in range(n):
+        va = M_find(i,v)
+        if isinstance(va, Coq_nval):
+            if va.b:
+                val += pow(2,i)
+    return val
+
 """
 Simulator class
   This class extends ExpVisitor, and is essentially an interpreter
@@ -290,10 +245,31 @@ Simulator class
 
 class Simulator(ExpVisitor):
 
-    def __init__(self, st: ChainMap, env, rmax):
+#x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
+#st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
+#st {x : v1} --> Coq_nval case: v1 is a ChainMap of Coq_nval
+# v1 --> 128 length array v1: {0 : Coq_nval, 1 : Coq_nval, 2 : Coq_nval, ...., 127 : Coq_nval}, 2^128
+#x --> v1 --> cal(v1) --> integer
+#Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
+#x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
+    def __init__(self, st: ChainMap, env: ChainMap):
         self.st = st
         self.env = env
-        self.rmax = rmax
+        # self.rmax = rmax rmax is M_find(x,env), a map from var to int
+
+    def sr_rotate(self, x, n):
+        val = M_find(x, self.st)
+        if isinstance(val, Coq_qval):
+            M_add(x,
+                  Coq_qval(val.r1, (val.r2 + pow(2, M_find(x, self.env) - n - 1)) % pow(2, M_find(x, self.env))),
+                  self.st)
+
+    def srr_rotate(self, x, n):
+        val = M_find(x, self.st)
+        if isinstance(val, Coq_qval):
+            M_add(x,
+                  Coq_qval(val.r1, natminusmod(val.r2, pow(2, M_find(x, self.env) - n - 1), M_find(x, self.env))),
+                  self.st)
 
     # define posi to be a pair of string,int
     def visitPosiexp(self, ctx: ExpParser.PosiexpContext):
@@ -307,14 +283,14 @@ class Simulator(ExpVisitor):
 
     # X posi, changed the following for an example
     def visitXgexp(self, ctx: ExpParser.XgexpContext):
-        p = ctx.posiexp().accept(self)  # this will pass the visitor to the child of ctx
-        self.st = M_add(p, exchange(get_state(p, self.st)), self.st)
+        x, p = ctx.posiexp().accept(self)  # this will pass the visitor to the child of ctx
+        self.st = M_add(x, M_add(p, exchange(get_nor_state(x, p, self.st)), get_nor_state(x, p, self.st)), self.st)
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
     def visitCUexp(self, ctx: ExpParser.CuexpContext):
-        p = ctx.posiexp().accept(self)
-        if get_cua(get_state(p, self.st)):
+        x, p = ctx.posiexp().accept(self)
+        if get_cua(get_nor_state(x, p, self.st)):
             ctx.exp().accept(self)
         else:
             return  # do nothing
@@ -326,49 +302,84 @@ class Simulator(ExpVisitor):
         # we can first define the var and integer case
         # I guess Identifier and int are all terminal
         # does it means that we do not need to define anything?
-        p = ctx.posiexp().accept(self)
-        st = M_add(p, times_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        x, p = ctx.posiexp().accept(self)
+        st = M_add(x, M_add(p, times_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env)),
+                            get_nor_state(x, p, self.st)), self.st)
 
     def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
         q = int(ctx.vexp().accept(self))
-        p = ctx.posiexp().accept(self)
+        x, p = ctx.posiexp().accept(self)
         # p = out[1]
-        st = M_add(p, times_r_rotate(get_state(p, self.st), q, self.rmax), self.st)
+        st = M_add(x, M_add(p, times_r_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env)),
+                            get_nor_state(x, p, self.st)), self.st)
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        st = sr_rotate(self.st, x, n, self.rmax)
+        self.sr_rotate(x, n)
 
     def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        return srr_rotate(self.st, x, n, self.rmax)
+        self.srr_rotate(x, n)
+
+    def lshift(self, x, n):
+        return M_add(x, lshift_prime(M_find(x, self.st), n), self.st)
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
         x = ctx.vexp().accept(self)
-        return lshift(self.st, x, self.env(x))
+        return self.lshift(x, M_find(x, self.env))
+
+    def rshift(self, x, n):
+        return M_add(x, rshift_prime(M_find(x, self.st), n), self.st)
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
         x = ctx.vexp().accept(self)
-        return rshift(self.st, x, self.env(x))
+        return self.rshift(x, M_find(x, self.env))
+
+    def reverse(self, x, n):
+        return M_add(x, reverse_prime(M_find(x, self.st), n), self.st)
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
         x = ctx.vexp().accept(self)
-        return reverse(self.st, x, self.env(x))
+        return self.reverse(x, M_find(x, self.env))
+
+    def turn_qft(self, x, n):
+        val = M_find(x, self.st)
+        r1 = 0
+        r2 = 0
+        for i in range(n):
+            l = M_find(i, val)
+            if isinstance(l, Coq_nval):
+                r1 += pow(2, i) * l.b % M_find(x, self.env)
+                r2 += l.r % M_find(x, self.env)
+        M_add(x, Coq_qval(r1, r2), self.st)
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
         x = ctx.vexp(0).accept(self)
         b = int(ctx.vexp(1).accept(self))
-        return turn_qft(self.st, x, b, self.rmax)
+        self.turn_qft(x, M_find(x, self.env) - b)
+
+    # TODO implement
+    def turn_rqft(self, x, n):
+        val = M_find(x, self.st)
+        if isinstance(val, Coq_qval):
+            tmp = val.r1
+            tov = ChainMap()
+            for i in range(n):
+                b = tmp % 2
+                tmp = tmp / 2
+                M_add(n - i - 1, Coq_nval(b, 0), tov)
+            M_add(0, Coq_nval(M_find(0, tov).b, val.r2), tov)
+            M_add(x, tov, self.st)
 
     def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
         x = ctx.vexp(0).accept(self)
         b = int(ctx.vexp(1).accept(self))
-        return turn_rqft(self.st, x, b, self.rmax)
+        self.turn_rqft(x, M_find(x, self.env) - b)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
