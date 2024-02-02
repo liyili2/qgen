@@ -87,41 +87,6 @@ def times_r_rotate(v, q, rmax):
         return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
 
 
-def lshift_prime(l, n):
-    if n == 0:
-        return
-
-    tmp = M_find(0, l)
-    for i in range(n - 1):
-        M_add(i, M_find(i + 1, l), l)
-
-    M_add(n - 1, tmp, l)
-
-    return l
-
-
-def rshift_prime(l, n):
-    if n == 0:
-        return
-
-    tmp = M_find(n - 1, l)
-    for i in range(n - 1, -1, -1):
-        M_add(i, M_find(i - 1, l), l)
-
-    M_add(0, tmp, l)
-
-    return l
-
-
-def reverse_prime(l, n):
-    if n == 0:
-        return
-    size = n
-    tmp = ChainMap(l)
-    for i in range(n):
-        M_add(i, M_find(size - i, tmp), l)
-    return l
-
 def up_h(v, rmax):
     if isinstance(v, Coq_nval):
         b = v.b
@@ -284,7 +249,7 @@ class Simulator(ExpVisitor):
     # X posi, changed the following for an example
     def visitXgexp(self, ctx: ExpParser.XgexpContext):
         x, p = ctx.posiexp().accept(self)  # this will pass the visitor to the child of ctx
-        self.st = M_add(x, M_add(p, exchange(get_nor_state(x, p, self.st)), get_nor_state(x, p, self.st)), self.st)
+        M_find(x, self.st)[p] = exchange(get_nor_state(x, p, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
@@ -303,15 +268,13 @@ class Simulator(ExpVisitor):
         # I guess Identifier and int are all terminal
         # does it means that we do not need to define anything?
         x, p = ctx.posiexp().accept(self)
-        st = M_add(x, M_add(p, times_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env)),
-                            get_nor_state(x, p, self.st)), self.st)
+        get_nor_state(x, p, self.st)[p] = times_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env))
 
     def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
         q = int(ctx.vexp().accept(self))
         x, p = ctx.posiexp().accept(self)
         # p = out[1]
-        st = M_add(x, M_add(p, times_r_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env)),
-                            get_nor_state(x, p, self.st)), self.st)
+        get_nor_state(x, p, self.st)[p] = times_r_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env))
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
@@ -325,21 +288,46 @@ class Simulator(ExpVisitor):
         self.srr_rotate(x, n)
 
     def lshift(self, x, n):
-        return M_add(x, lshift_prime(M_find(x, self.st), n), self.st)
+        if n == 0:
+            return
+
+        tmp = M_find(x,self.st)
+        tmpv = tmp[0]
+        for i in range(n - 1):
+            tmp[i] = tmp[i+1]
+        tmp[n-1] = tmpv
+        return M_add(x, tmp, self_st)
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
         x = ctx.vexp().accept(self)
         return self.lshift(x, M_find(x, self.env))
 
     def rshift(self, x, n):
-        return M_add(x, rshift_prime(M_find(x, self.st), n), self.st)
+        if n == 0:
+            return
+
+        tmp = M_find(x, self.st)
+        tmpv = tmp[n-1]
+        for i in range(n - 1, -1, -1):
+            tmp[i] = tmp[i-1]
+
+        tmp[0] = tmpv
+        M_add(x, tmp, self.st)
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
         x = ctx.vexp().accept(self)
         return self.rshift(x, M_find(x, self.env))
 
     def reverse(self, x, n):
-        return M_add(x, reverse_prime(M_find(x, self.st), n), self.st)
+        if n == 0:
+            return
+
+        size = n
+        tmp = M_find(x, self.st)
+        tmpa = []
+        for i in range(n):
+            tmpa.append(tmp[size - i])
+        M_add(x, tmpa, self.st)
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
         x = ctx.vexp().accept(self)
@@ -350,7 +338,7 @@ class Simulator(ExpVisitor):
         r1 = 0
         r2 = 0
         for i in range(n):
-            l = M_find(i, val)
+            l = val[i]
             if isinstance(l, Coq_nval):
                 r1 += pow(2, i) * l.b % M_find(x, self.env)
                 r2 += l.r % M_find(x, self.env)
@@ -368,11 +356,11 @@ class Simulator(ExpVisitor):
         val = M_find(x, self.st)
         if isinstance(val, Coq_qval):
             tmp = val.r1
-            tov = ChainMap()
+            tov = [Coq_nval(false, 0)] * n
             for i in range(n):
                 b = tmp % 2
                 tmp = tmp / 2
-                M_add(n - i - 1, Coq_nval(b, 0), tov)
+                tov[n - i - 1] = Coq_nval(b, 0)
             M_add(0, Coq_nval(M_find(0, tov).b, val.r2), tov)
             M_add(x, tov, self.st)
 
