@@ -89,30 +89,12 @@ class ExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ExpParser#rrzexp.
-    def enterRrzexp(self, ctx:ExpParser.RrzexpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#rrzexp.
-    def exitRrzexp(self, ctx:ExpParser.RrzexpContext):
-        pass
-
-
     # Enter a parse tree produced by ExpParser#srexp.
     def enterSrexp(self, ctx:ExpParser.SrexpContext):
         pass
 
     # Exit a parse tree produced by ExpParser#srexp.
     def exitSrexp(self, ctx:ExpParser.SrexpContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpParser#srrexp.
-    def enterSrrexp(self, ctx:ExpParser.SrrexpContext):
-        pass
-
-    # Exit a parse tree produced by ExpParser#srrexp.
-    def exitSrrexp(self, ctx:ExpParser.SrrexpContext):
         pass
 
 

@@ -268,24 +268,19 @@ class Simulator(ExpVisitor):
         # I guess Identifier and int are all terminal
         # does it means that we do not need to define anything?
         x, p = ctx.posiexp().accept(self)
-        get_nor_state(x, p, self.st)[p] = times_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env))
-
-    def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
-        q = int(ctx.vexp().accept(self))
-        x, p = ctx.posiexp().accept(self)
-        # p = out[1]
-        get_nor_state(x, p, self.st)[p] = times_r_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env))
+        if q >= 0:
+            get_nor_state(x, p, self.st)[p] = times_rotate(get_nor_state(x, p, self.st), q, M_find(x, self.env))
+        else:
+            get_nor_state(x, p, self.st)[p] = times_r_rotate(get_nor_state(x, p, self.st), abs(q), M_find(x, self.env))
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
         n = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        self.sr_rotate(x, n)
-
-    def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
-        n = int(ctx.vexp(0).accept(self))
-        x = ctx.vexp(1).accept(self)
-        self.srr_rotate(x, n)
+        if n >= 0:
+            self.sr_rotate(x, n)
+        else:
+            self.srr_rotate(x, abs(n))
 
     def lshift(self, x, n):
         if n == 0:

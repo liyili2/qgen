@@ -95,24 +95,13 @@ class TypeChecker(ExpVisitor):
         # I guess Identifier and int are all terminal
         # does it means that we do not need to define anything?
         x, p = ctx.posiexp().accept(self)
-        return isinstance(M_find(x, self.tenv), Nor) and 0 <= p < M_find(x, self.env) and 0 <= q < M_find(x, self.env)
-
-    def visitRrzexp(self, ctx: ExpParser.RrzexpContext):
-        q = int(ctx.vexp().accept(self))
-        x, p = ctx.posiexp().accept(self)
-        # p = out[1]
-        return isinstance(M_find(x, self.tenv), Nor) and 0 <= p < M_find(x, self.env) and 0 <= q < M_find(x, self.env)
+        return isinstance(M_find(x, self.tenv), Nor) and 0 <= p < M_find(x, self.env) and 0 <= abs(q) <= M_find(x, self.tenv).n
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
         b = int(ctx.vexp(0).accept(self))
         x = ctx.vexp(1).accept(self)
-        return isinstance(M_find(x, self.tenv), QFT) and 0 <= b < M_find(x, self.tenv).n
-
-    def visitSrrexp(self, ctx: ExpParser.SrrexpContext):
-        b = int(ctx.vexp(0).accept(self))
-        x = ctx.vexp(1).accept(self)
-        return isinstance(M_find(x, self.tenv), QFT) and 0 <= b < M_find(x, self.tenv).n
+        return isinstance(M_find(x, self.tenv), QFT) and 0 <= abs(b) <= M_find(x, self.tenv).n
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
         x = ctx.vexp().accept(self)

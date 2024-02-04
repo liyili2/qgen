@@ -62,26 +62,12 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</RZ>\n"
 
-    def visitRrzexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<RRZ>\n"
-        self.indentation += 1
-        self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</RRZ>\n"
-
     def visitSrexp(self, ctx):
         self.xml_output += "  " * self.indentation + "<SR>\n"
         self.indentation += 1
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</SR>\n"
-
-    def visitSrrexp(self, ctx):
-        self.xml_output += "  " * self.indentation + "<SRR>\n"
-        self.indentation += 1
-        self.visitChildren(ctx)
-        self.indentation -= 1
-        self.xml_output += "  " * self.indentation + "</SRR>\n"
 
     def visitLshiftexp(self, ctx):
         self.xml_output += "  " * self.indentation + "<Lshift>\n"

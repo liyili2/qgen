@@ -1,1 +1,1 @@
-X (x,0) ; CU (y,0) (RZ (y,1)) // applying X gate, and then a control gate of a single RZ gate, x and y are quantum arrays. (x,0) is a position at the zero of array x.
+X (x,0) ; CU (y,0) (RZ 10 (y,1)) // apply X gate to flip the bit in (x,0), rotates the global phase 2^10 (no effects) on (y,1)

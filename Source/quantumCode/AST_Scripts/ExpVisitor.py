@@ -54,18 +54,8 @@ class ExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpParser#rrzexp.
-    def visitRrzexp(self, ctx:ExpParser.RrzexpContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExpParser#srexp.
     def visitSrexp(self, ctx:ExpParser.SrexpContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpParser#srrexp.
-    def visitSrrexp(self, ctx:ExpParser.SrrexpContext):
         return self.visitChildren(ctx)
 
 

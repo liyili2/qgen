@@ -3,7 +3,7 @@ grammar Exp;
 program: exp (';' exp)* ;
 
 exp: Identifier | letexp | callexp | ifexp | skipexp | xgexp | cuexp 
-   | rzexp | rrzexp | srexp | srrexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | '(' exp ')' ;
+   | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | '(' exp ')' ;
         
 vexp: Identifier | numexp | boolexp | addexp | subexp | multexp | divexp | modexp | expexp;
 
@@ -18,12 +18,8 @@ xgexp: Xgate posiexp;
 cuexp: CU posiexp exp;
        
 rzexp: RZ vexp posiexp;
-       
-rrzexp: RRZ vexp posiexp;
 
 srexp: SR vexp vexp;
-       
-srrexp: SRR vexp vexp;
 
 lshiftexp: Lshift vexp;
 
@@ -108,9 +104,7 @@ funct: '(' typea '->' typea ')';
  Xgate : 'X' ;
  CU : 'CU';
  RZ : 'RZ';
- RRZ : 'RRZ';
  SR : 'SR';
- SRR : 'SRR';
  Lshift : 'Lshift';
  Rshift : 'Rshift';
  Rev : 'Rev';
