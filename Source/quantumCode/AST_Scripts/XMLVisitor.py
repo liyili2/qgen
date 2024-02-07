@@ -1,9 +1,50 @@
+from collections import ChainMap
+from types import NoneType
 from ExpVisitor import ExpVisitor
 from ExpParser import ExpParser
 
+def M_add(k, x, s: ChainMap):
+    if len(s.maps) == 0:
+        return ChainMap({k: x})
+    else:
+        p = s.maps[0]
+        k_prime, y = next(iter(p.items()))
+        if k < k_prime:
+            return ChainMap({k: x}, s)
+        elif k == k_prime:
+            s.__delitem__(k_prime)
+            return ChainMap({k: x}, s)
+        else:
+            s.__delitem__(k_prime)
+            return ChainMap({k_prime: y}, M_add(k, x, s))
+
+
+def M_find(k, M: ChainMap):
+    if len(M.maps) == 0:
+        return None
+    else:
+        p = M.maps[0]
+        k_prime, x = next(iter(p.items()))
+        if k < k_prime:
+            return None
+        elif k == k_prime:
+            return x
+        else:
+            M.__delitem__(k_prime)
+            return M_find(k, M)
+
+
+def findVar(node: ExpParser.VexpContext):
+    return node.Identifier().getText()
+    #if isinstance(node, ExpParser.Number):
+    #    return node.getText()
+    #return "None"
+
+
 class XMLVisitor(ExpVisitor):
 
-    def __init__(self):
+    def __init__(self, tenv: ChainMap):
+        self.tenv = tenv
         self.xml_output = ''
         self.indentation = 0
 
@@ -41,65 +82,83 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</SKIP>\n"
 
-    def visitXgexp(self, ctx):
+    def visitXgexp(self, ctx: ExpParser.XgexpContext):
+        x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<X>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</X>\n"
 
     def visitCuexp(self, ctx):
+        x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<CU>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</CU>\n"
 
     def visitRzexp(self, ctx):
+        x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<RZ>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</RZ>\n"
 
     def visitSrexp(self, ctx):
+        x = findVar(ctx.vexp(1))
         self.xml_output += "  " * self.indentation + "<SR>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</SR>\n"
 
     def visitLshiftexp(self, ctx):
+        x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Lshift>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Lshift>\n"
 
     def visitRshiftexp(self, ctx):
+        x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Rshift>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Rshift>\n"
 
     def visitRevexp(self, ctx):
+        x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Rev>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Rev>\n"
 
     def visitQftexp(self, ctx):
+        x = findVar(ctx.vexp(0))
         self.xml_output += "  " * self.indentation + "<QFT>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</QFT>\n"
 
     def visitRqftexp(self, ctx):
+        x = findVar(ctx.vexp(0))
         self.xml_output += "  " * self.indentation + "<RQFT>\n"
         self.indentation += 1
+        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</RQFT>\n"
@@ -265,9 +324,9 @@ class XMLVisitor(ExpVisitor):
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Funct>\n"
 
-    #the following visitChildren can be reomved,
-    #Antlr4 has its own implementation of visitChildren
-    #def visitChildren(self, ctx):
+    # the following visitChildren can be reomved,
+    # Antlr4 has its own implementation of visitChildren
+    # def visitChildren(self, ctx):
     #    for child in ctx.children:
     #        self.visit(child)
 
@@ -279,11 +338,11 @@ class XMLVisitor(ExpVisitor):
             self.xml_output += ""f'{node.getText()}\n'""
         self.xml_output += ""
 
-    #def visit(self, ctx):
+    # def visit(self, ctx):
     #    if ctx.getChildCount() > 0:
     #        self.visitChildren(ctx)
     #    else:
     #        self.visitTerminal(ctx)
 
     def getXML(self):
-        return "<program>"+self.xml_output+"</program>"
+        return "<program>" + self.xml_output + "</program>"

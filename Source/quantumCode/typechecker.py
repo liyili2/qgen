@@ -1,6 +1,12 @@
 # type checker
 from enum import Enum
+from collections import ChainMap
+from types import NoneType
 
+from antlr4 import ParserRuleContext
+
+from AST_Scripts.ExpParser import ExpParser
+from AST_Scripts.ExpVisitor import ExpVisitor
 
 class TypeName:
     pass  # TODO
@@ -8,7 +14,8 @@ class TypeName:
 
 class Nor(TypeName):
 
-    def __init__(self):
+    def __str__(self):
+        return "Nor"
 
 
 class QFT(TypeName):
@@ -16,6 +23,9 @@ class QFT(TypeName):
     def __init__(self, n: int):
         self.n = n
         #self.r2 = r2
+
+    def __str__(self):
+        return "QFT("+str(self.n)+")"
 
 
 def M_add(k, x, s: ChainMap):

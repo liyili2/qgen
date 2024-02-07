@@ -3,7 +3,7 @@ grammar Exp;
 program: exp (';' exp)* ;
 
 exp: Identifier | letexp | callexp | ifexp | skipexp | xgexp | cuexp 
-   | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | '(' exp ')' ;
+   | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp | '(' program ')' ;
         
 vexp: Identifier | numexp | boolexp | addexp | subexp | multexp | divexp | modexp | expexp;
 
