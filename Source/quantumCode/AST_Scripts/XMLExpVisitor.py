@@ -34,6 +34,11 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by XMLExpParser#typeexp.
+    def visitTypeexp(self, ctx:XMLExpParser.TypeexpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by XMLExpParser#boolexp.
     def visitBoolexp(self, ctx:XMLExpParser.BoolexpContext):
         return self.visitChildren(ctx)

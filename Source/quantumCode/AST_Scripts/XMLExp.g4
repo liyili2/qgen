@@ -6,12 +6,14 @@ xexp: '<' Identifier '>' nextlevel '</' Identifier '>' ;
         
 vexp: Identifier | numexp | boolexp | vexp '+' vexp | vexp '-' vexp | vexp '*'  vexp | vexp '/' vexp | vexp '%' vexp | vexp '^' vexp;
 
-nextlevel: program | vexp | Nor | QFT '(' Number ')' ;
+nextlevel: program | vexp | typeexp ;
 
 numexp: Number | '-' Number | Number Dot Number | '-' Number Dot Number;       
         
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
+
+typeexp: Nor | QFT '(' Number ')';
 
 boolexp: TrueLiteral | FalseLiteral;
 
