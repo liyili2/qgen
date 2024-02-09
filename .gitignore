@@ -1,1 +1,3 @@
 .idea
+Source/.pyggi/*
+*.pyc

@@ -1,20 +1,18 @@
 import copy
 from typing import List
-from . import *
 from jmetal.operator.crossover import Crossover
+from .patch import PyggiPatch
 
 """
 .. module:: crossover
    :platform: Unix, Windows
    :synopsis: Module implementing crossover operator for PyGGI-JMetal.
 """
-
-
-class QCrossover(Crossover[QPatch, QPatch]):
+class PyggiCrossover(Crossover[PyggiPatch, PyggiPatch]):
     def __init__(self, probability: float):
-        super().__init__(probability=probability)
+        super(PyggiCrossover, self).__init__(probability=probability)
 
-    def execute(self, parents: List[QPatch]) -> List:
+    def execute(self, parents: List[PyggiPatch]) -> List:
         if len(parents) != 2:
             raise Exception('The number of parents is not two: {}'.format(len(parents)))
 

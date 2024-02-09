@@ -1,46 +1,46 @@
 import random
 from jmetal.core.operator import Mutation
-from jmetal.util.ckecking import Check
-from tools.hypergi import ProgramEntropy
-from tools.jppatch import JPPatch
+from .patch import PyggiPatch
 
 """
 .. module:: mutation
    :platform: Unix, Windows
    :synopsis: Module implementing mutation operators.
 
-.. moduleauthor:: Antonio J. Nebro <antonio@lcc.uma.es>, Antonio Benítez-Hidalgo <antonio.b@uma.es>
+.. moduleauthor:: 
 """
+class NullMutation(Mutation[PyggiPatch]):
+    """
+    Null Mutation which does nothing
+    """
+    def __init__(self):
+        super(NullMutation, self).__init__(probability=0)
 
-
-class QMutation(Mutation[JPPatch]):
-
-    def __init__(self, probability: float, prg: QProgram):
-        super(QMutation, self).__init__(probability=probability)
-        self.prg = prg
-
-    def execute(self, solution: QPatch) -> QPatch:
-        Check.that(type(solution) is QPatch, "Solution type invalid")
-
-        lp = len(solution.edit_list)
-        for j in range(lp):
-            rand = random.random()
-            if rand <= self.probability:
-                rnd = random.random()
-                if lp > 1 and rnd < 0.33:
-                    if j < len(solution.edit_list):
-                        solution.remove(j)
-                    j -= 1
-                    lp -= 1
-                elif lp == 0 or rnd < 0.66:
-                    edit_operator = random.choice(self.prg.operators)
-                    solution.add(edit_operator.create(self.prg))
-                else:
-                    edit_operator = random.choice(self.prg.operators)
-                    if j < len(solution.edit_list):
-                        solution.edit_list[j] = edit_operator.create(self.prg)
-
+    def execute(self, solution: PyggiPatch) -> PyggiPatch:
         return solution
 
     def get_name(self):
-        return 'QMutation'
+        return 'Null mutation'
+
+class PyggiMutation(Mutation[PyggiPatch]):
+    """
+    Pyggi Mutation which changes the pyggi edit lists
+    """
+    def __init__(self):
+        super(NullMutation, self).__init__(probability=0)
+
+    def execute(self, solution: PyggiPatch) -> PyggiPatch:
+        """
+        What Mutations:
+        Add to edit list
+
+        Remove from edit list
+
+        Change order of edit list
+
+        Change an item in the item list (remove and replace in same location)
+        """
+        return solution
+
+    def get_name(self):
+        return 'Pyggi mutation'
