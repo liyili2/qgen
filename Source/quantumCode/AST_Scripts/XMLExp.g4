@@ -22,13 +22,13 @@ cuexp: '<' PEXP 'gate' '=' 'CU' flag '>' idexp vexp program '</' PEXP '>' ;
 
 rzexp: '<' PEXP 'gate' '=' 'RZ' flag '>' vexp idexp vexp '</' PEXP '>' ;
 
-srexp: '<' PEXP 'gate' '=' 'SR' flag '>' vexp vexp '</' PEXP '>' ;
+srexp: '<' PEXP 'gate' '=' 'SR' flag '>' vexp idexp '</' PEXP '>' ;
 
-lshiftexp: '<' PEXP 'gate' '=' 'Lshift' flag '>' vexp '</' PEXP '>' ;
+lshiftexp: '<' PEXP 'gate' '=' 'Lshift' flag '>' idexp '</' PEXP '>' ;
 
-rshiftexp: '<' PEXP 'gate' '=' 'Rshift' flag '>' vexp '</' PEXP '>' ;
+rshiftexp: '<' PEXP 'gate' '=' 'Rshift' flag '>' idexp '</' PEXP '>' ;
 
-revexp: '<' PEXP 'gate' '=' 'Rev' flag '>' vexp '</' PEXP '>' ;
+revexp: '<' PEXP 'gate' '=' 'Rev' flag '>' idexp '</' PEXP '>' ;
 
 qftexp: '<' PEXP 'gate' '=' 'QFT' flag '>' idexp vexp '</' PEXP '>' ;
 

@@ -237,8 +237,8 @@ class Simulator(XMLExpVisitor):
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
-        n = int(ctx.vexp(0).accept(self))
-        x = ctx.vexp(1).accept(self)
+        n = int(ctx.vexp().accept(self))
+        x = ctx.idexp().accept(self)
         if n >= 0:
             self.sr_rotate(x, n)
         else:
@@ -255,6 +255,10 @@ class Simulator(XMLExpVisitor):
         tmp[n-1] = tmpv
         return M_add(x, tmp, self_st)
 
+    def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
+        x = ctx.idexp().accept(self)
+        return self.lshift(x, M_find(x, self.env))
+
     def rshift(self, x, n):
         if n == 0:
             return
@@ -268,7 +272,7 @@ class Simulator(XMLExpVisitor):
         M_add(x, tmp, self.st)
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
-        x = ctx.vexp().accept(self)
+        x = ctx.idexp().accept(self)
         return self.rshift(x, M_find(x, self.env))
 
     def reverse(self, x, n):
@@ -283,7 +287,7 @@ class Simulator(XMLExpVisitor):
         M_add(x, tmpa, self.st)
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
-        x = ctx.vexp().accept(self)
+        x = ctx.idexp().accept(self)
         return self.reverse(x, M_find(x, self.env))
 
     def turn_qft(self, x, n):
