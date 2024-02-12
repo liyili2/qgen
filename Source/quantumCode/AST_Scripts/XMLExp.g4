@@ -30,9 +30,9 @@ rshiftexp: '<' PEXP 'gate' '=' 'Rshift' flag '>' vexp '</' PEXP '>' ;
 
 revexp: '<' PEXP 'gate' '=' 'Rev' flag '>' vexp '</' PEXP '>' ;
 
-qftexp: '<' PEXP 'gate' '=' 'QFT' flag '>' vexp '</' PEXP '>' ;
+qftexp: '<' PEXP 'gate' '=' 'QFT' flag '>' idexp vexp '</' PEXP '>' ;
 
-rqftexp: '<' PEXP 'gate' '=' 'RQFT' flag '>' vexp '</' PEXP '>' ;
+rqftexp: '<' PEXP 'gate' '=' 'RQFT' flag '>' idexp vexp '</' PEXP '>' ;
 
 op: Plus | Minus | Times | Div | Mod | Exp;
 
