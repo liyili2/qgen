@@ -9,7 +9,7 @@ idexp : '<' ID '>' Identifier '</' ID '>';
 vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
     | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
 
-numexp: Number | '-' Number | Number Dot Number | '-' Number Dot Number;       
+numexp: Number | Minus Number;
         
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
