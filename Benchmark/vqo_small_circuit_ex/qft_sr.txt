@@ -1,1 +1,2 @@
-QFT x 0; SR 10 x; RQFT x 0 //The function adds 2^10 to x's array.
+//The function adds 2^10 to x's array.
+<pexp gate = 'QFT' type = 'Nor' > <idexp> x </idexp>  <vexp> 0 </vexp> </pexp> <pexp gate = 'SR' type = 'QFT(10)' > < vexp> 10 </vexp> <idexp> x </idexp> </pexp> <pexp gate = 'RQFT' type = 'QFT(10)' > <idexp> x </idexp>  <vexp> 0 </vexp> </pexp> 
