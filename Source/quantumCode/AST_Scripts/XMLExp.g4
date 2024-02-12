@@ -7,7 +7,7 @@ exp: skipexp | xexp | cuexp | rzexp | srexp | lshiftexp | rshiftexp | revexp | q
 idexp : '<' ID '>' Identifier '</' ID '>';
         
 vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
-    | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' numexp '</' VEXP '>';
+    | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
 
 numexp: Number | '-' Number | Number Dot Number | '-' Number Dot Number;       
         
