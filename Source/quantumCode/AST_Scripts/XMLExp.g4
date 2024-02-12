@@ -1,17 +1,42 @@
 grammar XMLExp;
 
-program: xexp (xexp)* ;
+program: exp (exp)* ;
 
-xexp: '<' Identifier '>' nextlevel '</' Identifier '>' ;
+exp: skipexp | xexp | cuexp | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp;
+
+idexp : '<' ID '>' Identifier '</' ID '>';
         
-vexp: Identifier | numexp | boolexp | vexp '+' vexp | vexp '-' vexp | vexp '*'  vexp | vexp '/' vexp | vexp '%' vexp | vexp '^' vexp;
-
-nextlevel: program | vexp | typeexp ;
+vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
+    | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' numexp '</' VEXP '>';
 
 numexp: Number | '-' Number | Number Dot Number | '-' Number Dot Number;       
         
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
+
+skipexp: '<' PEXP Gate '=' skip flag '>' idexp vexp '</' PEXP '>' ;
+
+xexp: '<' PEXP Gate '=' X flag '>' idexp vexp '</' PEXP '>' ;
+
+cuexp: '<' PEXP Gate '=' CU flag '>' idexp vexp program '</' PEXP '>' ;
+
+rzexp: '<' PEXP Gate '=' RZ flag '>' vexp idexp vexp '</' PEXP '>' ;
+
+srexp: '<' PEXP Gate '=' SR flag '>' vexp vexp '</' PEXP '>' ;
+
+lshiftexp: '<' PEXP Gate '=' Lshift flag '>' vexp '</' PEXP '>' ;
+
+rshiftexp: '<' PEXP Gate '=' Rshift flag '>' vexp '</' PEXP '>' ;
+
+revexp: '<' PEXP Gate '=' Rev flag '>' vexp '</' PEXP '>' ;
+
+qftexp: '<' PEXP Gate '=' QFT flag '>' vexp '</' PEXP '>' ;
+
+rqftexp: '<' PEXP Gate '=' RQFT flag '>' vexp '</' PEXP '>' ;
+
+op: Plus | Minus | Times | Div | Mod | Exp;
+
+flag: Type '=' '\'' typeexp '\'';
 
 typeexp: Nor | QFT '(' Number ')';
 
@@ -22,6 +47,48 @@ boolexp: TrueLiteral | FalseLiteral;
  Dot : '.' ;
  Nor : 'Nor' ;
  QFT : 'QFT' ;
+
+ RQFT : 'RQFT' ;
+
+ OP : 'op';
+
+ Plus : '+';
+
+ Minus : '-';
+
+ Times : '*';
+
+ Div : '/';
+
+ Mod : '%';
+
+ Exp : '^';
+
+ skip : 'SKIP';
+
+ X : 'X';
+
+ RZ : 'RZ';
+
+ SR : 'SR';
+
+ CU : 'CU';
+
+ Lshift : 'Lshift';
+
+ Rshift : 'Rshift';
+
+ Rev : 'Rev';
+
+ Gate : 'gate';
+
+ Type : 'type';
+
+ PEXP : 'pexp';
+
+ VEXP : 'vexp';
+
+ ID : 'id';
 
  Number : DIGIT+ ;
 
