@@ -179,12 +179,3 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by XMLExpParser#skip.
-    def enterSkip(self, ctx:XMLExpParser.SkipContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#skip.
-    def exitSkip(self, ctx:XMLExpParser.SkipContext):
-        pass
-
-

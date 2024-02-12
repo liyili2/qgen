@@ -14,25 +14,25 @@ numexp: Number | Minus Number;
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
 
-skipexp: '<' PEXP Gate '=' skip flag '>' idexp vexp '</' PEXP '>' ;
+skipexp: '<' PEXP 'gate' '=' 'SKIP' flag '>' idexp vexp '</' PEXP '>' ;
 
-xexp: '<' PEXP Gate '=' X flag '>' idexp vexp '</' PEXP '>' ;
+xexp: '<' PEXP 'gate' '=' 'X' flag '>' idexp vexp '</' PEXP '>' ;
 
-cuexp: '<' PEXP Gate '=' CU flag '>' idexp vexp program '</' PEXP '>' ;
+cuexp: '<' PEXP 'gate' '=' 'CU' flag '>' idexp vexp program '</' PEXP '>' ;
 
-rzexp: '<' PEXP Gate '=' RZ flag '>' vexp idexp vexp '</' PEXP '>' ;
+rzexp: '<' PEXP 'gate' '=' 'RZ' flag '>' vexp idexp vexp '</' PEXP '>' ;
 
-srexp: '<' PEXP Gate '=' SR flag '>' vexp vexp '</' PEXP '>' ;
+srexp: '<' PEXP 'gate' '=' 'SR' flag '>' vexp vexp '</' PEXP '>' ;
 
-lshiftexp: '<' PEXP Gate '=' Lshift flag '>' vexp '</' PEXP '>' ;
+lshiftexp: '<' PEXP 'gate' '=' 'Lshift' flag '>' vexp '</' PEXP '>' ;
 
-rshiftexp: '<' PEXP Gate '=' Rshift flag '>' vexp '</' PEXP '>' ;
+rshiftexp: '<' PEXP 'gate' '=' 'Rshift' flag '>' vexp '</' PEXP '>' ;
 
-revexp: '<' PEXP Gate '=' Rev flag '>' vexp '</' PEXP '>' ;
+revexp: '<' PEXP 'gate' '=' 'Rev' flag '>' vexp '</' PEXP '>' ;
 
-qftexp: '<' PEXP Gate '=' QFT flag '>' vexp '</' PEXP '>' ;
+qftexp: '<' PEXP 'gate' '=' 'QFT' flag '>' vexp '</' PEXP '>' ;
 
-rqftexp: '<' PEXP Gate '=' RQFT flag '>' vexp '</' PEXP '>' ;
+rqftexp: '<' PEXP 'gate' '=' 'RQFT' flag '>' vexp '</' PEXP '>' ;
 
 op: Plus | Minus | Times | Div | Mod | Exp;
 
@@ -63,24 +63,6 @@ boolexp: TrueLiteral | FalseLiteral;
  Mod : '%';
 
  Exp : '^';
-
- skip : 'SKIP';
-
- X : 'X';
-
- RZ : 'RZ';
-
- SR : 'SR';
-
- CU : 'CU';
-
- Lshift : 'Lshift';
-
- Rshift : 'Rshift';
-
- Rev : 'Rev';
-
- Gate : 'gate';
 
  Type : 'type';
 

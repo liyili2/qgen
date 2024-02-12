@@ -104,10 +104,5 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by XMLExpParser#skip.
-    def visitSkip(self, ctx:XMLExpParser.SkipContext):
-        return self.visitChildren(ctx)
-
-
 
 del XMLExpParser
