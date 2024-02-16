@@ -8,18 +8,18 @@ from pyggi.base import BaseOperator
 ## Implement new operators here
 
 class ReplaceOperator(BaseOperator):
-    def __init__(self, name, tags):
+    def __init__(self, name, tag, quantum_gates):
         super(ReplaceOperator, self).__init__(name)
-        self.tags = tags
+        self.tag = tag
+        self.quantum_gates = quantum_gates
 
     def apply(self, program):
         tree = program.get_tree()
-        statement = random.choice(tree.findall(".//statement"))
-        tag = random.choice(self.tags)
+        statement = tree.findall(tag)
 
-        # Replace a random tag within a random statement
-        for elem in statement.findall(tag):
-            elem.text = f"new_{tag}_{random.randint(1, 100)}"  # Need to change to replace a quantum gate
+        # Replace the current quantum gate with a random selection
+        statement.text = random.choice(self.quantum_gates)
+
 
 class AddOperator(BaseOperator):
     def __init__(self, name, tags):
@@ -34,6 +34,7 @@ class AddOperator(BaseOperator):
         # Add a new tag within a random statement
         new_tag = ET.SubElement(statement, tag)
         new_tag.text = f"new_{tag}_{random.randint(1, 100)}"
+
 
 class RemoveOperator(BaseOperator):
     def __init__(self, name, tags):
