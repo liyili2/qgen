@@ -15,6 +15,8 @@ class ReplaceOperator(BaseOperator):
 
     def apply(self, program):
         tree = program.get_tree()
+
+        # Find the statement with the tag
         statement = tree.findall(tag)
 
         # Replace the current quantum gate with a random selection
