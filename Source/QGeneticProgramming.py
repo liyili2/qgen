@@ -17,7 +17,26 @@ from quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
 from argparse import ArgumentParser
 import pytest
 import random
+import xml.etree.ElementTree as ET
 
+class XMLEngine:
+    def __init__(self, xml_content):
+        self.xml_content = xml_content
+        self.tags = self.extract_tags()
+
+    def extract_tags(self):
+        tags = set()
+        root = ET.fromstring(self.xml_content)
+
+        for statement in root.findall(".//statement"):
+            # Extracting tags within each statement
+            tags.update(tag.tag for tag in statement)
+
+        return list(tags)
+
+    def get_tags(self):
+        return self.tags
+        
 
 # Fixture to provide input_states to tests
 @pytest.fixture
