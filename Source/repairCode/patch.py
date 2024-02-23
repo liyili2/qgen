@@ -21,6 +21,8 @@ class PyggiPatch(Patch, Solution):
         # Support the pyggi edit lists
         self.program = program
         self.edit_list = []   
+        self.objectives = [1]
+        print("I made a pyggiPath")
 
 class PPatch(PyggiPatch):
     """

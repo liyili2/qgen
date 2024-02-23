@@ -14,11 +14,20 @@ from pyggi.algorithms import LocalSearch
 from repairCode.crossover import PyggiCrossover
 from repairCode.mutation import NullMutation
 from repairCode.patch import PyggiPatch
-from repairCode.problem import MyLineProgram, MyTreeProgram, MyProgram
+from repairCode.program import MyLineProgram, MyTreeProgram, MyProgram
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
 from jmetal.util.termination_criterion import StoppingByQualityIndicator
 from jmetal.core.quality_indicator import FitnessValue
+
+class MyFitnessValue(FitnessValue):
+    """
+    
+    """
+    is_minimization = True
+
+    def __init__(self, is_minimization: bool = True):
+        super().__init__(is_minimization)
 
 class MyXmlEngine(XmlEngine):
     """
@@ -41,6 +50,9 @@ class MyXmlEngine(XmlEngine):
 
 
 class MyTabuSearch(LocalSearch):
+    """
+    
+    """
     def setup(self):
         self.tabu = []
 
@@ -73,7 +85,7 @@ class MyGA(GeneticAlgorithm):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='../sample/Triangle_bug_python')
+    parser.add_argument('--project_path', type=str, default='pyggi2/sample/Triangle_bug_python')
     parser.add_argument('--mode', type=str, default='line')
     parser.add_argument('--epoch', type=int, default=30,
         help='total epoch(default: 30)')
@@ -93,7 +105,7 @@ if __name__ == "__main__":
         #ga.crossover_operator = Crossover()
         #ga.selection = BinaryTournamentSelection()
         # Target Fitness, Precision
-        ga.termination_criterion = StoppingByQualityIndicator(FitnessValue, 0, 1.0)
+        ga.termination_criterion = StoppingByQualityIndicator(MyFitnessValue, 0, 1.0)
         result = ga.run()
 
     elif args.mode == 'line':

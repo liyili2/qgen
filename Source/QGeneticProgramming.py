@@ -3,9 +3,9 @@ from quantumCode.simulator import Simulator, Coq_nval, CalInt
 from repairCode.crossover import QCrossover
 from repairCode.mutation import QMutation
 from repairCode.patch import QPatch
-from repairCode.problem import QProblem
+from Source.repairCode.program import QProblem
 
-from pyggi.pyggi.base import AbstractProgram
+from pyggi.base import AbstractProgram
 
 import unittest
 #from antlr4 import *

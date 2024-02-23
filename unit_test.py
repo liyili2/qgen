@@ -1,7 +1,7 @@
 import os
 from Source.quantumCode.AST_Scripts.XMLVisitor import XMLVisitor
 from Source.quantumCode.AST_Scripts.ExpParser import ExpParser
-from Source.repairCode.problem import QProblem
+from Source.repairCode.program import QProblem
 
 # Specify the folder path
 folder_path = 'Benchmark/vqo_small_circuit_ex'

@@ -7,6 +7,7 @@ from pyggi.base.edit import AbstractEdit
 from pyggi.tree import XmlEngine
 from typing import Generic, TypeVar, List
 import random
+import re
 
 
 class PyggiProblem(Problem):
@@ -44,16 +45,13 @@ class PyggiProblem(Problem):
 
     def evaluate(self, solution: PyggiPatch) -> PyggiPatch:
         fitness = self.prg.evaluate_solution(solution, self.program.build_command)
-        solution.fitness = entropy / 2 + f_rate / 2
+        solution.fitness = 0
         solution.objectives[0] = solution.fitness
 
         return solution
 
     def create_solution(self) -> PyggiPatch:
-        no = 1
-        if self.program.args.somo == "MO":
-            no = 2
-        solution = PyggiPatch(self.program, number_of_variables=1, number_of_objectives=no)
+        solution = PyggiPatch(self.program, number_of_variables=1, number_of_objectives=1)
         edit_operator: AbstractEdit = random.choice(self.program.operators) 
         opr = edit_operator.create(self.program)
         solution.add(opr)
@@ -98,16 +96,21 @@ class MyProgram(MyTreeProgram, Problem):
         :param prg: Program object from pyggi
         """
         super(MyTreeProgram, self).__init__(project_path)
-        self.path = project_path
-        self.number_of_variables = 1
-        self.number_of_objectives = 1
-        self.obj_directions = [self.MINIMIZE]
-        self.obj_labels = ['Fitness']
+        self.path                  = project_path
+        self.number_of_variables   = 1
+        self.number_of_objectives  = 1
+        self.obj_directions        = [self.MINIMIZE]
+        self.obj_labels            = ['Fitness']
         self.number_of_constraints = 0
 
 
-    def compute_fitness(self, result, return_code, stdout, stderr, elapsed_time):
-        import re
+    def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
+        """
+        Given a program, compute the fitness
+        """
+
+
+        '''
         m = re.findall("runtime: ([0-9.]+)", stdout)
         if len(m) > 0:
             runtime = m[0]
@@ -117,6 +120,7 @@ class MyProgram(MyTreeProgram, Problem):
             result.fitness = failed
         else:
             result.status = 'PARSE_ERROR'
+        '''
 
     #def get_engine(cls, file_name=""):
     #   return MyXmlEngine
@@ -126,18 +130,17 @@ class MyProgram(MyTreeProgram, Problem):
         new_solution = PyggiPatch(self, number_of_variables=1, number_of_objectives=1)
         return new_solution
 
-    def evaluate(self) -> PyggiPatch:
+    def evaluate(self, patch) -> PyggiPatch:
         """
         Evaluates a program, and returns the fitness
         """
-        # Run Program
-
-        # Compute Fitness
-        fitness = self.compute_fitness()
+        # Run Program and get the RunResult Object
+        #result = self.evaluate_patch(patch, timeout=15)
+        fitness = 0
         # Save to Solution Object
-        PyggiPatch.objectives[0] = fitness
+        patch.objectives[0] = fitness
         
-        return PyggiPatch
+        return patch
     
     def number_of_variables(self) -> int:
         return self.number_of_variables
