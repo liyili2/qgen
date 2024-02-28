@@ -4,6 +4,7 @@ Possible Edit Operators
 import random
 from abc import ABC
 from pyggi.base import BaseOperator
+from lxml import etree
 
 ## Implement new operators here
 
@@ -23,8 +24,8 @@ class QGateReplacement(StmtReplacement):
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
 
-        # Find all elements with the target tag
-        elements = target_tree.findall(".//{}".format(self.target_tag))
+        # Find all elements with the target tag and type='Nor'
+        elements = target_tree.xpath(".//{}[@type='Nor']".format(self.target_tag))
 
         if elements:
             # Choose a random element to replace
@@ -33,9 +34,14 @@ class QGateReplacement(StmtReplacement):
             # Parse the XML content of the ingredient
             ingredient_tree = etree.fromstring(ingredient_content)
 
-            # Replace the chosen element with the entire content of the ingredient
+            # Create a new <pexp> element with a different gate but the same type
+            new_pexp = etree.Element(self.target_tag)
+            new_pexp.set('gate', 'NewGate')  # Replace 'NewGate' with your desired gate
+            new_pexp.set('type', 'Nor')
+
+            # Replace the chosen element with the new <pexp> element
             parent = element_to_replace.getparent()
-            parent.replace(element_to_replace, ingredient_tree)
+            parent.replace(element_to_replace, new_pexp)
 
             # Serialize the modified XML back to a string
             new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
@@ -43,7 +49,6 @@ class QGateReplacement(StmtReplacement):
             return new_target_content
 
         return target_content
-
 
 
 class AddOperator(BaseOperator):
