@@ -13,6 +13,15 @@ def main():
   tree = parser.program()
   print(tree.toStringTree(recog=parser))
   #walker = ParseTreeWalker()
+  # y = simulator(state, environment) # Environment is same, initial state varies by pyTest
+  # y.visitProgram(tree)
+  # state = y.get_state()
+
+  # Do assertion check that state is as expected
+  # Add function to do state (binary-> int ) conversion  #TODO#
+  # int n = calInt(arrayQuBits, sizeArray)
+  # Then ASSERT 
+
 #y = XMLVisitor.XMLVisitor()
 
 if __name__ == "__main__":
