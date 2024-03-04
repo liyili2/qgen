@@ -3,8 +3,8 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from Source.quantumCode.AST_Scripts.ExpParser import ExpParser
-from Source.quantumCode.AST_Scripts.ExpVisitor import ExpVisitor
+from AST_Scripts.ExpParser import ExpParser
+from AST_Scripts.ExpVisitor import ExpVisitor
 
 """
 Types
