@@ -4,7 +4,7 @@ from types import NoneType
 from antlr4 import ParserRuleContext
 
 from XMLExpParser import *
-import XMLExpVisitor
+from XMLExpVisitor import *
 
 
 class coq_val:
@@ -202,18 +202,18 @@ class Simulator(XMLExpVisitor):
                   self.st)
 
     # should do nothing
-    def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
+    def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
         return
 
     # X posi, changed the following for an example
-    def visitXexp(self, ctx: ExpParser.XexpContext):
+    def visitXexp(self, ctx: XMLExpParser.XexpContext):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         M_find(x, self.st)[p] = exchange(get_nor_state(x, p, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCUexp(self, ctx: ExpParser.CuexpContext):
+    def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         if get_cua(get_nor_state(x, p, self.st)):
@@ -223,7 +223,7 @@ class Simulator(XMLExpVisitor):
 
     # my previous rz parsing is wrong
     # it should be RZ q posi
-    def visitRzexp(self, ctx: ExpParser.RzexpContext):
+    def visitRzexp(self, ctx: XMLExpParser.RzexpContext):
         q = int(ctx.vexp(0).accept(self))  # I guess then you need to define vexp
         # we can first define the var and integer case
         # I guess Identifier and int are all terminal
@@ -236,7 +236,7 @@ class Simulator(XMLExpVisitor):
             get_nor_state(x, p, self.st)[p] = times_r_rotate(get_nor_state(x, p, self.st), abs(q), M_find(x, self.env))
 
     # SR n x, now variables are all string, are this OK?
-    def visitSrexp(self, ctx: ExpParser.SrexpContext):
+    def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
         n = int(ctx.vexp().accept(self))
         x = ctx.idexp().accept(self)
         if n >= 0:
@@ -255,7 +255,7 @@ class Simulator(XMLExpVisitor):
         tmp[n-1] = tmpv
         return M_add(x, tmp, self_st)
 
-    def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
+    def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
         x = ctx.idexp().accept(self)
         return self.lshift(x, M_find(x, self.env))
 
@@ -271,7 +271,7 @@ class Simulator(XMLExpVisitor):
         tmp[0] = tmpv
         M_add(x, tmp, self.st)
 
-    def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
+    def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
         x = ctx.idexp().accept(self)
         return self.rshift(x, M_find(x, self.env))
 
@@ -286,7 +286,7 @@ class Simulator(XMLExpVisitor):
             tmpa.append(tmp[size - i])
         M_add(x, tmpa, self.st)
 
-    def visitRevexp(self, ctx: ExpParser.RevexpContext):
+    def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
         x = ctx.idexp().accept(self)
         return self.reverse(x, M_find(x, self.env))
 
@@ -303,7 +303,7 @@ class Simulator(XMLExpVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQftexp(self, ctx: ExpParser.QftexpContext):
+    def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
         x = ctx.idexp().accept(self)
         b = int(ctx.vexp().accept(self))
         self.turn_qft(x, M_find(x, self.env) - b)
@@ -321,7 +321,7 @@ class Simulator(XMLExpVisitor):
             M_add(0, Coq_nval(M_find(0, tov).b, val.r2), tov)
             M_add(x, tov, self.st)
 
-    def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
+    def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.idexp().accept(self)
         b = int(ctx.vexp().accept(self))
         self.turn_rqft(x, M_find(x, self.env) - b)
@@ -334,8 +334,8 @@ class Simulator(XMLExpVisitor):
 
     # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
-        if node.getSymbol().type == ExpParser.Identifier:
+        if node.getSymbol().type == XMLExpParser.Identifier:
             return node.getText()
-        if node.getSymbol().type == ExpParser.Number:
+        if node.getSymbol().type == XMLExpParser.Number:
             return node.getText()
         return "None"
