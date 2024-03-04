@@ -354,7 +354,7 @@ class Simulator(ExpVisitor):
         val = M_find(x, self.st)
         if isinstance(val, Coq_qval):
             tmp = val.r1
-            tov = [Coq_nval(false, 0)] * n
+            tov = [Coq_nval(False, 0)] * n
             for i in range(n):
                 b = tmp % 2
                 tmp = tmp / 2
