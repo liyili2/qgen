@@ -1,11 +1,12 @@
 from collections import ChainMap
-from types import NoneType
+# from types import NoneType
 
 from antlr4 import ParserRuleContext
 
 from XMLExpParser import *
 from XMLExpVisitor import *
 
+NoneType = type(None)
 
 class coq_val:
     pass  # TODO
@@ -187,6 +188,9 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
+    def get_state(self):
+        return self.st
+    
     def sr_rotate(self, x, n):
         val = M_find(x, self.st)
         if isinstance(val, Coq_qval):
