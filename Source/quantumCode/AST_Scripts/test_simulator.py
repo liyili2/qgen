@@ -1,6 +1,7 @@
 #import pytest
 
 from simulator import *
+from XMLExpLexer import XMLExpLexer
 
 ####################
 ## What is input ###
@@ -43,3 +44,7 @@ class Test_Simulator(object):
         # Add function to do state (binary-> int ) conversion  #TODO#
         # int n = calInt(arrayQuBits, sizeArray)
         assert newState == state
+
+def test_trivial():
+    Test_Simulator()
+    assert True
