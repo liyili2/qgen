@@ -1,5 +1,6 @@
 #import pytest
 
+from collections import ChainMap
 from simulator import *
 from XMLExpLexer import XMLExpLexer
 
@@ -34,11 +35,19 @@ class Test_Simulator(object):
         tree = parser.program()
         print(tree.toStringTree(recog=parser))
 
+        # the following shows an example of using 1 variable state. You can have a 10 variable state
+        # see that a variable is a string.
+        num = 16 # Number of Qubits
+        val = 100 #init value
+        valArray = calBin(val,num) #conver value to array
+        #val = [False]*num # state for x
+        ChainMap({"x" : Coq_nval(valArray,0)}) #initial a chainMap having variable "x" to be 0 (list of False)
         state = True
-        environment = 10 # Number of Qubits
+        environment = 16
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
         newState = y.get_state()
+        assert(110 == calInt(M_find(x, newState).getBits()))
 
         # Do assertion check that state is as expected
         # Add function to do state (binary-> int ) conversion  #TODO#
