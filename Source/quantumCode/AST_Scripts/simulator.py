@@ -44,7 +44,7 @@ Helper Functions
 """
 
 
-def exchange(v: coq_val, n: nat):
+def exchange(v: coq_val, n: int):
     if isinstance(v, Coq_nval):
         v.getBits()[n] = not v.getBits()[n]
 
