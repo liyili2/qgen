@@ -221,7 +221,12 @@ class Simulator(XMLExpVisitor):
     def visitXexp(self, ctx: XMLExpParser.XexpContext):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
+        print("herea")
+        print(x)
+        print("ad:")
+        print(p)
         exchange(M_find(x, self.st), p)
+        #print(M_find(x, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
@@ -343,10 +348,17 @@ class Simulator(XMLExpVisitor):
         else:
             return self.visitTerminal(ctx)
 
+    def visitIdexp(self, ctx:XMLExpParser.IdexpContext):
+        return ctx.Identifier().accept(self)
+
+    # Visit a parse tree produced by XMLExpParser#vexp.
+    def visitVexp(self, ctx:XMLExpParser.VexpContext):
+        return ctx.numexp().accept(self)
+
     # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
         if node.getSymbol().type == XMLExpParser.Identifier:
             return node.getText()
         if node.getSymbol().type == XMLExpParser.Number:
-            return node.getText()
+            return int(node.getText())
         return "None"
