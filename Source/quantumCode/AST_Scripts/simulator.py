@@ -179,7 +179,7 @@ def calBin(v, n):
     val = [False]*n
     for i in range(n):
         b = v % 2
-        v = v / 2
+        v = v // 2
         val[i] = bool(b)
     return val
 
