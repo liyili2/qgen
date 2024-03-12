@@ -41,12 +41,12 @@ class Test_Simulator(object):
         val = 100 #init value
         valArray = calBin(val,num) #conver value to array
         #val = [False]*num # state for x
-        state = ChainMap({"x" : Coq_nval(valArray,0)}) #initial a chainMap having variable "x" to be 0 (list of False)
-        environment = ChainMap({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
+        state = dict({"x" : Coq_nval(valArray,0)}) #initial a chainMap having variable "x" to be 0 (list of False)
+        environment = dict({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
         newState = y.get_state()
-        assert(1124 == calInt(M_find('x', newState).getBits(), num))
+        assert(1124 == calInt(newState.get('x').getBits(), num))
 
         # Do assertion check that state is as expected
         # Add function to do state (binary-> int ) conversion  #TODO#
