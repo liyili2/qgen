@@ -14,6 +14,7 @@ from pyggi.algorithms import LocalSearch
 from repairCode.crossover import PyggiCrossover
 from repairCode.mutation import NullMutation
 from repairCode.patch import PyggiPatch
+from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
 from repairCode.program import MyLineProgram, MyTreeProgram, MyProgram
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
@@ -85,7 +86,7 @@ class MyGA(GeneticAlgorithm):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='pyggi2/sample/Triangle_bug_python')
+    parser.add_argument('--project_path', type=str, default='../Benchmark/vqo_small_circuit_ex')
     parser.add_argument('--mode', type=str, default='line')
     parser.add_argument('--epoch', type=int, default=30,
         help='total epoch(default: 30)')
@@ -104,6 +105,9 @@ if __name__ == "__main__":
         #ga.mutation_operator = Mutation()
         #ga.crossover_operator = Crossover()
         #ga.selection = BinaryTournamentSelection()
+
+        ga.program.operators = [QGateReplacement]
+        
         # Target Fitness, Precision
         ga.termination_criterion = StoppingByQualityIndicator(MyFitnessValue, 0, 1.0)
         result = ga.run()
