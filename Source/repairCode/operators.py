@@ -3,7 +3,7 @@ Possible Edit Operators
 """
 import random
 from abc import ABC
-from pyggi.base import BaseOperator
+#from pyggi.base import BaseOperator
 from lxml import etree
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 
