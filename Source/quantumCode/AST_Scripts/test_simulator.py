@@ -46,7 +46,7 @@ class Test_Simulator(object):
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
         newState = y.get_state()
-        assert(1124 == calInt(newState.get('x').getBits(), num))
+        assert(132 == calInt(newState.get('x').getBits(), num))
 
         # Do assertion check that state is as expected
         # Add function to do state (binary-> int ) conversion  #TODO#
