@@ -152,24 +152,6 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by XMLExpParser#flag.
-    def enterFlag(self, ctx:XMLExpParser.FlagContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#flag.
-    def exitFlag(self, ctx:XMLExpParser.FlagContext):
-        pass
-
-
-    # Enter a parse tree produced by XMLExpParser#typeexp.
-    def enterTypeexp(self, ctx:XMLExpParser.TypeexpContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#typeexp.
-    def exitTypeexp(self, ctx:XMLExpParser.TypeexpContext):
-        pass
-
-
     # Enter a parse tree produced by XMLExpParser#boolexp.
     def enterBoolexp(self, ctx:XMLExpParser.BoolexpContext):
         pass

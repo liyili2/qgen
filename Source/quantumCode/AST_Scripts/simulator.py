@@ -195,9 +195,9 @@ class Simulator(XMLExpVisitor):
         x = ctx.idexp().accept(self)
         p = ctx.vexp(1).accept(self)  # this will pass the visitor to the child of ctx
         if q >= 0:
-            self.st.update({x: times_rotate(self.st.get(x), p, self.env.get(x))})
+            self.st.update({x: times_rotate(self.st.get(x), q, self.env.get(x))})
         else:
-            self.st.update({x: times_r_rotate(self.st.get(x), p, self.env.get(x))})
+            self.st.update({x: times_r_rotate(self.st.get(x), abs(q), self.env.get(x))})
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):

@@ -1,2 +1,2 @@
 // applying X gate, and then a CCX gate controlling at (x,0) and (x,1) and flip of (y,1)
-<pexp gate = 'X' type = 'Nor' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'CU' type = 'Nor' > <id> x </id> < vexp> 0 </vexp>  <pexp gate = 'CU' type = 'Nor' > <id> x </id>  <vexp> 1 </vexp> <pexp gate = 'X' type = 'Nor' > <id> y </id>  <vexp> 1 </vexp> </pexp> </pexp>  </pexp> 
+<pexp gate = 'X' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'CU' > <id> x </id> < vexp> 0 </vexp>  <pexp gate = 'CU' > <id> x </id>  <vexp> 1 </vexp> <pexp gate = 'X' > <id> y </id>  <vexp> 1 </vexp> </pexp> </pexp>  </pexp> 

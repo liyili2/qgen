@@ -1,3 +1,3 @@
 X (x,0) ; CU (y,0) (RZ 10 (y,1)) // apply X gate to flip the bit in (x,0), rotates the global phase 2^10 (no effects) on (y,1)
 
-<pexp gate = 'X' type = 'Nor' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'CU' type = 'Nor' > <id> x </id> < vexp> 0 </vexp>  <pexp gate = 'RZ' type = 'Nor' > <vexp> 10 </vexp> <id> y </id>  <vexp> 1 </vexp> </pexp>  </pexp> 
+<pexp gate = 'X' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'CU' > <id> x </id> < vexp> 0 </vexp>  <pexp gate = 'RZ' > <vexp> 10 </vexp> <id> y </id>  <vexp> 1 </vexp> </pexp>  </pexp> 
