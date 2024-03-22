@@ -174,8 +174,8 @@ class Simulator(XMLExpVisitor):
         f = ctx.idexp().accept(self)
         ctxa = self.st.get(f)
         i = 0
-        while ctx.ida(i) is not None:
-            x = ctx.Identifier().accept(self)
+        while ctxa.ida(i) is not None:
+            x = ctxa.ida(i).Identifier().accept(self)
             v = ctx.vexp(i).accept(self)
             self.st.update({x: v})
             i += 1
@@ -183,7 +183,7 @@ class Simulator(XMLExpVisitor):
 
     def visitIfexp(self, ctx:XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
-        if v == 0:
+        if v == 1:
             ctx.exp(0).accept(self)
         else:
             ctx.exp(1).accept(self)
