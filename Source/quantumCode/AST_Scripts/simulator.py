@@ -149,6 +149,45 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
+    def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
+        f = ctx.idexp().accept(self)
+        self.st.update({f: ctx})
+        ctx.exp().accept(self)
+
+    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
+        x = ctx.idexp().accept(self)
+        v = self.st.get(x)
+        i = 0
+        while ctx.exppair(i) is not None:
+            if ctx.exppair(i).vexp().OP() == 0:
+                va = ctx.exppair(i).vexp().accept(self)
+                if v == va:
+                    ctx.exppair(i).exp().accept(self)
+                    return
+            else:
+                y = ctx.exppair(i).vexp().idexp().accept(self)
+                self.st.update({y:v-1})
+                ctx.exppair(i).exp().accept(self)
+            i += 1
+
+    def visitAppexp(self, ctx:XMLExpParser.AppexpContext):
+        f = ctx.idexp().accept(self)
+        ctxa = self.st.get(f)
+        i = 0
+        while ctx.ida(i) is not None:
+            x = ctx.Identifier().accept(self)
+            v = ctx.vexp(i).accept(self)
+            self.st.update({x: v})
+            i += 1
+        ctxa.exp().accept(self)
+
+    def visitIfexp(self, ctx:XMLExpParser.IfexpContext):
+        v = ctx.vexp().accept(self)
+        if v == 0:
+            ctx.exp(0).accept(self)
+        else:
+            ctx.exp(1).accept(self)
+
     def get_state(self):
         return self.st
 
@@ -299,7 +338,31 @@ class Simulator(XMLExpVisitor):
 
     # Visit a parse tree produced by XMLExpParser#vexp.
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
-        return ctx.numexp().accept(self)
+        if ctx.OP() == 0:
+            if ctx.numexp() != 0:
+                return ctx.numexp().accept(self)
+            elif ctx.idexp() != 0:
+                x = ctx.idexp().accept(self)
+                return self.st.get(x)
+            elif ctx.boolexp() != 0:
+                if ctx.boolexp().TrueLiteral() != 0:
+                    return 1
+                else:
+                    return 0
+        else:
+            x = ctx.vexp(0).accept(self)
+            y = ctx.vexp(1).accept(self)
+            if ctx.OP() == XMLExpParser.Plus:
+                return x + y
+            elif ctx.OP() == XMLExpParser.Minus:
+                return x - y
+            elif ctx.OP() == XMLExpParser.Times:
+                return x * y
+            elif ctx.OP() == XMLExpParser.Div:
+                return x // y
+            elif ctx.op() == XMLExpParser.GNum:
+                return int(x[y])
+        return 0
 
     # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):

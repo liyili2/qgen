@@ -2,9 +2,21 @@ grammar XMLExp;
 
 program: exp (exp)* ;
 
-exp: skipexp | xexp | cuexp | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp;
+exp: letexp | appexp | ifexp | matchexp | skipexp | xexp | cuexp | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp;
 
-idexp : '<' ID '>' Identifier '</' ID '>';
+idexp : '<' ID '>' Identifier '</' ID '>' ;
+
+exppair : '<' Pair '>' vexp exp '</' Pair '>' ;
+
+matchexp : '<' Match '>' idexp exppair (exppair)* '</' Match '>' ;
+
+letexp : '<' Let '>' idexp (ida)* exp '</' Let '>' ;
+
+ifexp : '<' Ifa '>' vexp exp exp '</' Ifa '>';
+
+appexp : '<' APP '>' idexp (vexp)* '</' APP '>';
+
+ida : '<' ID 'type' '=' '\'' atype '\'' '>' Identifier '</' ID '>' ;
         
 vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
     | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
@@ -36,7 +48,23 @@ rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' '>' idexp vexp '</' PEXP '>' ;
 
 op: Plus | Minus | Times | Div | Mod | Exp;
 
+atype: Qubits | Nat | Bits;
+
 boolexp: TrueLiteral | FalseLiteral;
+
+Let : 'let';
+
+Ifa : 'if';
+
+Match : 'match';
+
+Pair : 'pair';
+
+Qubits : 'qubits';
+
+Nat : 'nat';
+
+Bits : 'bits';
 
  TrueLiteral : '#t' ;
  FalseLiteral : '#f' ;
@@ -58,7 +86,9 @@ boolexp: TrueLiteral | FalseLiteral;
 
  Exp : '^';
 
- Type : 'type';
+ GNum : '$';
+
+ APP : 'app';
 
  PEXP : 'pexp';
 

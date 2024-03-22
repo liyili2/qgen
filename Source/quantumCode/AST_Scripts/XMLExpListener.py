@@ -35,6 +35,60 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#exppair.
+    def enterExppair(self, ctx:XMLExpParser.ExppairContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#exppair.
+    def exitExppair(self, ctx:XMLExpParser.ExppairContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#matchexp.
+    def enterMatchexp(self, ctx:XMLExpParser.MatchexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#matchexp.
+    def exitMatchexp(self, ctx:XMLExpParser.MatchexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#letexp.
+    def enterLetexp(self, ctx:XMLExpParser.LetexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#letexp.
+    def exitLetexp(self, ctx:XMLExpParser.LetexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#ifexp.
+    def enterIfexp(self, ctx:XMLExpParser.IfexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#ifexp.
+    def exitIfexp(self, ctx:XMLExpParser.IfexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#appexp.
+    def enterAppexp(self, ctx:XMLExpParser.AppexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#appexp.
+    def exitAppexp(self, ctx:XMLExpParser.AppexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#ida.
+    def enterIda(self, ctx:XMLExpParser.IdaContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#ida.
+    def exitIda(self, ctx:XMLExpParser.IdaContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#vexp.
     def enterVexp(self, ctx:XMLExpParser.VexpContext):
         pass
@@ -149,6 +203,15 @@ class XMLExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by XMLExpParser#op.
     def exitOp(self, ctx:XMLExpParser.OpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#atype.
+    def enterAtype(self, ctx:XMLExpParser.AtypeContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#atype.
+    def exitAtype(self, ctx:XMLExpParser.AtypeContext):
         pass
 
 
