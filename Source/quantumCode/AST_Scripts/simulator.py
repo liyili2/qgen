@@ -159,7 +159,7 @@ class Simulator(XMLExpVisitor):
         v = self.st.get(x)
         i = 0
         while ctx.exppair(i) is not None:
-            if ctx.exppair(i).vexp().OP() == 0:
+            if ctx.exppair(i).vexp().OP() is not None:
                 va = ctx.exppair(i).vexp().accept(self)
                 if v == va:
                     ctx.exppair(i).exp().accept(self)
@@ -338,14 +338,14 @@ class Simulator(XMLExpVisitor):
 
     # Visit a parse tree produced by XMLExpParser#vexp.
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
-        if ctx.OP() == 0:
-            if ctx.numexp() != 0:
+        if ctx.OP() is None:
+            if ctx.numexp() is not None:
                 return ctx.numexp().accept(self)
-            elif ctx.idexp() != 0:
+            elif ctx.idexp() is not None:
                 x = ctx.idexp().accept(self)
                 return self.st.get(x)
-            elif ctx.boolexp() != 0:
-                if ctx.boolexp().TrueLiteral() != 0:
+            elif ctx.boolexp() is not None:
+                if ctx.boolexp().TrueLiteral() is not None:
                     return 1
                 else:
                     return 0
