@@ -25,20 +25,29 @@ class QGateReplacement(StmtReplacement):
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
 
-        # Find all elements with the target tag and type='Nor'
-        elements = target_tree.xpath(".//{}[@type='Nor']".format(self.target_tag))
+        # Find all elements with the target gates X, CU, RZ, SKIP
+        elements = target_tree.xpath(".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
 
         if elements:
             # Choose a random element to replace
             element_to_replace = random.choice(elements)
 
+            # Determine the current gate
+            current_gate = element_to_replace.get('gate')
+
+            # Define a list of alternative gates
+            alternative_gates = ['X', 'CU', 'RZ', 'SKIP']
+            alternative_gates.remove(current_gate)
+
+            # Choose a random alternative gate
+            new_gate = random.choice(alternative_gates)
+
             # Parse the XML content of the ingredient
             ingredient_tree = etree.fromstring(ingredient_content)
 
-            # Create a new <pexp> element with a different gate but the same type
+            # Create a new <pexp> element with the chosen alternative gate but the same type
             new_pexp = etree.Element(self.target_tag)
-            new_pexp.set('gate', 'NewGate')  # Replace 'NewGate' with desired gate
-            new_pexp.set('type', 'Nor')
+            new_pexp.set('gate', new_gate)
 
             # Replace the chosen element with the new <pexp> element
             parent = element_to_replace.getparent()
