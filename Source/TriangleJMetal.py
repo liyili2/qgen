@@ -86,8 +86,8 @@ class MyGA(GeneticAlgorithm):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='../Benchmark/vqo_small_circuit_ex')
-    parser.add_argument('--mode', type=str, default='line')
+    parser.add_argument('--project_path', type=str, default='../xiangm/qgen/Benchmark/vqo_small_circuit_ex')
+    parser.add_argument('--mode', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=30,
         help='total epoch(default: 30)')
     parser.add_argument('--iter', type=int, default=100,
@@ -106,8 +106,8 @@ if __name__ == "__main__":
         #ga.crossover_operator = Crossover()
         #ga.selection = BinaryTournamentSelection()
 
-        ga.program.operators = [QGateReplacement]
-        
+        ga.operators = [QGateReplacement]
+
         # Target Fitness, Precision
         ga.termination_criterion = StoppingByQualityIndicator(MyFitnessValue, 0, 1.0)
         result = ga.run()
