@@ -319,7 +319,6 @@ class Simulator(XMLExpVisitor):
                 b = tmp % 2
                 tmp = tmp // 2
                 tov[i] = bool(b)
-            print(tov)
             self.st.update({x: Coq_nval(tov, val.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
