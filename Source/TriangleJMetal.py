@@ -2,6 +2,7 @@
 Automated program repair ::
 """
 import sys
+import os
 import random
 import argparse
 
@@ -31,7 +32,7 @@ class MyFitnessValue(FitnessValue):
     def __init__(self, is_minimization: bool = True):
         super().__init__(is_minimization)
 
-    def compute(self, solution: Solution) -> float:
+    def compute(self, solution: PyggiPatch) -> float:
         """
         Computes the fitness value for the given solution.
 
@@ -43,8 +44,14 @@ class MyFitnessValue(FitnessValue):
         """
         # Placeholder for fitness evaluation logic
         fitness_value = 0.0
-        
+        print("Hello - im in a place!")
+        # Run Program
+
+        # Calling pytest with the generate patched program and the test suite.
+        cmd = "pytest simulatorTest.py parameters"
+        programOutput = os.system(cmd)
         # Perform fitness evaluation here
+        fitness_value = compute_fitness(programOutput)
         # Example: compute fitness based on solution attributes
         
         return fitness_value
