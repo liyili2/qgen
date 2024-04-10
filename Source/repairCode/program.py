@@ -110,7 +110,7 @@ class MyProgram(MyTreeProgram, Problem):
         """
 
 
-        '''
+        
         m = re.findall("runtime: ([0-9.]+)", stdout)
         if len(m) > 0:
             runtime = m[0]
@@ -120,7 +120,7 @@ class MyProgram(MyTreeProgram, Problem):
             result.fitness = failed
         else:
             result.status = 'PARSE_ERROR'
-        '''
+        
 
     #def get_engine(cls, file_name=""):
     #   return MyXmlEngine
