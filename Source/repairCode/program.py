@@ -109,15 +109,15 @@ class MyProgram(MyTreeProgram, Problem):
         Given a program, compute the fitness
         """
 
-
-        
+        print('start computing fitness')
         m = re.findall("runtime: ([0-9.]+)", stdout)
         if len(m) > 0:
             runtime = m[0]
             failed = re.findall("([0-9]+) failed", stdout)
-            pass_all = len(failed) == 0
-            failed = int(failed[0]) if not pass_all else 0
-            result.fitness = failed
+            passed = re.findall("([0-9]+) passed", stdout)
+            total_tests = failed + passed
+
+            result.fitness = passed / total_tests if total_tests > 0 else 0
         else:
             result.status = 'PARSE_ERROR'
         
