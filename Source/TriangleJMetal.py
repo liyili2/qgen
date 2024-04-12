@@ -32,7 +32,7 @@ class MyFitnessValue(FitnessValue):
     def __init__(self, is_minimization: bool = True):
         super().__init__(is_minimization)
 
-    def compute(self, solution: PyggiPatch) -> float:
+    def compute(self, solution: Solution) -> float:
         """
         Computes the fitness value for the given solution.
 
@@ -42,17 +42,17 @@ class MyFitnessValue(FitnessValue):
         Returns:
         - fitness_value (float): The computed fitness value.
         """
-        # Placeholder for fitness evaluation logic
-        fitness_value = 0.0
-        print("Hello - im in a place!")
-        # Run Program
+        # Call pytest with the generated patch from pytest
+        cmd = 'pytest qgen/Source/quantumCode/AST_Scripts/test_simulator.py'
+        program_output = os.system(cmd)
 
-        # Calling pytest with the generate patched program and the test suite.
-        cmd = "pytest simulatorTest.py parameters"
-        programOutput = os.system(cmd)
+        # Call compute_fitness from program.py
+        fitness_value = MyProgram.compute_fitness(program_output)
+        print(f'fitness value: {fitness_value}')
         # Perform fitness evaluation here
-        fitness_value = compute_fitness(programOutput)
         # Example: compute fitness based on solution attributes
+
+        #fitness_value = 100
         
         return fitness_value
 
