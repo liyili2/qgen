@@ -22,6 +22,8 @@ from jmetal.operator import BinaryTournamentSelection
 from jmetal.util.termination_criterion import StoppingByQualityIndicator
 from jmetal.core.quality_indicator import FitnessValue
 
+from jmetal.core.solution import Solution
+
 class MyFitnessValue(FitnessValue):
     """
     Custom fitness value class for evaluating solutions.
