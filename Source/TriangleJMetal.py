@@ -137,7 +137,7 @@ if __name__ == "__main__":
         ga.operators = [QGateReplacement]
 
         # Target Fitness, Precision
-        ga.termination_criterion = StoppingByQualityIndicator(MyFitnessValue, 0, 1.0)
+        ga.termination_criterion = StoppingByQualityIndicator(fitness_calculator, 0.1, 1.0)
         result = ga.run()
 
     elif args.mode == 'line':
