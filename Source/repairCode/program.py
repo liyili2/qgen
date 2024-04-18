@@ -154,3 +154,15 @@ class MyProgram(MyTreeProgram, Problem):
     
     def name(self) -> str:
         return "MyProgram"
+
+    def evaluate_patch(self, patch, timeout=15):
+        # apply + run
+        self.apply(patch)
+        return_code, stdout, stderr, elapsed_time = self.exec_cmd(self.test_command, timeout)
+        if return_code is None: # timeout
+            return RunResult('TIMEOUT')
+        else:
+            result = RunResult('SUCCESS', None)
+            self.compute_fitness(result, return_code, stdout, stderr, elapsed_time)
+            assert not (result.status == 'SUCCESS' and result.fitness is None)
+            return result

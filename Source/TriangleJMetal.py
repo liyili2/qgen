@@ -114,7 +114,7 @@ class MyGA(GeneticAlgorithm):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='../xiangm/qgen/Benchmark/vqo_small_circuit_ex')
+    parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
     parser.add_argument('--mode', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=30,
         help='total epoch(default: 30)')
