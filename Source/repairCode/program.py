@@ -108,18 +108,36 @@ class MyProgram(MyTreeProgram, Problem):
         """
         Given a program, compute the fitness
         """
-
         print('start computing fitness')
-        m = re.findall("runtime: ([0-9.]+)", stdout)
-        if len(m) > 0:
-            runtime = m[0]
-            failed = re.findall("([0-9]+) failed", stdout)
-            passed = re.findall("([0-9]+) passed", stdout)
-            total_tests = failed + passed
+        # m = re.findall("runtime: ([0-9.]+)", stdout)
+        # print(f'm: {m}')
+        # if len(m) > 0:
+        #     runtime = m[0]
+        #     failed = re.findall("([0-9]+) failed", stdout)
+        #     passed = re.findall("([0-9]+) passed", stdout)
+        #     total_tests = failed + passed
+        #
+        #     result.fitness = passed / total_tests if total_tests > 0 else 0
+        #     print(f'result fitness: {result.fitness}')
+        # else:
+        #     result.status = 'PARSE_ERROR'
 
-            result.fitness = passed / total_tests if total_tests > 0 else 0
-        else:
-            result.status = 'PARSE_ERROR'
+        try:
+            failed = int(re.search("([0-9]+) failed", stdout).group(1))
+        except AttributeError:
+            failed = 0
+
+        try:
+            passed = int(re.search("([0-9]+) passed", stdout).group(1))
+        except AttributeError:
+            passed = 0
+
+        total_tests = failed + passed
+
+        result.fitness = passed / total_tests if total_tests > 0 else 0
+        print(f'result fitness: {result.fitness}')
+
+        return result.fitness
         
 
     #def get_engine(cls, file_name=""):
