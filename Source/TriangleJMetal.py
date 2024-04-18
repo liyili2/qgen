@@ -24,6 +24,8 @@ from jmetal.core.quality_indicator import FitnessValue
 
 from jmetal.core.solution import Solution
 
+import os
+
 class MyFitnessValue(FitnessValue):
     """
     Custom fitness value class for evaluating solutions.
@@ -33,8 +35,9 @@ class MyFitnessValue(FitnessValue):
 
     def __init__(self, is_minimization: bool = True):
         super().__init__(is_minimization)
+        self.compute()
 
-    def compute(self, solution: Solution) -> float:
+    def compute(self) -> float:
         """
         Computes the fitness value for the given solution.
 
@@ -46,16 +49,17 @@ class MyFitnessValue(FitnessValue):
         """
         # Call pytest with the generated patch from pytest
         cmd = 'pytest qgen/Source/quantumCode/AST_Scripts/test_simulator.py'
+        print(cmd)
         program_output = os.system(cmd)
-
+        print(f'program output: {program_output}')
         # Call compute_fitness from program.py
-        fitness_value = MyProgram.compute_fitness(program_output)
+        fitness_value = MyProgram.compute_fitness(self, program_output)
         print(f'fitness value: {fitness_value}')
         # Perform fitness evaluation here
         # Example: compute fitness based on solution attributes
 
         #fitness_value = 100
-        
+
         return fitness_value
 
 class MyXmlEngine(XmlEngine):
