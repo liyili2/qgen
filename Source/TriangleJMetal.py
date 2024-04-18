@@ -35,9 +35,9 @@ class MyFitnessValue(FitnessValue):
 
     def __init__(self, is_minimization: bool = True):
         super().__init__(is_minimization)
-        self.compute()
+        # self.compute()
 
-    def compute(self) -> float:
+    def compute(self, solution) -> float:
         """
         Computes the fitness value for the given solution.
 
