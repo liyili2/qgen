@@ -132,36 +132,36 @@ if __name__ == "__main__":
         #program = QProgram(args.project_path)
         #program = MyProgram(args.project_path)
         program = MyProgram(args.project_path)
-        # ga = MyGA(program, 8, 8, NullMutation(), PyggiCrossover(.5))
+        ga = MyGA(program, 8, 8, NullMutation(), PyggiCrossover(.5))
         # # Uses JMetal defaults if not overwritten
         # #ga.mutation_operator = Mutation()
         # #ga.crossover_operator = Crossover()
         # #ga.selection = BinaryTournamentSelection()
         #
-        # ga.operators = [QGateReplacement]
+        ga.operators = [QGateReplacement]
         #
         # # Target Fitness, Precision
         # # Instantiate MyFitnessValue with any necessary arguments
-        # fitness_calculator = MyFitnessValue()
+        fitness_calculator = MyFitnessValue()
         #
         # # Set termination criterion with the instantiated MyFitnessValue object
-        # ga.termination_criterion = StoppingByQualityIndicator(fitness_calculator, 0.1, 1.0)
-        # result = ga.run()
+        ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=FitnessValue, expected_value=0.1, degree=1.0)
+        result = ga.run()
 
         # Initialize genetic algorithm with problem and parameters
-        ga = GeneticAlgorithm(program, population_size=8, offspring_population_size=8,
-                              mutation=NullMutation(), crossover=PyggiCrossover(0.5))
+        # ga = GeneticAlgorithm(program, population_size=8, offspring_population_size=8,
+        #                       mutation=NullMutation(), crossover=PyggiCrossover(0.5))
 
         # Set the minimization attribute manually
-        FitnessValue.is_minimization = True
+        # FitnessValue.is_minimization = True
 
-        ga.operators = [QGateReplacement]
+        # ga.operators = [QGateReplacement]
         
         # Set termination criterion
-        ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=FitnessValue, expected_value=0.1, degree=1.0)
+        # ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=FitnessValue, expected_value=0.1, degree=1.0)
 
         # Run the genetic algorithm
-        result = ga.run()
+        # result = ga.run()
 
     elif args.mode == 'line':
         program = MyLineProgram(args.project_path)
