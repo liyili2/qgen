@@ -154,7 +154,7 @@ class MyProgram(MyTreeProgram, Problem):
         """
         # Run Program and get the RunResult Object
         #result = self.evaluate_patch(patch, timeout=15)
-        fitness = 0
+        fitness = 100
         # Save to Solution Object
         patch.objectives[0] = fitness
         
