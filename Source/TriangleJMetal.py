@@ -145,7 +145,7 @@ if __name__ == "__main__":
         fitness_calculator = MyFitnessValue()
         #
         # # Set termination criterion with the instantiated MyFitnessValue object
-        ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=FitnessValue, expected_value=0.1, degree=1.0)
+        ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=fitness_calculator, expected_value=0.1, degree=1.0)
         result = ga.run()
 
         # Initialize genetic algorithm with problem and parameters
