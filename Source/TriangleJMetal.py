@@ -16,12 +16,11 @@ from repairCode.crossover import PyggiCrossover
 from repairCode.mutation import NullMutation
 from repairCode.patch import PyggiPatch
 from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
-from repairCode.program import MyLineProgram, MyTreeProgram, MyProgram
+from repairCode.program import MyLineProgram, MyTreeProgram, MyProgram,PyggiProblem
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
 from jmetal.util.termination_criterion import StoppingByQualityIndicator
 from jmetal.core.quality_indicator import FitnessValue, QualityIndicator
-
 from jmetal.core.solution import Solution
 
 import os
@@ -118,7 +117,7 @@ class MyGA(GeneticAlgorithm):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
+    parser.add_argument('--project_path', type=str, default='Benchmark/vqo_small_circuit_ex')
     parser.add_argument('--mode', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=30,
         help='total epoch(default: 30)')
@@ -131,8 +130,10 @@ if __name__ == "__main__":
     if args.mode == 'ga':
         #program = QProgram(args.project_path)
         #program = MyProgram(args.project_path)
+        #program = MyProgram(args.project_path)
         program = MyProgram(args.project_path)
-        ga = MyGA(program, 8, 8, NullMutation(), PyggiCrossover(.5))
+        problem = PyggiProblem(program, number_of_variables=8)
+        ga = MyGA(problem, 8, 8, NullMutation(), PyggiCrossover(.5))
         # # Uses JMetal defaults if not overwritten
         # #ga.mutation_operator = Mutation()
         # #ga.crossover_operator = Crossover()
@@ -146,8 +147,8 @@ if __name__ == "__main__":
         #
         # # Set termination criterion with the instantiated MyFitnessValue object
         ga.termination_criterion = StoppingByQualityIndicator(quality_indicator=fitness_calculator, expected_value=0.1, degree=1.0)
-        result = ga.run()
-
+        ga.run()
+        result = ga.result()       
         # Initialize genetic algorithm with problem and parameters
         # ga = GeneticAlgorithm(program, population_size=8, offspring_population_size=8,
         #                       mutation=NullMutation(), crossover=PyggiCrossover(0.5))

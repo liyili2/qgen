@@ -2,7 +2,8 @@ from jmetal.core.problem import Problem
 from jmetal.core.solution import Solution
 from .patch import PyggiPatch
 from pyggi.line import LineProgram
-from pyggi.tree import TreeProgram
+from pyggi.tree import TreeProgram,StmtInsertion
+from pyggi.base.program import RunResult
 from pyggi.base.edit import AbstractEdit
 from pyggi.tree import XmlEngine
 from typing import Generic, TypeVar, List
@@ -16,7 +17,7 @@ class PyggiProblem(Problem):
 
     """
 
-    def __init__(self, number_of_variables: int = 8):
+    def __init__(self,program, number_of_variables: int = 8):
         """
         :param number_of_variables: Number of decision variables of the problem.
         :param prg: Program object from pyggi
@@ -27,10 +28,6 @@ class PyggiProblem(Problem):
         self.number_of_objectives = 1
         self.obj_directions = [self.MINIMIZE]
         self.obj_labels = ['Fitness']
-        if program.args.somo == "MO":
-            self.number_of_objectives = 2
-            self.obj_directions = [self.MINIMIZE, self.MINIMIZE]
-            self.obj_labels = ['?', 'Fail rate']
 
         self.number_of_constraints = 0
 
@@ -44,8 +41,8 @@ class PyggiProblem(Problem):
         return self.number_of_constraints
 
     def evaluate(self, solution: PyggiPatch) -> PyggiPatch:
-        fitness = self.prg.evaluate_solution(solution, self.program.build_command)
-        solution.fitness = 0
+        fitness = self.program.evaluate_solution(solution, self.program.test_command)
+        solution.fitness = fitness
         solution.objectives[0] = solution.fitness
 
         return solution
@@ -55,7 +52,6 @@ class PyggiProblem(Problem):
         edit_operator: AbstractEdit = random.choice(self.program.operators) 
         opr = edit_operator.create(self.program)
         solution.add(opr)
-
         return solution
 
     def generate_neighbor(self, solution: PyggiPatch) -> PyggiPatch:
@@ -82,7 +78,7 @@ class MyLineProgram(LineProgram):
 class MyTreeProgram(TreeProgram):
     pass
 
-class MyProgram(MyTreeProgram, Problem):
+class MyProgram(MyTreeProgram, PyggiProblem):
     """
     
     """
@@ -102,42 +98,27 @@ class MyProgram(MyTreeProgram, Problem):
         self.obj_directions        = [self.MINIMIZE]
         self.obj_labels            = ['Fitness']
         self.number_of_constraints = 0
-
+        self.operators             = [StmtInsertion]
 
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
         Given a program, compute the fitness
         """
         print('start computing fitness')
-        # m = re.findall("runtime: ([0-9.]+)", stdout)
-        # print(f'm: {m}')
-        # if len(m) > 0:
-        #     runtime = m[0]
-        #     failed = re.findall("([0-9]+) failed", stdout)
-        #     passed = re.findall("([0-9]+) passed", stdout)
-        #     total_tests = failed + passed
-        #
-        #     result.fitness = passed / total_tests if total_tests > 0 else 0
-        #     print(f'result fitness: {result.fitness}')
-        # else:
-        #     result.status = 'PARSE_ERROR'
+        m = re.findall("runtime: ([0-9.]+)", stdout)
+        print(f'm: {m}')
+        if len(m) > 0:
+            runtime = m[0]
+            failed = re.findall("([0-9]+) failed", stdout)
+            passed = re.findall("([0-9]+) passed", stdout)
+            total_tests = failed + passed
+        
+            result.fitness = passed / total_tests if total_tests > 0 else 0
+            print(f'result fitness: {result.fitness}')
+        else:
+            result.status = 'PARSE_ERROR'
 
-        try:
-            failed = int(re.search("([0-9]+) failed", stdout).group(1))
-        except AttributeError:
-            failed = 0
-
-        try:
-            passed = int(re.search("([0-9]+) passed", stdout).group(1))
-        except AttributeError:
-            passed = 0
-
-        total_tests = failed + passed
-
-        result.fitness = passed / total_tests if total_tests > 0 else 0
-        print(f'result fitness: {result.fitness}')
-
-        return result.fitness
+        return result
         
 
     #def get_engine(cls, file_name=""):
@@ -153,13 +134,33 @@ class MyProgram(MyTreeProgram, Problem):
         Evaluates a program, and returns the fitness
         """
         # Run Program and get the RunResult Object
-        #result = self.evaluate_patch(patch, timeout=15)
-        fitness = 100
-        # Save to Solution Object
-        patch.objectives[0] = fitness
-        
+        fitness = patch.evaluate_solution(patch, self.program.build_command)
+        patch.fitness = fitness
+        patch.objectives[0] = patch.fitness
         return patch
     
+    def evaluate_solution(self, patch, test_command):
+        #
+        # apply + run
+        #
+        self.apply(patch)
+        # print(patch, "\n")
+ 
+        # rcode is the return code of the program execution
+        # etime is the elapsed time of the program execution
+        tout = 10
+        rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
+        pos1 = pos2 = -1
+ 
+        result = RunResult('SUCCESS', None)
+        # result, return_code, stdout, stderr, elapsed_time, cov=0
+        print(stdout)
+        self.compute_fitness(result, rcode, stdout, stderr, elapsed)
+        # print(result.status, result.leak)
+        # assert (result.status == 'SUCCESS' and not (result.leak is None))
+ 
+        return result
+
     def number_of_variables(self) -> int:
         return self.number_of_variables
 

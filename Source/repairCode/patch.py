@@ -7,7 +7,7 @@ This module contains Patch class.
 from jmetal.core.solution import Solution
 from pyggi.base.patch import Patch
 
-class PyggiPatch(Patch, Solution):
+class PyggiPatch(Solution,Patch):
     """
     Modified Patch to work with jMetal
     Adds the pyggi edit list 
@@ -17,12 +17,20 @@ class PyggiPatch(Patch, Solution):
         Modify this if additonal state needed
         """
         # Intialize the jMetal Solution Object
-        super(Patch, self).__init__(number_of_variables=number_of_variables, number_of_objectives=number_of_objectives)
+        super(PyggiPatch, self).__init__(number_of_variables=number_of_variables, number_of_objectives=number_of_objectives)
         # Support the pyggi edit lists
         self.program = program
         self.edit_list = []   
         self.objectives = [1]
         print("I made a pyggiPath")
+
+    def add(self, edit, after: bool = False):
+            assert isinstance(edit, AbstractEdit)
+ 
+            if after:
+                     self.edit_list.append(edit)
+            return
+            self.edit_list.insert(0, edit)
 
 class PPatch(PyggiPatch):
     """
