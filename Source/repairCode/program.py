@@ -72,13 +72,8 @@ class PyggiProblem(Problem):
     def name(self):
         return 'PyggiProblem'
     
-class MyLineProgram(LineProgram):
-    pass
 
-class MyTreeProgram(TreeProgram):
-    pass
-
-class MyProgram(MyTreeProgram):
+class MyProgram(TreeProgram):
     """
     
     """
