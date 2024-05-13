@@ -6,6 +6,7 @@ This module contains Patch class.
 #from constants import PRECISION, INF
 from jmetal.core.solution import Solution
 from pyggi.base.patch import Patch
+from pyggi.base.edit import AbstractEdit
 
 class PyggiPatch(Solution,Patch):
     """
