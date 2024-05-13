@@ -1,31 +1,23 @@
 """
 Automated program repair ::
 """
-import sys
-import os
-import random
 import argparse
 
 # For pyggi default program + repair
-from pyggi.line import LineReplacement, LineInsertion, LineDeletion
 from pyggi.tree import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
-from pyggi.algorithms import LocalSearch
-# For modified program + repair
-from Source.repairCode.qFitness import QFitness
-from Source.repairCode.qcrossover import PyggiCrossover, QCrossover
-from Source.repairCode.qproblem import QProblem
-from Source.repairCode.qmutation import NullMutation
-from Source.repairCode.qpatch import PyggiPatch
-from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
-from Source.repairCode.qprogram import MyLineProgram, MyTreeProgram, MyProgram,PyggiProblem, QProgram
+# From jMetalpy
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from jmetal.core.quality_indicator import FitnessValue, QualityIndicator
-from jmetal.core.solution import Solution
-
-import os
+# For modified program + repair
+from Source.repairCode.qprogram import QProgram
+from Source.repairCode.qproblem import QProblem
+from Source.repairCode.qpatch import QPatch
+from Source.repairCode.qmutation import NullMutation, QMutation
+from Source.repairCode.qcrossover import QCrossover
+from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
 
 class MyXmlEngine(XmlEngine):
     """
