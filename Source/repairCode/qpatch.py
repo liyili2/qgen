@@ -1,9 +1,6 @@
 """
 This module contains Patch class.
 """
-# import os
-# from copy import deepcopy
-#from constants import PRECISION, INF
 from jmetal.core.solution import Solution
 from pyggi.base.patch import Patch
 from pyggi.base.edit import AbstractEdit

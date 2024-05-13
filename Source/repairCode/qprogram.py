@@ -71,18 +71,14 @@ class QProgram(TreeProgram):
         return patch
     
     def evaluate_solution(self, patch, test_command):
-        #
-        # apply + run
-        #
+        '''
+        apply + run
+        '''
         self.apply(patch)
-        # print(patch, "\n")
- 
         # rcode is the return code of the program execution
         # etime is the elapsed time of the program execution
         tout = 10
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
-        pos1 = pos2 = -1
- 
         result = RunResult('SUCCESS', None)
         # result, return_code, stdout, stderr, elapsed_time, cov=0
         print(stdout)

@@ -12,7 +12,7 @@ class QCrossover(Crossover[QPatch, QPatch]):
     def __init__(self, probability: float):
         super(QCrossover, self).__init__(probability=probability)
 
-    def execute(self, parents: List[PyggiPatch]) -> List:
+    def execute(self, parents: List[QPatch]) -> List:
         if len(parents) != 2:
             raise Exception('The number of parents is not two: {}'.format(len(parents)))
 

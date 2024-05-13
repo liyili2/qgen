@@ -65,4 +65,4 @@ class QMutation(Mutation[QPatch]):
         return solution
 
     def get_name(self):
-        return 'Pyggi mutation'
+        return 'qGen Mutation'
