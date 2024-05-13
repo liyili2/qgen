@@ -78,7 +78,7 @@ class MyLineProgram(LineProgram):
 class MyTreeProgram(TreeProgram):
     pass
 
-class MyProgram(MyTreeProgram, PyggiProblem):
+class MyProgram(MyTreeProgram):
     """
     
     """

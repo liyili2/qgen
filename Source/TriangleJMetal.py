@@ -79,8 +79,6 @@ class MyXmlEngine(XmlEngine):
         cls.select_tags(tree, keep=stmt_tags)
         cls.rotate_newlines(tree)
 
-
-
 class MyTabuSearch(LocalSearch):
     """
     
