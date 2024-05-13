@@ -1,6 +1,6 @@
 import random
 from jmetal.core.operator import Mutation
-from .patch import PyggiPatch
+from .qpatch import QPatch
 
 """
 .. module:: mutation
@@ -9,27 +9,27 @@ from .patch import PyggiPatch
 
 .. moduleauthor:: 
 """
-class NullMutation(Mutation[PyggiPatch]):
+class NullMutation(Mutation[QPatch]):
     """
     Null Mutation which does nothing
     """
     def __init__(self):
         super(NullMutation, self).__init__(probability=0)
 
-    def execute(self, solution: PyggiPatch) -> PyggiPatch:
+    def execute(self, solution: QPatch) -> QPatch:
         return solution
 
     def get_name(self):
         return 'Null mutation'
 
-class PyggiMutation(Mutation[PyggiPatch]):
+class QMutation(Mutation[QPatch]):
     """
     Pyggi Mutation which changes the pyggi edit lists
     """
     def __init__(self):
-        super(NullMutation, self).__init__(probability=0)
+        super(QMutation, self).__init__(probability=0)
 
-    def execute(self, solution: PyggiPatch) -> PyggiPatch:
+    def execute(self, solution: QPatch) -> QPatch:
         """
         What Mutations:
         Add to edit list

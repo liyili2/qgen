@@ -1,6 +1,6 @@
-from jmetal.core.problem import Problem
+
 from jmetal.core.solution import Solution
-from .patch import PyggiPatch
+from .qpatch import PyggiPatch
 from pyggi.line import LineProgram
 from pyggi.tree import TreeProgram,StmtInsertion
 from pyggi.base.program import RunResult
@@ -10,70 +10,7 @@ from typing import Generic, TypeVar, List
 import random
 import re
 
-
-class PyggiProblem(Problem):
-    """ Problem Q
-            What is target description
-
-    """
-
-    def __init__(self,program, number_of_variables: int = 8):
-        """
-        :param number_of_variables: Number of decision variables of the problem.
-        :param prg: Program object from pyggi
-        """
-        super(PyggiProblem, self).__init__()
-        self.program = program
-        self.number_of_variables = 1
-        self.number_of_objectives = 1
-        self.obj_directions = [self.MINIMIZE]
-        self.obj_labels = ['Fitness']
-
-        self.number_of_constraints = 0
-
-    def number_of_variables(self) -> int:
-        return self.number_of_variables
-
-    def number_of_objectives(self) -> int:
-        return self.number_of_objectives
-
-    def number_of_constraints(self) -> int:
-        return self.number_of_constraints
-
-    def evaluate(self, solution: PyggiPatch) -> PyggiPatch:
-        fitness = self.program.evaluate_solution(solution, self.program.test_command)
-        solution.fitness = fitness
-        solution.objectives[0] = solution.fitness
-
-        return solution
-
-    def create_solution(self) -> PyggiPatch:
-        solution = PyggiPatch(self.program, number_of_variables=1, number_of_objectives=1)
-        edit_operator: AbstractEdit = random.choice(self.program.operators) 
-        opr = edit_operator.create(self.program)
-        solution.add(opr)
-        return solution
-
-    def generate_neighbor(self, solution: PyggiPatch) -> PyggiPatch:
-        rnd = random.random()
-        lp = len(solution)
-        if lp == 0 or rnd < 0.33:
-            edit_operator = random.choice(self.prg.operators)
-            solution.add(edit_operator.create(self.prg))
-        elif lp > 1 and rnd < 0.66:
-            solution.remove(random.randrange(0, lp))
-        else:
-            edit_operator = random.choice(self.program.operators)
-            pn = random.randrange(0, lp)
-            solution.edit_list[pn] = edit_operator.create(self.prg)
-
-        return solution
-
-    def name(self):
-        return 'PyggiProblem'
-    
-
-class MyProgram(TreeProgram):
+class QProgram(TreeProgram):
     """
     
     """
@@ -86,14 +23,13 @@ class MyProgram(TreeProgram):
         :param number_of_variables: Number of decision variables of the problem.
         :param prg: Program object from pyggi
         """
-        super(MyTreeProgram, self).__init__(project_path)
+        super(TreeProgram, self).__init__(project_path)
         self.path                  = project_path
         self.number_of_variables   = 1
         self.number_of_objectives  = 1
         self.obj_directions        = [self.MINIMIZE]
         self.obj_labels            = ['Fitness']
         self.number_of_constraints = 0
-        self.operators             = [StmtInsertion]
 
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
@@ -169,7 +105,7 @@ class MyProgram(TreeProgram):
     def name(self) -> str:
         return "MyProgram"
 
-    def evaluate_patch(self, patch, timeout=15):
+'''    def evaluate_patch(self, patch, timeout=15):
         # apply + run
         self.apply(patch)
         return_code, stdout, stderr, elapsed_time = self.exec_cmd(self.test_command, timeout)
@@ -180,3 +116,4 @@ class MyProgram(TreeProgram):
             self.compute_fitness(result, return_code, stdout, stderr, elapsed_time)
             assert not (result.status == 'SUCCESS' and result.fitness is None)
             return result
+'''
