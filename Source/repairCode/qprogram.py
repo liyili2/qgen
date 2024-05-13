@@ -1,6 +1,6 @@
 
 from jmetal.core.solution import Solution
-from .qpatch import PyggiPatch
+from .qpatch import QPatch
 from pyggi.line import LineProgram
 from pyggi.tree import TreeProgram,StmtInsertion
 from pyggi.base.program import RunResult
@@ -27,9 +27,10 @@ class QProgram(TreeProgram):
         self.path                  = project_path
         self.number_of_variables   = 1
         self.number_of_objectives  = 1
+        self.number_of_constraints = 0
         self.obj_directions        = [self.MINIMIZE]
         self.obj_labels            = ['Fitness']
-        self.number_of_constraints = 0
+        
 
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
@@ -56,19 +57,11 @@ class QProgram(TreeProgram):
     #   return MyXmlEngine
 
     # jMetalpy functions        
-    def create_solution(self) -> PyggiPatch:
-        new_solution = PyggiPatch(self, number_of_variables=1, number_of_objectives=1)
+    def create_solution(self) -> QPatch:
+        new_solution = QPatch(self, number_of_variables=1, number_of_objectives=1)
         return new_solution
 
-    def evaluate(self, patch) -> PyggiPatch:
-        """
-        Evaluates a program, and returns the fitness
-        """
-        # Run Program and get the RunResult Object
-        fitness = patch.evaluate_solution(patch, self.program.build_command)
-        patch.fitness = fitness
-        patch.objectives[0] = patch.fitness
-        return patch
+
     
     def evaluate_solution(self, patch, test_command):
         '''
