@@ -1,4 +1,4 @@
-#import pytest
+import pytest
 
 from collections import ChainMap
 from simulator import *
@@ -29,17 +29,17 @@ from VarCollector import *
 
 # Write a series of tests HERE
 class Test_Simulator(object):
-
+    @pytest.fixture
     def test_result(self, spec: SpecExpParser.ProgramContext, st: dict):
         specVisitor = SpecGen(st)
         return specVisitor.visitProgram(spec).getResult()
 
-
+    @pytest.fixture
     def test_pattern(self, spec: SpecExpParser.ProgramContext):
         varVisitor = VarCollector()
         st = varVisitor.visitProgram(spec)
         # need to use random testing generator to generate values in st
-        return test_result(spec, st)
+        return self.test_result(spec, st)
 
     #test_pattern above is rewritten for the usage of pytest.
     #pytest will call test_pattern to test a spec

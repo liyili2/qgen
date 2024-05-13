@@ -1,16 +1,16 @@
 import copy
 from typing import List
 from jmetal.operator.crossover import Crossover
-from .patch import PyggiPatch
+from .qpatch import QPatch
 
 """
 .. module:: crossover
    :platform: Unix, Windows
    :synopsis: Module implementing crossover operator for PyGGI-JMetal.
 """
-class PyggiCrossover(Crossover[PyggiPatch, PyggiPatch]):
+class QCrossover(Crossover[QPatch, QPatch]):
     def __init__(self, probability: float):
-        super(PyggiCrossover, self).__init__(probability=probability)
+        super(QCrossover, self).__init__(probability=probability)
 
     def execute(self, parents: List[PyggiPatch]) -> List:
         if len(parents) != 2:
@@ -43,4 +43,4 @@ class PyggiCrossover(Crossover[PyggiPatch, PyggiPatch]):
         return 2
 
     def get_name(self):
-        return 'Crossover for JMetal-PyGGI'
+        return 'Crossover for qGen'
