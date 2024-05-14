@@ -12,11 +12,11 @@ from jmetal.operator import BinaryTournamentSelection
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from jmetal.core.quality_indicator import FitnessValue, QualityIndicator
 # For modified program + repair
-from Source.repairCode.qprogram import QProgram
-from Source.repairCode.qproblem import QProblem
-from Source.repairCode.qpatch import QPatch
-from Source.repairCode.qmutation import NullMutation, QMutation
-from Source.repairCode.qcrossover import QCrossover
+from repairCode.qprogram import QProgram
+from repairCode.qproblem import QProblem
+from repairCode.qpatch import QPatch
+from repairCode.qmutation import NullMutation, QMutation
+from repairCode.qcrossover import QCrossover
 from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
 
 class MyXmlEngine(XmlEngine):
