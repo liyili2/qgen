@@ -23,12 +23,12 @@ class NullMutation(Mutation[QPatch]):
     def get_name(self):
         return 'Null mutation'
 
-class QMutation(Mutation[QPatch]):
+class PyGGiMutation(Mutation[QPatch]):
     """
     Pyggi Mutation which changes the pyggi edit lists
     """
     def __init__(self, probability):
-        super(QMutation, self).__init__(probability=probability)
+        super(PyGGiMutation, self).__init__(probability=probability)
 
     def execute(self, solution: QPatch) -> QPatch:
         """

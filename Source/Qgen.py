@@ -15,8 +15,8 @@ from jmetal.core.quality_indicator import FitnessValue, QualityIndicator
 from repairCode.qprogram import QProgram
 from repairCode.qproblem import QProblem
 from repairCode.qpatch import QPatch
-from repairCode.qmutation import NullMutation, QMutation
-from repairCode.qcrossover import QCrossover
+from repairCode.mutation import NullMutation, PyGGiMutation
+from repairCode.crossover import PyGGiCrossover
 from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
 
 class MyXmlEngine(XmlEngine):
@@ -64,8 +64,8 @@ if __name__ == "__main__":
         algorithm = GeneticAlgorithm(problem,
             population_size=args.pop,
             offspring_population_size=args.pop,
-            mutation=QMutation(args.mutation),
-            crossover=QCrossover(args.crossover),
+            mutation=PyGGiMutation(args.mutation),
+            crossover=PyGGiCrossover(args.crossover),
             selection=BinaryTournamentSelection(),
             termination_criterion = StoppingByEvaluations(max_evaluations=args.iter))
     else:

@@ -8,9 +8,9 @@ from .qpatch import QPatch
    :platform: Unix, Windows
    :synopsis: Module implementing crossover operator for PyGGI-JMetal.
 """
-class QCrossover(Crossover[QPatch, QPatch]):
+class PyGGiCrossover(Crossover[QPatch, QPatch]):
     def __init__(self, probability: float):
-        super(QCrossover, self).__init__(probability=probability)
+        super(PyGGiCrossover, self).__init__(probability=probability)
 
     def execute(self, parents: List[QPatch]) -> List:
         if len(parents) != 2:
