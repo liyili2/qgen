@@ -17,7 +17,6 @@ import copy
 import difflib
 import signal
 from abc import ABC, abstractmethod
-from distutils.dir_util import copy_tree
 from .. import PYGGI_DIR
 from ..utils import Logger, weighted_choice
 
