@@ -1,8 +1,9 @@
 from pyggi.tree import TreeProgram
+from .qresult import QResult
 
 import re
 
-from pyggi.base.program import RunResult
+
 
 class QProgram(TreeProgram):
     """
@@ -65,7 +66,7 @@ class QProgram(TreeProgram):
         # etime is the elapsed time of the program execution
         tout = 10
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
-        result = RunResult('SUCCESS', None)
+        result = QResult('SUCCESS', None)
         self.compute_fitness(result, rcode, stdout, stderr, elapsed)
  
         return result
