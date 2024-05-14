@@ -27,8 +27,8 @@ class QMutation(Mutation[QPatch]):
     """
     Pyggi Mutation which changes the pyggi edit lists
     """
-    def __init__(self):
-        super(QMutation, self).__init__(probability=0)
+    def __init__(self, probability):
+        super(QMutation, self).__init__(probability=probability)
 
     def execute(self, solution: QPatch) -> QPatch:
         """

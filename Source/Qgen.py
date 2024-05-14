@@ -43,10 +43,10 @@ if __name__ == "__main__":
     parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
     parser.add_argument('--mode', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=1, help='total epoch(default: 1)')
-    parser.add_argument('--iter', type=int, default=100, help='total iterations per epoch(default: 100)')
-    parser.add_argument('--pop', type=int, default=10, help='population size(default: 10)')
-    parser.add_argument('--mut', type=float, default=0.1, help='mutation rate(default: 0.1)')
-    parser.add_argument('--cross', type=float, default=0.9, help='crossover rate(default: 0.9)')
+    parser.add_argument('--iter', type=int, default=10, help='total iterations per epoch(default: 100)')
+    parser.add_argument('--pop', type=int, default=8, help='population size(default: 10)')
+    parser.add_argument('--mut', type=float, default=0, help='mutation rate(default: 0.1)')
+    parser.add_argument('--cross', type=float, default=0, help='crossover rate(default: 0.9)')
     parser.add_argument('--sel', type=str, default='tournament', help='selection operator(default: tournament)')
     parser.add_argument('--tags', type=str, default='[]', help='XML tags (default: [])')
     args = parser.parse_args()
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     problem = QProblem(program, number_of_variables=8)
     # Choose which algorithm
     if args.mode == 'ga':
-        ga = GeneticAlgorithm(problem, 8, 8,QMutation(),QCrossover(.5))
+        ga = GeneticAlgorithm(problem, 8, 8,QMutation(0),QCrossover(0))
         ga.selection_operator    = BinaryTournamentSelection()
         ga.termination_criterion = StoppingByEvaluations(max_evaluations=args.iter)
         ga.run()

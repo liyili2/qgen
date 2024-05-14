@@ -24,15 +24,24 @@ class QProgram(TreeProgram):
         """
         print('start computing fitness')
         m = re.findall("runtime: ([0-9.]+)", stdout)
-        print(f'm: {m}')
+        print(f'Runtime: {m}')
         if len(m) > 0:
             runtime = m[0]
-            failed = int(re.findall("([0-9]+) failed", stdout)[0])
-            passed = int(re.findall("([0-9]+) passed", stdout)[0])
+            failed_list = re.findall("([0-9]+) failed", stdout)
+            if len(failed_list) > 0: 
+                failed = int(failed_list[0])
+            else: 
+                failed = 0
+            passed_list = re.findall("([0-9]+) passed", stdout)
+            if len(failed_list) > 0: 
+                passed = int(passed_list[0])
+            else: 
+                passed = 0
             total_tests = failed + passed
         
-            result.fitness = passed / total_tests if total_tests > 0 else 0
-            print(f'result fitness: {result.fitness}')
+            result.fitness = failed
+            #result.fitness = passed / total_tests if total_tests > 0 else 0
+            print(f'Fitness: {result.fitness}')
         else:
             result.status = 'PARSE_ERROR'
 
