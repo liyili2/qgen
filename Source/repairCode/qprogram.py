@@ -1,22 +1,13 @@
+from pyggi.tree import TreeProgram
 
-from jmetal.core.solution import Solution
-from .qpatch import QPatch
-from pyggi.line import LineProgram
-from pyggi.tree import TreeProgram,StmtInsertion
-from pyggi.base.program import RunResult
-from pyggi.base.edit import AbstractEdit
-from pyggi.tree import XmlEngine
-from typing import Generic, TypeVar, List
-import random
 import re
+
+from Source.pyggi.base.program import RunResult
 
 class QProgram(TreeProgram):
     """
-    
+    A Program 
     """
-    number_of_variables = 1
-    number_of_objectives = 1
-    number_of_constraints = 0
 
     def __init__(self, project_path):
         """
@@ -24,13 +15,8 @@ class QProgram(TreeProgram):
         :param prg: Program object from pyggi
         """
         super(TreeProgram, self).__init__(project_path)
-        self.path                  = project_path
-        self.number_of_variables   = 1
-        self.number_of_objectives  = 1
-        self.number_of_constraints = 0
-        self.obj_directions        = [self.MINIMIZE]
-        self.obj_labels            = ['Fitness']
-        
+        self.path      = project_path
+        self.operators = []
 
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
@@ -52,17 +38,15 @@ class QProgram(TreeProgram):
 
         return result
         
-
-    #def get_engine(cls, file_name=""):
-    #   return MyXmlEngine
-
-    # jMetalpy functions        
-    def create_solution(self) -> QPatch:
-        new_solution = QPatch(self, number_of_variables=1, number_of_objectives=1)
-        return new_solution
-
-
+    def stopping_criterion(self, iters, fitness):
+        return fitness <= self.BEST
     
+    def name(self) -> str:
+        return "QProgram"
+    
+    # jMetal required functions
+
+        
     def evaluate_solution(self, patch, test_command):
         '''
         apply + run
@@ -80,29 +64,3 @@ class QProgram(TreeProgram):
         # assert (result.status == 'SUCCESS' and not (result.leak is None))
  
         return result
-
-    def number_of_variables(self) -> int:
-        return self.number_of_variables
-
-    
-    def number_of_objectives(self) -> int:
-        return self.number_of_objectives
-
-    def number_of_constraints(self) -> int:
-        return self.number_of_constraints
-    
-    def name(self) -> str:
-        return "MyProgram"
-
-'''    def evaluate_patch(self, patch, timeout=15):
-        # apply + run
-        self.apply(patch)
-        return_code, stdout, stderr, elapsed_time = self.exec_cmd(self.test_command, timeout)
-        if return_code is None: # timeout
-            return RunResult('TIMEOUT')
-        else:
-            result = RunResult('SUCCESS', None)
-            self.compute_fitness(result, return_code, stdout, stderr, elapsed_time)
-            assert not (result.status == 'SUCCESS' and result.fitness is None)
-            return result
-'''

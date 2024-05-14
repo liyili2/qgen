@@ -50,6 +50,7 @@ if __name__ == "__main__":
     # Choose which algorithm
     if args.mode == 'ga':
         program = QProgram(args.project_path)
+        program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
         problem = QProblem(program, number_of_variables=8)
         ga = GeneticAlgorithm(problem, 8, 8, NullMutation(), QCrossover(.5))
         ga.selection = BinaryTournamentSelection()
