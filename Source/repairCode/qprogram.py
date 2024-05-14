@@ -27,8 +27,8 @@ class QProgram(TreeProgram):
         print(f'm: {m}')
         if len(m) > 0:
             runtime = m[0]
-            failed = re.findall("([0-9]+) failed", stdout)
-            passed = re.findall("([0-9]+) passed", stdout)
+            failed = int(re.findall("([0-9]+) failed", stdout)[0])
+            passed = int(re.findall("([0-9]+) passed", stdout)[0])
             total_tests = failed + passed
         
             result.fitness = passed / total_tests if total_tests > 0 else 0
