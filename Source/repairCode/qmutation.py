@@ -37,31 +37,34 @@ class QMutation(Mutation[QPatch]):
 
         Remove from edit list
 
-        Change order of edit list
+        Change order of edit list [Not Implemented]
 
         Change an item in the item list (remove and replace in same location)
         """
         Check.that(type(solution) is QPatch, "Solution type invalid")
 
-        lp = len(solution.edit_list)
-        for j in range(lp):
+        edit_list_length = len(solution.edit_list)
+        # For all items in the edit list
+        for j in range(edit_list_length):
             rand = random.random()
             if rand <= self.probability:
                 rnd = random.random()
-                if lp > 1 and rnd < 0.33:
-                    if j < len(solution.edit_list):
+                # 1/3rd Chance of removal
+                if edit_list_length > 1 and rnd < 0.33:
+                    if j < edit_list_length:
                         solution.remove(j)
                     j -= 1
-                    lp -= 1
-                elif lp == 0 or rnd < 0.66:
+                    edit_list_length -= 1
+                # 1/3rd Chance of add
+                elif edit_list_length == 0 or rnd < 0.66:
                     edit_operator = random.choice(self.prg.operators)
                     solution.add(edit_operator.create(self.prg))
+                # 1/3rd Chance replace
                 else:
                     edit_operator = random.choice(self.prg.operators)
-                    if j < len(solution.edit_list):
+                    if j < edit_list_length:
                         solution.edit_list[j] = edit_operator.create(self.prg)
 
-        return solution
         return solution
 
     def get_name(self):
