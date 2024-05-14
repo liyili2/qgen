@@ -40,7 +40,7 @@ class MyXmlEngine(XmlEngine):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
+    parser.add_argument('--project_path', type=str, default='../Benchmark/Triangle')
     parser.add_argument('--algorithm', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=1, help='total epoch(default: 1)')
     parser.add_argument('--iter', type=int, default=8, help='total iterations per epoch(default: 100)')
