@@ -57,28 +57,5 @@ class QProblem(Problem):
         solution.add(opr)
         return solution
 
-
-    # Is this needed here? # TODO #
-    def generate_neighbor(self, solution: QPatch) -> QPatch:
-        '''
-        
-        '''
-        rnd = random.random()
-        edit_list_length = len(solution.edit_list)
-        # If edit list is emoty or 1/3rd chance : Add
-        if edit_list_length == 0 or rnd < 0.33:
-            edit_operator = random.choice(self.program.operators)
-            solution.add(edit_operator.create(self.program))
-        # If more than one item in the edit list and 1/3rd chance : Remove
-        elif edit_list_length > 1 and rnd < 0.66:
-            solution.remove(random.randrange(0, edit_list_length))
-        # Else, 1/3rd chance : Change
-        else:
-            edit_operator = random.choice(self.program.operators)
-            edit_list_index = random.randrange(0, edit_list_length)
-            solution.edit_list[edit_list_index] = edit_operator.create(self.program)
-
-        return solution
-
     def name(self):
         return 'QProblem'

@@ -41,14 +41,15 @@ if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
     parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
-    parser.add_argument('--mode', type=str, default='ga')
+    parser.add_argument('--algorithm', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=1, help='total epoch(default: 1)')
     parser.add_argument('--iter', type=int, default=10, help='total iterations per epoch(default: 100)')
     parser.add_argument('--pop', type=int, default=8, help='population size(default: 10)')
-    parser.add_argument('--mut', type=float, default=0, help='mutation rate(default: 0.1)')
-    parser.add_argument('--cross', type=float, default=0, help='crossover rate(default: 0.9)')
+    parser.add_argument('--mutation', type=float, default=1, help='mutation rate(default: 0.1)')
+    parser.add_argument('--crossover', type=float, default=1, help='crossover rate(default: 0.9)')
     parser.add_argument('--sel', type=str, default='tournament', help='selection operator(default: tournament)')
     parser.add_argument('--tags', type=str, default='[]', help='XML tags (default: [])')
+    parser.add_argument('--operators', type=str, default='[]', help='Operators (default: [])')
     args = parser.parse_args()
 
     # Make a Program
@@ -56,17 +57,21 @@ if __name__ == "__main__":
     program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
     program.tags = args.tags
     # Make a Problem
-    problem = QProblem(program, number_of_variables=8)
+    problem = QProblem(program, number_of_variables=1)
     # Choose which algorithm
-    if args.mode == 'ga':
-        ga = GeneticAlgorithm(problem, 2, 2,QMutation(0),QCrossover(0))
-        ga.selection_operator    = BinaryTournamentSelection()
-        ga.termination_criterion = StoppingByEvaluations(max_evaluations=args.iter)
-        ga.run()
-        result = ga.result()       
-    # Add other algorithms here
-
-
+    if args.algorithm == 'ga':
+        algorithm = GeneticAlgorithm(problem,
+            population_size=args.pop,
+            offspring_population_size=args.pop,
+            mutation=QMutation(args.mutation),
+            crossover=QCrossover(args.crossover),
+            selection=BinaryTournamentSelection(),
+            termination_criterion = StoppingByEvaluations(max_evaluations=args.iter))
+    else:
+        raise Exception('Invalid Algorithm')
+    # Run the algorithm
+    algorithm.run()
+    result = algorithm.result()       
     print("======================RESULT======================")
     print(result)
     #program.remove_tmp_variant()

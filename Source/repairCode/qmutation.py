@@ -57,13 +57,13 @@ class QMutation(Mutation[QPatch]):
                     edit_list_length -= 1
                 # 1/3rd Chance of add
                 elif edit_list_length == 0 or rnd < 0.66:
-                    edit_operator = random.choice(self.prg.operators)
-                    solution.add(edit_operator.create(self.prg))
+                    edit_operator = random.choice(solution.program.operators)
+                    solution.add(edit_operator.create(solution.program))
                 # 1/3rd Chance replace
                 else:
-                    edit_operator = random.choice(self.prg.operators)
+                    edit_operator = random.choice(solution.program.operators)
                     if j < edit_list_length:
-                        solution.edit_list[j] = edit_operator.create(self.prg)
+                        solution.edit_list[j] = edit_operator.create(solution.program)
 
         return solution
 
