@@ -59,7 +59,7 @@ if __name__ == "__main__":
     problem = QProblem(program, number_of_variables=8)
     # Choose which algorithm
     if args.mode == 'ga':
-        ga = GeneticAlgorithm(problem, 8, 8,QMutation(0),QCrossover(0))
+        ga = GeneticAlgorithm(problem, 2, 2,QMutation(0),QCrossover(0))
         ga.selection_operator    = BinaryTournamentSelection()
         ga.termination_criterion = StoppingByEvaluations(max_evaluations=args.iter)
         ga.run()

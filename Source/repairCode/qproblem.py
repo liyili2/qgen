@@ -15,6 +15,11 @@ class QProblem(Problem):
         :param program: Program object from pyggi
         """
         super(QProblem, self).__init__()
+        # Done in super
+        #self.reference_front: List[S] = []
+        #self.directions: List[int] = []
+        #self.labels: List[str] = []
+
         self.program = program
         self.number_of_variables = 1
         self.number_of_objectives = 1
@@ -33,6 +38,9 @@ class QProblem(Problem):
         return self.number_of_constraints
 
     def evaluate(self, solution: QPatch) -> QPatch:
+        '''
+        Evaluates a QPatch and returns the fitness
+        '''
         result = self.program.evaluate_solution(solution, self.program.test_command)
         # Check if result is valid # TODO #
         solution.objectives[0] = result.fitness
@@ -40,13 +48,21 @@ class QProblem(Problem):
         return solution
 
     def create_solution(self) -> QPatch:
+        '''
+        Creates a new solution object with a random edit operator
+        '''
         solution = QPatch(self.program, number_of_variables=1, number_of_objectives=1)
         edit_operator: AbstractEdit = random.choice(self.program.operators) 
         opr = edit_operator.create(self.program)
         solution.add(opr)
         return solution
 
+
+    # Is this needed here? # TODO #
     def generate_neighbor(self, solution: QPatch) -> QPatch:
+        '''
+        
+        '''
         rnd = random.random()
         edit_list_length = len(solution.edit_list)
         # If edit list is emoty or 1/3rd chance : Add

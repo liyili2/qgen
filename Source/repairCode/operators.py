@@ -28,7 +28,7 @@ class QGateReplacement(StmtReplacement):
         # Find all elements with the target gates X, CU, RZ, SKIP
         elements = target_tree.xpath(".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
 
-        print(elements)
+        #print(elements)
         
         if elements:
             # Choose a random element to replace

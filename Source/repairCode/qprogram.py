@@ -22,9 +22,9 @@ class QProgram(TreeProgram):
         """
         Given a program, compute the fitness by parsing the pyTest output
         """
-        print('start computing fitness')
+        #print('start computing fitness')
         m = re.findall("runtime: ([0-9.]+)", stdout)
-        print(f'Runtime: {m}')
+        #print(f'Runtime: {m}')
         if len(m) > 0:
             runtime = m[0]
             failed_list = re.findall("([0-9]+) failed", stdout)
@@ -33,7 +33,7 @@ class QProgram(TreeProgram):
             else: 
                 failed = 0
             passed_list = re.findall("([0-9]+) passed", stdout)
-            if len(failed_list) > 0: 
+            if len(passed_list) > 0: 
                 passed = int(passed_list[0])
             else: 
                 passed = 0
@@ -41,10 +41,10 @@ class QProgram(TreeProgram):
         
             result.fitness = failed
             #result.fitness = passed / total_tests if total_tests > 0 else 0
-            print(f'Fitness: {result.fitness}')
+            #print(f'Fitness: {result.fitness}')
         else:
-            result.status = 'PARSE_ERROR'
-
+            result.status  = 'PARSE_ERROR'
+            result.fitness = 1000000 # Large Value
         return result
         
     def stopping_criterion(self, iters, fitness):
@@ -58,7 +58,7 @@ class QProgram(TreeProgram):
         
     def evaluate_solution(self, patch, test_command):
         '''
-        apply + run
+        Apply the edit list to the program and run the test command (pyTest)
         '''
         self.apply(patch)
         # rcode is the return code of the program execution
@@ -66,10 +66,6 @@ class QProgram(TreeProgram):
         tout = 10
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
         result = RunResult('SUCCESS', None)
-        # result, return_code, stdout, stderr, elapsed_time, cov=0
-        print(stdout)
         self.compute_fitness(result, rcode, stdout, stderr, elapsed)
-        # print(result.status, result.leak)
-        # assert (result.status == 'SUCCESS' and not (result.leak is None))
  
         return result
