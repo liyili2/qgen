@@ -6,6 +6,12 @@ This project uses Pyggi to synthesize quantum programs.
 
 
 
+Required pip packages
+jMetalpy
+lxml
+astor
+
+
 Files to change:
 
 Pyggi/base/patch.py

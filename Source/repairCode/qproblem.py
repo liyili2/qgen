@@ -12,7 +12,7 @@ class QProblem(Problem):
     def __init__(self,program, number_of_variables: int = 8):
         """
         :param number_of_variables: Number of decision variables of the problem.
-        :param prg: Program object from pyggi
+        :param program: Program object from pyggi
         """
         super(QProblem, self).__init__()
         self.program = program
@@ -33,9 +33,9 @@ class QProblem(Problem):
         return self.number_of_constraints
 
     def evaluate(self, solution: QPatch) -> QPatch:
-        fitness = self.program.evaluate_solution(solution, self.program.test_command)
-        solution.fitness = fitness
-        solution.objectives[0] = solution.fitness
+        result = self.program.evaluate_solution(solution, self.program.test_command)
+        # Check if result is valid # TODO #
+        solution.objectives[0] = result.fitness
 
         return solution
 
@@ -48,16 +48,19 @@ class QProblem(Problem):
 
     def generate_neighbor(self, solution: QPatch) -> QPatch:
         rnd = random.random()
-        lp = len(solution)
-        if lp == 0 or rnd < 0.33:
-            edit_operator = random.choice(self.prg.operators)
-            solution.add(edit_operator.create(self.prg))
-        elif lp > 1 and rnd < 0.66:
-            solution.remove(random.randrange(0, lp))
+        edit_list_length = len(solution.edit_list)
+        # If edit list is emoty or 1/3rd chance : Add
+        if edit_list_length == 0 or rnd < 0.33:
+            edit_operator = random.choice(self.program.operators)
+            solution.add(edit_operator.create(self.program))
+        # If more than one item in the edit list and 1/3rd chance : Remove
+        elif edit_list_length > 1 and rnd < 0.66:
+            solution.remove(random.randrange(0, edit_list_length))
+        # Else, 1/3rd chance : Change
         else:
             edit_operator = random.choice(self.program.operators)
-            pn = random.randrange(0, lp)
-            solution.edit_list[pn] = edit_operator.create(self.prg)
+            edit_list_index = random.randrange(0, edit_list_length)
+            solution.edit_list[edit_list_index] = edit_operator.create(self.program)
 
         return solution
 

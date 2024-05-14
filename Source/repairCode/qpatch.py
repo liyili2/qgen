@@ -21,22 +21,19 @@ class QPatch(Solution,Patch):
         self.edit_list = []   
         self.objectives = [1]
         # TODO # Initialize to infinity / large number
-        self.objectives[0] = 10000
-        print("I made a qPacth")
+        # Objective[0] is the fitness
+        self.objectives[0] = 1000000
 
     # Sort according fitness in decreasing order
     def __lt__(self, other):
         '''
         Compare two qPatches
+
+        If they are equal, return true 
         '''
         if self.fitness is None: return False
         if other.fitness is None: return True
-
-        # Checking edit list length if tied
-        #if abs(self.fitness - other.fitness) < PRECISION:
-        #    return self.__len__() < other.__len__()
-
-        return self.fitness < other.fitness
+        return self.fitness <= other.fitness
 
     def __repr__(self):
         '''

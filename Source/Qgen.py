@@ -5,7 +5,7 @@ import argparse
 
 # For pyggi default program + repair
 from pyggi.tree import XmlEngine
-from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
+from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion # Default Python program support
 # From jMetalpy
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
@@ -40,25 +40,33 @@ class MyXmlEngine(XmlEngine):
 if __name__ == "__main__":
     print("Starting")
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str, default='../Benchmark/vqo_small_circuit_ex')
+    parser.add_argument('--project_path', type=str, default='Benchmark/Triangle')
     parser.add_argument('--mode', type=str, default='ga')
     parser.add_argument('--epoch', type=int, default=1, help='total epoch(default: 1)')
     parser.add_argument('--iter', type=int, default=100, help='total iterations per epoch(default: 100)')
+    parser.add_argument('--pop', type=int, default=10, help='population size(default: 10)')
+    parser.add_argument('--mut', type=float, default=0.1, help='mutation rate(default: 0.1)')
+    parser.add_argument('--cross', type=float, default=0.9, help='crossover rate(default: 0.9)')
+    parser.add_argument('--sel', type=str, default='tournament', help='selection operator(default: tournament)')
+    parser.add_argument('--tags', type=str, default='[]', help='XML tags (default: [])')
     args = parser.parse_args()
-    #assert args.mode in ['line', 'tree']
 
+    # Make a Program
+    program = QProgram(args.project_path)
+    program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
+    program.tags = args.tags
+    # Make a Problem
+    problem = QProblem(program, number_of_variables=8)
     # Choose which algorithm
     if args.mode == 'ga':
-        program = QProgram(args.project_path)
-        program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
-        problem = QProblem(program, number_of_variables=8)
-        ga = GeneticAlgorithm(problem, 8, 8, NullMutation(), QCrossover(.5))
-        ga.selection = BinaryTournamentSelection()
-        ga.operators = [QGateReplacement]
+        ga = GeneticAlgorithm(problem, 8, 8,QMutation(),QCrossover(.5))
+        ga.selection_operator    = BinaryTournamentSelection()
         ga.termination_criterion = StoppingByEvaluations(max_evaluations=args.iter)
         ga.run()
         result = ga.result()       
-    
+    # Add other algorithms here
+
+
     print("======================RESULT======================")
     print(result)
     #program.remove_tmp_variant()

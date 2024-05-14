@@ -206,8 +206,8 @@ class AbstractProgram(ABC):
         :param str tmp_path: The path of directory to clean.
         :return: None
         """
-        pathlib.Path(self.tmp_path).mkdir(parents=True, exist_ok=True)
-        copy_tree(self.path, self.tmp_path)
+        #pathlib.Path(self.tmp_path).mkdir(parents=True, exist_ok=True)
+        shutil.copytree(self.path, self.tmp_path)
 
     def remove_tmp_variant(self):
         shutil.rmtree(self.tmp_path)

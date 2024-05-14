@@ -2,7 +2,7 @@ from pyggi.tree import TreeProgram
 
 import re
 
-from Source.pyggi.base.program import RunResult
+from pyggi.base.program import RunResult
 
 class QProgram(TreeProgram):
     """
@@ -20,7 +20,7 @@ class QProgram(TreeProgram):
 
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
-        Given a program, compute the fitness
+        Given a program, compute the fitness by parsing the pyTest output
         """
         print('start computing fitness')
         m = re.findall("runtime: ([0-9.]+)", stdout)
