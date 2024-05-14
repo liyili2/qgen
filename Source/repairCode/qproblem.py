@@ -1,6 +1,7 @@
 from pyggi.base.edit import AbstractEdit
 from jmetal.core.problem import Problem
 from .qpatch import QPatch
+from .qprogram import QProgram
 import random
 
 class QProblem(Problem):
@@ -9,7 +10,7 @@ class QProblem(Problem):
 
     """
 
-    def __init__(self,program, number_of_variables: int = 8):
+    def __init__(self, program: QProgram, number_of_variables: int = 1):
         """
         :param number_of_variables: Number of decision variables of the problem.
         :param program: Program object from pyggi
@@ -23,8 +24,8 @@ class QProblem(Problem):
         self.program = program
         self.number_of_variables = 1
         self.number_of_objectives = 1
-        self.obj_directions = [self.MINIMIZE]
-        self.obj_labels = ['Fitness']
+        self.directions = [self.MINIMIZE]
+        self.labels = ['Fitness']
 
         self.number_of_constraints = 0
 

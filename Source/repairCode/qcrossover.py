@@ -15,7 +15,7 @@ class QCrossover(Crossover[QPatch, QPatch]):
     def execute(self, parents: List[QPatch]) -> List:
         if len(parents) != 2:
             raise Exception('The number of parents is not two: {}'.format(len(parents)))
-
+        print("CROSSOVER!!")
         # crossover of a pair
         parent_a = copy.deepcopy(parents[0])
         parent_b = copy.deepcopy(parents[1])
