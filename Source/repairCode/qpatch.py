@@ -2,8 +2,9 @@
 This module contains Patch class.
 """
 from jmetal.core.solution import Solution
-from pyggi.base.patch import Patch
-from pyggi.base.edit import AbstractEdit
+from Source.pyggi.base.edit import AbstractEdit
+from Source.pyggi.base import Patch
+
 
 class QPatch(Solution,Patch):
     """

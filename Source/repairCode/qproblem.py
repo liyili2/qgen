@@ -1,4 +1,4 @@
-from pyggi.base.edit import AbstractEdit
+from Source.pyggi.base.edit import AbstractEdit
 from jmetal.core.problem import Problem
 from .qpatch import QPatch
 from .qprogram import QProgram
@@ -53,7 +53,8 @@ class QProblem(Problem):
         Creates a new solution object with a random edit operator
         '''
         solution = QPatch(self.program, number_of_variables=1, number_of_objectives=1)
-        edit_operator: AbstractEdit = random.choice(self.program.operators) 
+        print(self.program)
+        edit_operator: AbstractEdit = random.choice(self.program.operators)
         opr = edit_operator.create(self.program)
         solution.add(opr)
         return solution
