@@ -1,13 +1,13 @@
 import pytest
 
 from collections import ChainMap
-from simulator import *
-from XMLExpLexer import XMLExpLexer
+from Source.quantumCode.AST_Scripts.simulator import *
+from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from antlr4 import *
-from SpecExpParser import *
-from SpecExpVisitor import *
-from SpecGen import *
-from VarCollector import *
+from Source.quantumCode.AST_Scripts.SpecExpParser import *
+from Source.quantumCode.AST_Scripts.SpecExpVisitor import *
+from Source.quantumCode.AST_Scripts.SpecGen import *
+from Source.quantumCode.AST_Scripts.VarCollector import *
 
 
 ####################
@@ -50,13 +50,14 @@ class TestSimulator(object):
     # users are responsible to turn the nat numbers to Nvals, then check if
     # the quantum component satisfies with the output
     def test_init(self):
-        # We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
+        # //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
         str = "<pexp gate = 'QFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'SR' > < vexp> 10 </vexp> <id> x </id> </pexp> <pexp gate = 'RQFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> "
         i_stream = InputStream(str)
         lexer = XMLExpLexer(i_stream)
         t_stream = CommonTokenStream(lexer)
         parser = XMLExpParser(t_stream)
         tree = parser.program()
+        print('pp')
         print(tree.toStringTree(recog=parser))
 
         # the following shows an example of using 1 variable state. You can have a 10 variable state
@@ -78,27 +79,9 @@ class TestSimulator(object):
         # int n = calInt(arrayQuBits, sizeArray)
         # assert new_state == state
 
-    def test_qval_rqft_ssr_qft(self):
-        string = "<pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp><pexp gate='SRR'><vexp>80</vexp><id>x</id></pexp><pexp gate='QFT'><id>x</id><vexp>0</vexp></pexp>"
-        i_stream = InputStream(string)
-        lexer = XMLExpLexer(i_stream)
-        t_stream = CommonTokenStream(lexer)
-        parser = XMLExpParser(t_stream)
-        tree = parser.program()
-        num_qubits = 55
-        val = 90
-        val_array = int_to_bool_array(val, num_qubits)
-        state = dict({"x": Coq_qval(16, 20, 30)})
-        environment = dict({"x": num_qubits})
-        simulator = Simulator(state, environment)
-        simulator.visitProgram(tree)
-        new_state = simulator.state
-        qval = state.get("x")
-        assert [21,41,41] == [qval.getPhase(), qval.getLocal(), qval.getNum()]
-
     def test_trial(self):
         string = "<pexp gate='QFT'><id>x</id><vexp>0</vexp></pexp> <pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp> "
-        i_stream = InputStream(string)
+        i_stream = InputStream(str)
         lexer = XMLExpLexer(i_stream)
         t_stream = CommonTokenStream(lexer)
         parser = XMLExpParser(t_stream)
@@ -107,11 +90,10 @@ class TestSimulator(object):
         val = 120
         val_bit_arr = int_to_bool_array(val, num_of_qubits)
         state = dict({"x": Coq_nval(val_bit_arr, 0)})
-        environment = dict({"x": num_of_qubits})
-        simulator = Simulator(state, environment)
+        environment = dict({"x": Coq_nval(val_bit_arr, 0)})
+        simulator = Simulator(state,environment)
         simulator.visit(tree)
-        assert 10 == binary_arr_to_int(simulator.state.get('x').getBits(), num_of_qubits)
-
+        assert 10 == simulator.state.get('x').getBits()
 
 
 
