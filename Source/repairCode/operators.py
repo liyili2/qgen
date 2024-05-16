@@ -5,7 +5,7 @@ import random
 from abc import ABC
 #from pyggi.base import BaseOperator
 from lxml import etree
-from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
+from Source.pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 
 ## Implement new operators here
 

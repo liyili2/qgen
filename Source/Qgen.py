@@ -5,7 +5,7 @@ import argparse
 
 # For pyggi default program + repair
 from pyggi.tree import XmlEngine
-from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion # Default Python program support
+from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion  # Default Python program support
 # From jMetalpy
 from jmetal.algorithm.singleobjective import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
@@ -17,6 +17,7 @@ from repairCode.mutation import PyGGiMutation
 from repairCode.crossover import PyGGiCrossover
 # Custom Operators
 from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
+
 
 class MyXmlEngine(XmlEngine):
     """
@@ -36,43 +37,46 @@ class MyXmlEngine(XmlEngine):
         cls.select_tags(tree, keep=stmt_tags)
         cls.rotate_newlines(tree)
 
-if __name__ == "__main__":
-    print("Starting")
-    parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
-    parser.add_argument('--algorithm',    type=str,   default='ga')
-    parser.add_argument('--epoch',        type=int,   default=1,            help='total epoch(default: 1)')
-    parser.add_argument('--iter',         type=int,   default=8,            help='total iterations per epoch(default: 100)')
-    parser.add_argument('--pop',          type=int,   default=8,            help='population size(default: 10)')
-    parser.add_argument('--mutation',     type=float, default=1,            help='mutation rate(default: 0.1)')
-    parser.add_argument('--crossover',    type=float, default=1,            help='crossover rate(default: 0.9)')
-    parser.add_argument('--sel',          type=str,   default='tournament', help='selection operator(default: tournament)')
-    parser.add_argument('--tags',         type=str,   default='[]',         help='XML tags (default: [])')
-    parser.add_argument('--operators',    type=str,   default='[]',         help='Operators (default: [])')
-    args = parser.parse_args()
 
+def parser_generator():
+    parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
+    parser.add_argument('--project_path', type=str, default='../Benchmark/Triangle')
+    parser.add_argument('--algorithm', type=str, default='ga')
+    parser.add_argument('--epoch', type=int, default=1, help='total epoch(default: 1)')
+    parser.add_argument('--iter', type=int, default=8, help='total iterations per epoch(default: 100)')
+    parser.add_argument('--pop', type=int, default=8, help='population size(default: 10)')
+    parser.add_argument('--mutation', type=float, default=1, help='mutation rate(default: 0.1)')
+    parser.add_argument('--crossover', type=float, default=1, help='crossover rate(default: 0.9)')
+    parser.add_argument('--sel', type=str, default='tournament', help='selection operator(default: tournament)')
+    parser.add_argument('--tags', type=str, default='[]', help='XML tags (default: [])')
+    parser.add_argument('--operators', type=str, default='[]', help='Operators (default: [])')
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parser_generator()
     # Make a Program
     program = QProgram(args.project_path)
-    program.operators = args.operators #Need to parse args into a list
-    program.operators = [StmtDeletion, StmtInsertion, StmtReplacement] 
-    program.tags      = args.tags
+    program.operators = args.operators  # Need to parse args into a list
+    program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
+    program.tags = args.tags
     # Make a Problem
     problem = QProblem(program, number_of_variables=1)
     # Choose which algorithm
     if args.algorithm == 'ga':
         algorithm = GeneticAlgorithm(problem,
-            population_size=args.pop,
-            offspring_population_size=args.pop,
-            mutation=PyGGiMutation(args.mutation),
-            crossover=PyGGiCrossover(args.crossover),
-            selection=BinaryTournamentSelection(),
-            termination_criterion = StoppingByEvaluations(max_evaluations=args.iter))
+                                     population_size=args.pop,
+                                     offspring_population_size=args.pop,
+                                     mutation=PyGGiMutation(args.mutation),
+                                     crossover=PyGGiCrossover(args.crossover),
+                                     selection=BinaryTournamentSelection(),
+                                     termination_criterion=StoppingByEvaluations(max_evaluations=args.iter))
     else:
         raise Exception('Invalid Algorithm')
     # Run the algorithm
     algorithm.run()
-    solution = algorithm.get_result()       
+    solution = algorithm.get_result()
     print("======================RESULT======================")
     print(solution)
     print(solution.program)
-    #program.remove_tmp_variant()
+    # program.remove_tmp_variant()

@@ -1,14 +1,19 @@
-from pyggi.tree import TreeProgram
+from Source.pyggi.tree import TreeProgram
 from .qresult import QResult
 
 import re
-
 
 
 class QProgram(TreeProgram):
     """
     A Program 
     """
+
+    MINIMIZE = -1
+    MAXIMIZE = 1
+
+    MINIMIZE = -1
+    MAXIMIZE = 1
 
     def __init__(self, project_path):
         """
@@ -62,8 +67,9 @@ class QProgram(TreeProgram):
         Apply the edit list to the program and run the test command (pyTest)
         '''
         self.apply(patch)
-        # rcode is the return code of the program execution
-        # etime is the elapsed time of the program execution
+        # print(patch, "\n")
+ 
+        # return_code is the return code of the program execution
         tout = 10
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
         result = QResult('SUCCESS', None)
