@@ -1,4 +1,4 @@
-from Source.pyggi.tree import TreeProgram
+from pyggi.tree import TreeProgram
 from .qresult import QResult
 
 import re
