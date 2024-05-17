@@ -9,6 +9,8 @@ class QProgram(TreeProgram):
     A Program 
     """
 
+
+    # @Logan What does this do?
     MINIMIZE = -1
     MAXIMIZE = 1
 
