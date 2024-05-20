@@ -8,15 +8,6 @@ class QProgram(TreeProgram):
     """
     A Program 
     """
-
-
-    # @Logan What does this do?
-    MINIMIZE = -1
-    MAXIMIZE = 1
-
-    MINIMIZE = -1
-    MAXIMIZE = 1
-
     def __init__(self, project_path):
         """
         :param number_of_variables: Number of decision variables of the problem.
