@@ -62,10 +62,10 @@ class StoppingByEvaluationORFitness(StoppingByEvaluations):
 
 def parser_generator():
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
+    parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
     #parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
     parser.add_argument('--algorithm',    type=str,   default='ga')
-    parser.add_argument('--epoch',        type=int,   default=5,            help='total epoch(default: 1)')
+    parser.add_argument('--epoch',        type=int,   default=1,            help='total epoch(default: 1)')
     parser.add_argument('--iter',         type=int,   default=50,            help='total iterations per epoch(default: 100)')
     parser.add_argument('--pop',          type=int,   default=8,            help='population size(default: 10)')
     parser.add_argument('--mutation',     type=float, default=1,            help='mutation rate(default: 0.1)')
