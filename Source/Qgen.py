@@ -40,8 +40,10 @@ class MyXmlEngine(XmlEngine):
 class StoppingByEvaluationORFitness(StoppingByEvaluations):
     """
     Stopping by Evaluation or Fitness
+
+    Default Target Fitness is 0
     """
-    def __init__(self, max_evaluations: int, target_fitness: float):
+    def __init__(self, max_evaluations: int, target_fitness: float = 0):
         super(StoppingByEvaluationORFitness, self).__init__(target_fitness)
         self.target_fitness = target_fitness
         self.max_evaluations = max_evaluations
@@ -56,6 +58,8 @@ class StoppingByEvaluationORFitness(StoppingByEvaluations):
     def is_met(self):
         return self.evaluations >= self.max_evaluations or self.fitness <= self.target_fitness  
 
+
+
 def parser_generator():
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
     parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
@@ -69,6 +73,7 @@ def parser_generator():
     parser.add_argument('--sel',          type=str,   default='tournament', help='selection operator(default: tournament)')
     parser.add_argument('--tags',         type=str,   default='[]',         help='XML tags (default: [])')
     parser.add_argument('--operators',    type=str,   default='[]',         help='Operators (default: [])')
+    parser.add_argument('--targetfitness', type=str,   default='0',         help='Target Fitness (default: 0)')
     return parser.parse_args()
 
 
