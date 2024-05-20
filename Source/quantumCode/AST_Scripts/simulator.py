@@ -9,11 +9,11 @@ from XMLExpVisitor import *
 NoneType = type(None)
 
 
-class coq_val:
+class CoqVal:
     pass  # TODO
 
 
-class Coq_nval(coq_val):
+class Coq_nval(CoqVal):
 
     def __init__(self, b: [bool], r: int):
         self.bit_array = b
@@ -26,7 +26,7 @@ class Coq_nval(coq_val):
         return self.phase
 
 
-class Coq_qval(coq_val):
+class Coq_qval(CoqVal):
     """
     A class to represent qval
 
@@ -38,7 +38,7 @@ class Coq_qval(coq_val):
     def __init__(self, phase: int, local: int, num: int):
         self.phase = phase
         self.local = local
-        self.num = num
+        self.num_good_qubits = num
 
     def getPhase(self):
         return self.phase
@@ -47,7 +47,7 @@ class Coq_qval(coq_val):
         return self.local
 
     def getNum(self):
-        return self.num
+        return self.num_good_qubits
 
 
 """
@@ -55,7 +55,7 @@ Helper Functions
 """
 
 
-def exchange(v: coq_val, n: int):
+def exchange(v: CoqVal, n: int):
     if isinstance(v, Coq_nval):
         v.getBits()[n] = not v.getBits()[n]
 
@@ -151,7 +151,7 @@ class Simulator(XMLExpVisitor):
     # x --> v1 --> cal(v1) --> integer
     # Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
     # x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
-    def __init__(self, state: dict, env: dict):
+    def __init__(self, state: dict[str, CoqVal], env: dict):
         self.state = state
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
@@ -198,16 +198,19 @@ class Simulator(XMLExpVisitor):
     def get_state(self):
         return self.state
 
+    # shift rotate
     def sr_rotate(self, x, vexp_val):
         val = self.state.get(x)
         if isinstance(val, Coq_qval):
             self.state.update(
-                {x: Coq_qval(val.phase, (val.local + pow(2, val.num - vexp_val - 1)) % pow(2, val.num), val.num)})
+                {x: Coq_qval(val.phase, (val.local + pow(2, val.num_good_qubits - vexp_val - 1)) % pow(2, val.num_good_qubits), val.num_good_qubits)})
 
-    def srr_rotate(self, x, n):
+    # shift rotate reverse
+    def srr_rotate(self, x, vexp_val):
+        raise Exception("wieneerrs")
         val = self.state.get(x)
         if isinstance(val, Coq_qval):
-            self.state.update({x: Coq_qval(val.phase, nat_minus_mod(val.local, pow(2, val.getNum() - n - 1),
+            self.state.update({x: Coq_qval(val.phase, nat_minus_mod(val.local, pow(2, val.getNum() - vexp_val - 1),
                                                                     pow(2, val.getNum())), val.getNum())})
 
     # should do nothing
@@ -254,16 +257,17 @@ class Simulator(XMLExpVisitor):
         else:
             self.srr_rotate(x, abs(vexp_val))
 
-    def lshift(self, x, n):
+    def lshift(self, x: str, n):
         if n == 0:
             return
 
-        tmp = self.state.get(x).getBits()
-        tmpv = tmp[0]
-        for i in range(n - 1):
-            tmp[i] = tmp[i + 1]
-        tmp[n - 1] = tmpv
-        return self.state.update({x: Coq_nval(tmp, self.state.get(x).getPhase())})
+        tmp = self.state.get(x).bit_array
+        tmpv = tmp[n - 1]
+        for i in range(n - 1, -1, -1):
+            tmp[i] = tmp[i - 1]
+
+        tmp[0] = tmpv
+        self.state.update({x: Coq_nval(tmp, self.state.get(x).getPhase())})
 
     def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
         x = ctx.idexp().accept(self)
@@ -273,28 +277,23 @@ class Simulator(XMLExpVisitor):
         if n == 0:
             return
 
-        tmp = self.state.get(x)
-        tmpv = tmp[n - 1]
-        for i in range(n - 1, -1, -1):
-            tmp[i] = tmp[i - 1]
-
-        tmp[0] = tmpv
-        self.state.update({x: Coq_nval(tmp, self.state.get(x).getPhase())})
+        tmp = self.state.get(x).bit_array
+        tmpv = tmp[0]
+        for i in range(n - 1):
+            tmp[i] = tmp[i + 1]
+        tmp[n - 1] = tmpv
+        return self.state.update({x: Coq_nval(tmp, self.state.get(x).getPhase())})
 
     def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
         x = ctx.idexp().accept(self)
         return self.rshift(x, self.env.get(x))
 
-    def reverse(self, x, n):
-        if n == 0:
+    def reverse(self, x, environment_val):
+        if environment_val == 0:
             return
-
-        size = n
-        tmp = self.state.get(x)
-        tmpa = []
-        for i in range(n):
-            tmpa.append(tmp[size - i])
-        self.state.update({x: Coq_nval(tmp, self.state.get(x).getPhase())})
+        cur_binary = self.state.get(x).bit_array
+        reversed_binary = list(reversed(cur_binary))
+        self.state.update({x: Coq_nval(reversed_binary, self.state.get(x).getPhase())})
 
     def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
         x = ctx.idexp().accept(self)
