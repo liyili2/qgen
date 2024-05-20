@@ -2,7 +2,7 @@
 Automated program repair ::
 """
 import argparse
-
+import logging
 # For pyggi default program + repair
 from pyggi.tree import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion  # Default Python program support
@@ -19,7 +19,7 @@ from repairCode.crossover import PyGGiCrossover
 from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
 
 
-class MyXmlEngine(XmlEngine):
+class MyXmlEngine(XmlEngine):  
     """
     PyGGI uses its own engine. Then, it allows customizing some
     functionalities of engine classes through the use of subclasses.
@@ -62,12 +62,12 @@ class StoppingByEvaluationORFitness(StoppingByEvaluations):
 
 def parser_generator():
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
+    parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
     #parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
     parser.add_argument('--algorithm',    type=str,   default='ga')
-    parser.add_argument('--epoch',        type=int,   default=1,            help='total epoch(default: 1)')
-    parser.add_argument('--iter',         type=int,   default=50,           help='total iterations per epoch(default: 100)')
-    parser.add_argument('--pop',          type=int,   default=4,            help='population size(default: 10)')
+    parser.add_argument('--epoch',        type=int,   default=5,            help='total epoch(default: 1)')
+    parser.add_argument('--iter',         type=int,   default=50,            help='total iterations per epoch(default: 100)')
+    parser.add_argument('--pop',          type=int,   default=8,            help='population size(default: 10)')
     parser.add_argument('--mutation',     type=float, default=1,            help='mutation rate(default: 0.1)')
     parser.add_argument('--crossover',    type=float, default=1,            help='crossover rate(default: 0.9)')
     parser.add_argument('--sel',          type=str,   default='tournament', help='selection operator(default: tournament)')
@@ -105,8 +105,8 @@ if __name__ == "__main__":
         raise Exception('Invalid Algorithm')
     # Run the algorithm
     algorithm.run()
-    solution = algorithm.get_result()
+    solution = algorithm.solutions
     print("======================RESULT======================")
     print(solution)
-    print(solution.program)
+   # print(solution.program)
     # program.remove_tmp_variant()
