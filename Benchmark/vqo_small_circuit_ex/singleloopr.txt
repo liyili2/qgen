@@ -3,6 +3,7 @@
 //  | 0 => SKIP (x,0)
 //  | S m => f x m size M ; if M m then SR (size - n) x else SKIP (x,m)
 //  end.
+//adder, adding n to qubit array x
 
 
 <let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> <id type = 'nat' > size </id> <id type = 'bits' > M </id> 
