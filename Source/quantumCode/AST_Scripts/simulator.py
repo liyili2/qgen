@@ -27,20 +27,27 @@ class Coq_nval(coq_val):
 
 
 class Coq_qval(coq_val):
+    """
+    A class to represent qval
 
-    def __init__(self, r1: int, r2: int, n: int):
-        self.r1 = r1
-        self.r2 = r2
-        self.n = n
+    Attributes:
+        phase (int): phase
+        local (int): local
+        num (int): num
+    """
+    def __init__(self, phase: int, local: int, num: int):
+        self.phase = phase
+        self.local = local
+        self.num = num
 
     def getPhase(self):
-        return self.r1
+        return self.phase
 
     def getLocal(self):
-        return self.r2
+        return self.local
 
     def getNum(self):
-        return self.n
+        return self.num
 
 
 """
@@ -60,7 +67,7 @@ def times_rotate(v, q, rmax):
         else:
             return Coq_nval(v.getBits(), v.getPhase())
     else:
-        return Coq_qval(v.r1, rotate(v.r2, q, rmax))
+        return Coq_qval(v.phase, rotate(v.local, q, rmax))
 
 
 def addto(r, n, rmax):
@@ -90,7 +97,7 @@ def times_r_rotate(v, q, rmax):
         else:
             return Coq_nval(v.getBits(), v.getPhase())
     else:
-        return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
+        return Coq_qval(v.phase, r_rotate(v.local, q, rmax))
 
 
 def up_h(v, rmax):
@@ -105,8 +112,8 @@ def up_h(v, rmax):
         else:
             return Coq_qval(r, 0)
     else:
-        r = v.r1
-        f = v.r2
+        r = v.phase
+        f = v.local
         return Coq_nval(
             2 ** max_helper(rmax, 1) <= f,
             r
@@ -170,7 +177,7 @@ class Simulator(XMLExpVisitor):
                 ctx.exppair(i).exp().accept(self)
             i += 1
 
-    def visitAppexp(self, ctx:XMLExpParser.AppexpContext):
+    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         f = ctx.idexp().accept(self)
         ctxa = self.state.get(f)
         i = 0
@@ -181,7 +188,7 @@ class Simulator(XMLExpVisitor):
             i += 1
         ctxa.exp().accept(self)
 
-    def visitIfexp(self, ctx:XMLExpParser.IfexpContext):
+    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
         if v == 1:
             ctx.exp(0).accept(self)
@@ -191,17 +198,17 @@ class Simulator(XMLExpVisitor):
     def get_state(self):
         return self.state
 
-    def sr_rotate(self, x, n):
+    def sr_rotate(self, x, vexp_val):
         val = self.state.get(x)
         if isinstance(val, Coq_qval):
             self.state.update(
-                {x: Coq_qval(val.r1, (val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()), val.getNum())})
+                {x: Coq_qval(val.phase, (val.local + pow(2, val.num - vexp_val - 1)) % pow(2, val.num), val.num)})
 
     def srr_rotate(self, x, n):
         val = self.state.get(x)
         if isinstance(val, Coq_qval):
-            self.state.update({x: Coq_qval(val.r1, nat_minus_mod(val.r2, pow(2, val.getNum() - n - 1),
-                                                                 pow(2, val.getNum())), val.getNum())})
+            self.state.update({x: Coq_qval(val.phase, nat_minus_mod(val.local, pow(2, val.getNum() - n - 1),
+                                                                    pow(2, val.getNum())), val.getNum())})
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
@@ -240,12 +247,12 @@ class Simulator(XMLExpVisitor):
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        n = int(ctx.vexp().accept(self))
+        vexp_val = int(ctx.vexp().accept(self))
         x = ctx.idexp().accept(self)
-        if n >= 0:
-            self.sr_rotate(x, n)
+        if vexp_val >= 0:
+            self.sr_rotate(x, vexp_val)
         else:
-            self.srr_rotate(x, abs(n))
+            self.srr_rotate(x, abs(vexp_val))
 
     def lshift(self, x, n):
         if n == 0:
@@ -294,13 +301,13 @@ class Simulator(XMLExpVisitor):
         return self.reverse(x, self.env.get(x))
 
     def turn_qft(self, x, n):
-        val = self.state.get(x)
-        r1 = val.getPhase()
-        r2 = 0
-        if isinstance(val, Coq_nval):
+        selected_state = self.state.get(x)
+        phase = selected_state.getPhase()
+        local = 0
+        if isinstance(selected_state, Coq_nval):
             for i in range(n):
-                r2 = (r2 + pow(2, i) * int(val.getBits()[i])) % pow(2, n)
-        self.state.update({x: Coq_qval(r1, r2, n)})
+                local = (local + pow(2, i) * int(selected_state.bit_array[i])) % pow(2, n)
+        self.state.update({x: Coq_qval(phase, local, n)})
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
@@ -311,20 +318,20 @@ class Simulator(XMLExpVisitor):
 
     # TODO implement
     def turn_rqft(self, x, n):
-        val = self.state.get(x)
-        if isinstance(val, Coq_qval):
-            tmp = val.getLocal()
+        selected_state = self.state.get(x)
+        if isinstance(selected_state, Coq_qval):
+            tmp = selected_state.getLocal()
             tov = [False] * n
             for i in range(n):
-                b = tmp % 2
+                LSB = tmp % 2
                 tmp = tmp // 2
-                tov[i] = bool(b)
-            self.state.update({x: Coq_nval(tov, val.getPhase())})
+                tov[i] = bool(LSB)
+            self.state.update({x: Coq_nval(tov, selected_state.phase)})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.idexp().accept(self)
-        b = int(ctx.vexp().accept(self))
-        self.turn_rqft(x, self.env.get(x) - b)
+        vexp_val = int(ctx.vexp().accept(self))
+        self.turn_rqft(x, self.env.get(x) - vexp_val)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:

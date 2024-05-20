@@ -60,7 +60,7 @@ def times_rotate(v, q, rmax):
         else:
             return Coq_nval(v.getBits(), v.getPhase())
     else:
-        return Coq_qval(v.r1, rotate(v.r2, q, rmax))
+        return Coq_qval(v.phase, rotate(v.local, q, rmax))
 
 
 def addto(r, n, rmax):
@@ -90,7 +90,7 @@ def times_r_rotate(v, q, rmax):
         else:
             return Coq_nval(v.getBits(), v.getPhase())
     else:
-        return Coq_qval(v.r1, r_rotate(v.r2, q, rmax))
+        return Coq_qval(v.phase, r_rotate(v.local, q, rmax))
 
 
 def up_h(v, rmax):
@@ -105,8 +105,8 @@ def up_h(v, rmax):
         else:
             return Coq_qval(r, 0)
     else:
-        r = v.r1
-        f = v.r2
+        r = v.phase
+        f = v.local
         return Coq_nval(
             2 ** max_helper(rmax, 1) <= f,
             r

@@ -51,8 +51,8 @@ class TestSimulator(object):
     # the quantum component satisfies with the output
     def test_init(self):
         # We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
-        str = "<pexp gate = 'QFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'SR' > < vexp> 10 </vexp> <id> x </id> </pexp> <pexp gate = 'RQFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> "
-        i_stream = InputStream(str)
+        string = "<pexp gate = 'QFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> <pexp gate = 'SR' > < vexp> 10 </vexp> <id> x </id> </pexp> <pexp gate = 'RQFT' > <id> x </id>  <vexp> 0 </vexp> </pexp> "
+        i_stream = InputStream(string)
         lexer = XMLExpLexer(i_stream)
         t_stream = CommonTokenStream(lexer)
         parser = XMLExpParser(t_stream)
@@ -78,8 +78,28 @@ class TestSimulator(object):
         # int n = calInt(arrayQuBits, sizeArray)
         # assert new_state == state
 
+    def test_qval_sr_1(self):
+        string = "<pexp gate = 'SR' > < vexp> 10 </vexp> <id> x </id> </pexp>"
+        i_stream = InputStream(string)
+        lexer = XMLExpLexer(i_stream)
+        t_stream = CommonTokenStream(lexer)
+        parser = XMLExpParser(t_stream)
+        tree = parser.program()
+        num_of_qubits = 16
+        val = 100  # init value
+        val_array = int_to_bool_array(val, num_of_qubits)  # convert value to bool array
+        # val = [False]*num # state for x
+        state = dict({"x": Coq_qval(15,20,30)})  # initial a chainMap having variable "x" to be 0 (list of False)
+        environment = dict(
+            {"x": num_of_qubits})  # env has the same variables as state, but here, variable is initialized to its qubit num
+        simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        assert (132 == new_state.get('x').local)
+
     def test_qval_rqft_ssr_qft(self):
-        string = "<pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp><pexp gate='SRR'><vexp>80</vexp><id>x</id></pexp><pexp gate='QFT'><id>x</id><vexp>0</vexp></pexp>"
+   #     string = "<pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp><pexp gate='SRR'><vexp>80</vexp><id>x</id></pexp><pexp gate='QFT'><id>x</id><vexp>10</vexp></pexp>"
+        string = "<pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp><pexp gate='QFT'><id>x</id><vexp>0</vexp></pexp>"
         i_stream = InputStream(string)
         lexer = XMLExpLexer(i_stream)
         t_stream = CommonTokenStream(lexer)
@@ -94,7 +114,7 @@ class TestSimulator(object):
         simulator.visitProgram(tree)
         new_state = simulator.state
         qval = state.get("x")
-        assert [21,41,41] == [qval.getPhase(), qval.getLocal(), qval.getNum()]
+        assert [21,41,41] == [qval.phase, qval.local, qval.num]
 
     def test_trial(self):
         string = "<pexp gate='QFT'><id>x</id><vexp>0</vexp></pexp> <pexp gate='RQFT'><id>x</id><vexp>0</vexp></pexp> "
