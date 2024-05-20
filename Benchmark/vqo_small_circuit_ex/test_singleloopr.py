@@ -1,5 +1,9 @@
 import pytest
 
+
+# Call simulator on the program with some inputs and get an expect output is the general test format
+
+
 # Test case 1
 def test_case1():
     # Test logic goes here
