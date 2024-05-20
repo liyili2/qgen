@@ -53,6 +53,8 @@ class QProgram(TreeProgram):
         else:
             result.status  = 'PARSE_ERROR'
             result.fitness = 1000000 # Large Value
+        # Print Fitness
+        print(f'Fitness: {result.fitness}')
         return result
         
     def stopping_criterion(self, iters, fitness):
