@@ -5,5 +5,5 @@
    </match>
 </let>
 <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <id> x </id> <id> 16 </id> <id> 16 </id> <id> 10 </id> </app> 
+< app > <id> f </id> <id> x </id> <vexp> 16 </vexp> <vexp> 16 </vexp> <vexp> 10 </vexp> </app> 
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
