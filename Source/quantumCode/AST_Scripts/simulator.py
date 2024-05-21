@@ -28,7 +28,7 @@ class Coq_nval(coq_val):
 
 class Coq_qval(coq_val):
 
-    def __init__(self, r1: int, r2: int, b:[bool], n: int):
+    def __init__(self, r1: int, r2: int, b: [bool], n: int):
         self.r1 = r1
         self.r2 = r2
         self.n = n
@@ -140,6 +140,15 @@ def calBin(v, n):
     return val
 
 
+def calBinNoLength(v):
+    val = []
+    while v != 0:
+        b = v % 2
+        v = v // 2
+        val.append(b)
+    return val
+
+
 class Simulator(XMLExpVisitor):
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -170,11 +179,11 @@ class Simulator(XMLExpVisitor):
                     return
             else:
                 y = ctx.exppair(i).vexp().idexp().accept(self)
-                self.st.update({y:v-1})
+                self.st.update({y: v - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
 
-    def visitAppexp(self, ctx:XMLExpParser.AppexpContext):
+    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         f = ctx.idexp().accept(self)
         ctxa = self.st.get(f)
         i = 0
@@ -185,7 +194,7 @@ class Simulator(XMLExpVisitor):
             i += 1
         ctxa.exp().accept(self)
 
-    def visitIfexp(self, ctx:XMLExpParser.IfexpContext):
+    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
         if v == 1:
             ctx.exp(0).accept(self)
@@ -366,7 +375,8 @@ class Simulator(XMLExpVisitor):
             elif ctx.OP() == XMLExpParser.Div:
                 return x // y
             elif ctx.op() == XMLExpParser.GNum:
-                return int(x[y])
+                tmp = calBinNoLength(x)
+                return int(tmp[y])
         return 0
 
     # the only thing that matters will be 48 and 47

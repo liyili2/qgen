@@ -38,7 +38,7 @@ def serializedATN():
         buf.write("\3\25\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26\3\26")
         buf.write("\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\27\3\27\3\30\3\30")
         buf.write("\3\31\3\31\3\31\2\2\32\2\4\6\b\n\f\16\20\22\24\26\30\32")
-        buf.write("\34\36 \"$&(*,.\60\2\5\3\2\37$\3\2\27\31\3\2\32\33\2\u0150")
+        buf.write("\34\36 \"$&(*,.\60\2\5\3\2\37%\3\2\27\31\3\2\32\33\2\u0150")
         buf.write("\2\62\3\2\2\2\4G\3\2\2\2\6I\3\2\2\2\bQ\3\2\2\2\nZ\3\2")
         buf.write("\2\2\fi\3\2\2\2\16x\3\2\2\2\20\u0082\3\2\2\2\22\u0090")
         buf.write("\3\2\2\2\24\u00bc\3\2\2\2\26\u00c1\3\2\2\2\30\u00c3\3")
@@ -2072,6 +2072,9 @@ class XMLExpParser ( Parser ):
         def Exp(self):
             return self.getToken(XMLExpParser.Exp, 0)
 
+        def GNum(self):
+            return self.getToken(XMLExpParser.GNum, 0)
+
         def getRuleIndex(self):
             return XMLExpParser.RULE_op
 
@@ -2101,7 +2104,7 @@ class XMLExpParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 331
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << XMLExpParser.Plus) | (1 << XMLExpParser.Minus) | (1 << XMLExpParser.Times) | (1 << XMLExpParser.Div) | (1 << XMLExpParser.Mod) | (1 << XMLExpParser.Exp))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << XMLExpParser.Plus) | (1 << XMLExpParser.Minus) | (1 << XMLExpParser.Times) | (1 << XMLExpParser.Div) | (1 << XMLExpParser.Mod) | (1 << XMLExpParser.Exp) | (1 << XMLExpParser.GNum))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
