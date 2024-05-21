@@ -28,16 +28,20 @@ class Coq_nval(coq_val):
 
 class Coq_qval(coq_val):
 
-    def __init__(self, r1: int, r2: int, n: int):
+    def __init__(self, r1: int, r2: int, b:[bool], n: int):
         self.r1 = r1
         self.r2 = r2
         self.n = n
+        self.b = b
 
     def getPhase(self):
         return self.r1
 
     def getLocal(self):
         return self.r2
+
+    def getRest(self):
+        return self.b
 
     def getNum(self):
         return self.n
@@ -300,7 +304,8 @@ class Simulator(XMLExpVisitor):
         if isinstance(val, Coq_nval):
             for i in range(n):
                 r2 = (r2 + pow(2, i) * int(val.getBits()[i])) % pow(2, n)
-        self.st.update({x: Coq_qval(r1, r2, n)})
+        result = val.getBits()[n:]
+        self.st.update({x: Coq_qval(r1, r2, result, n)})
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
@@ -310,8 +315,9 @@ class Simulator(XMLExpVisitor):
         self.turn_qft(x, self.env.get(x) - b)
 
     # TODO implement
-    def turn_rqft(self, x, n):
+    def turn_rqft(self, x):
         val = self.st.get(x)
+        n = val.getNum()
         if isinstance(val, Coq_qval):
             tmp = val.getLocal()
             tov = [False] * n
@@ -319,12 +325,12 @@ class Simulator(XMLExpVisitor):
                 b = tmp % 2
                 tmp = tmp // 2
                 tov[i] = bool(b)
-            self.st.update({x: Coq_nval(tov, val.getPhase())})
+            result = tov + val.getRest()
+            self.st.update({x: Coq_nval(result, val.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.idexp().accept(self)
-        b = int(ctx.vexp().accept(self))
-        self.turn_rqft(x, self.env.get(x) - b)
+        self.turn_rqft(x)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
