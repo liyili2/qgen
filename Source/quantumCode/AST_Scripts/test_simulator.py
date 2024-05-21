@@ -174,21 +174,138 @@ class TestSimulator(object):
         assert 4 == binary_arr_to_int(new_state.get('x').getBits(), num_qubits)
 
     def test_let_basic(self):
-        assert True
+        string = """"
+        <let> <id> f </id> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </let>
+        """
+        tree = string_to_program_helper(string)
+        num_qubits = 12
+        val = 8
+        val_array = int_to_bool_array(val, num_qubits)
+        state = dict({"x": Coq_nval(val_array, 0)})
+        pre_arr = val_array
+        pre_phase = 0
+        environment = dict(
+            {"x": num_qubits})
+        simulator = Simulator(state, environment)
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        print(new_state)
+        assert binary_arr_to_int(pre_arr, num_qubits) == binary_arr_to_int(new_state.get('x').getBits(), num_qubits) and pre_phase == new_state.get('x').phase
+
 
     def test_match_basic(self):
-        assert True
+        string = """
+        <match>
+            <id>x</id>
+            <pair>
+                <vexp>0</vexp>
+                <pexp gate='SKIP'>
+                    <id>x</id>
+                    <vexp>0</vexp>
+                </pexp>
+            </pair>
+            <pair>
+                <vexp>1</vexp>
+                <pexp gate='SKIP'>
+                    <id>x</id>
+                    <vexp>1</vexp>
+                </pexp>
+            </pair>
+        </match>
+       """
+        tree = string_to_program_helper(string)
+        num_qubits = 12
+        val = 8
+        val_array = int_to_bool_array(val, num_qubits)
+        state = dict({"x": Coq_nval(val_array, 0)})
+        pre_arr = val_array
+        pre_phase = 0
+        environment = dict(
+            {"x": num_qubits})
+        simulator = Simulator(state, environment)
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        print(new_state)
+        assert binary_arr_to_int(pre_arr, num_qubits) == binary_arr_to_int(new_state.get('x').getBits(), num_qubits) and pre_phase == new_state.get('x').phase
 
     def test_app_basic(self):
-        assert True
+        string = """
+        <app>
+            <id>x</id>
+            <vexp>0</vexp>
+        </app>
+        """
+        tree = string_to_program_helper(string)
+        num_qubits = 12
+        val = 8
+        val_array = int_to_bool_array(val, num_qubits)
+        state = dict({"x": Coq_nval(val_array, 0)})
+        pre_arr = val_array
+        pre_phase = 0
+        environment = dict(
+            {"x": num_qubits})
+        simulator = Simulator(state, environment)
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        print(new_state)
+        assert binary_arr_to_int(pre_arr, num_qubits) == binary_arr_to_int(new_state.get('x').getBits(), num_qubits) and pre_phase == new_state.get('x').phase
 
     def test_if_basic(self):
-        assert True
+        string = """
+        <ifa>
+            <vexp>10</vexp>
+            <pexp gate ='Rev'>
+                <id>x</id>
+            </pexp>
+            <pexp gate ='SKIP'>
+                <id>x</id>
+                <vexp>0</vexp>
+            </pexp>
+        </ifa>
+        """
+        tree = string_to_program_helper(string)
+        num_qubits = 12
+        val = 8
+        val_array = int_to_bool_array(val, num_qubits)
+        state = dict({"x": Coq_nval(val_array, 0)})
+        pre_arr = val_array
+        pre_phase = 0
+        environment = dict(
+            {"x": num_qubits})
+        simulator = Simulator(state, environment)
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        print(new_state)
+        # TODO fix assertion
+        assert binary_arr_to_int(pre_arr, num_qubits) == binary_arr_to_int(new_state.get('x').getBits(), num_qubits) and pre_phase == new_state.get('x').phase
+
 
     def test_skip_basic(self):
-        assert True
+        string = """
+        <pexp gate ='SKIP'>
+        </pexp>
+        """
+        tree = string_to_program_helper(string)
+        num_qubits = 12
+        val = 8
+        val_array = int_to_bool_array(val, num_qubits)
+        state = dict({"x": Coq_nval(val_array, 0)})
+        pre_arr = val_array
+        pre_phase = 0
+        environment = dict(
+            {"x": num_qubits})
+        simulator = Simulator(state, environment)
+        simulator.visitProgram(tree)
+        new_state = simulator.get_state()
+        assert binary_arr_to_int(pre_arr, num_qubits) == binary_arr_to_int(new_state.get('x').getBits(), num_qubits) and pre_phase == new_state.get('x').phase
 
     def test_x_basic(self):
+        string = """
+        <pexp gate ='X'>
+        <id>x</id>
+        <vexp>0</vexp>
+        </pexp>
+        """
         assert True
 
     def test_CU_basic(self):

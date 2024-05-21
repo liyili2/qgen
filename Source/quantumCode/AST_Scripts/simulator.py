@@ -157,8 +157,8 @@ class Simulator(XMLExpVisitor):
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
-        f = ctx.idexp().accept(self)
-        self.state.update({f: ctx})
+        ID = ctx.idexp().accept(self)
+        self.state.update({ID: ctx})
         ctx.exp().accept(self)
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
@@ -172,8 +172,9 @@ class Simulator(XMLExpVisitor):
                     ctx.exppair(i).exp().accept(self)
                     return
             else:
-                y = ctx.exppair(i).vexp().idexp().accept(self)
-                self.state.update({y: v - 1})
+                if ctx.exppair(i).vexp().idexp():
+                    y = ctx.exppair(i).vexp().idexp().accept(self)
+                    self.state.update({y: v - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
 
