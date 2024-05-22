@@ -1,6 +1,11 @@
 import time
 import pytest
-from triangle import TriangleType, classify_triangle # this might not be correct
+from antlr4 import InputStream, CommonTokenStream
+
+from Benchmark.Triangle.triangle import TriangleType, classify_triangle # this might not be correct
+from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
+from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from quantumCode.AST_Scripts.simulator import calBin, Coq_nval, Simulator, calInt
 
 
 def check_classification(triangles, expected_result):
