@@ -30,21 +30,26 @@ class Coq_qval(CoqVal):
     """
     A class to represent qval
 
+<<<<<<< HEAD
     Attributes:
         phase (int): phase
         local (int): local
         num (int): num
     """
-    def __init__(self, phase: int, local: int, num: int):
+    def __init__(self, phase: int, local: int, b: [bool], num: int):
         self.phase = phase
         self.local = local
         self.num_good_qubits = num
+        self.b = b
 
     def getPhase(self):
         return self.phase
 
     def getLocal(self):
         return self.local
+
+    def getRest(self):
+        return self.b
 
     def getNum(self):
         return self.num_good_qubits
@@ -143,6 +148,15 @@ def int_to_bool_array(v: int, num_qubits: int) -> [bool]:
     return val
 
 
+def calBinNoLength(v):
+    val = []
+    while v != 0:
+        b = v % 2
+        v = v // 2
+        val.append(b)
+    return val
+
+
 class Simulator(XMLExpVisitor):
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -172,9 +186,8 @@ class Simulator(XMLExpVisitor):
                     ctx.exppair(i).exp().accept(self)
                     return
             else:
-                if ctx.exppair(i).vexp().idexp():
-                    y = ctx.exppair(i).vexp().idexp().accept(self)
-                    self.state.update({y: v - 1})
+                y = ctx.exppair(i).vexp().idexp().accept(self)
+                self.st.update({y: v - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
 
@@ -317,8 +330,9 @@ class Simulator(XMLExpVisitor):
         self.turn_qft(ID, self.env.get(ID) - vexp)
 
     # TODO implement
-    def turn_rqft(self, x, n):
-        selected_state = self.state.get(x)
+    def turn_rqft(self, x):
+        selected_state = self.st.get(x)
+        n = selected_state.getNum()
         if isinstance(selected_state, Coq_qval):
             tmp = selected_state.getLocal()
             tov = [False] * n
@@ -326,12 +340,12 @@ class Simulator(XMLExpVisitor):
                 LSB = tmp % 2
                 tmp = tmp // 2
                 tov[i] = bool(LSB)
-            self.state.update({x: Coq_nval(tov, selected_state.phase)})
+            result = tov + selected_state.getRest()
+            self.st.update({x: Coq_nval(result, selected_state.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.idexp().accept(self)
-        vexp_val = int(ctx.vexp().accept(self))
-        self.turn_rqft(x, self.env.get(x) - vexp_val)
+        self.turn_rqft(x)
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
@@ -367,7 +381,8 @@ class Simulator(XMLExpVisitor):
             elif ctx.OP() == XMLExpParser.Div:
                 return x // y
             elif ctx.op() == XMLExpParser.GNum:
-                return int(x[y])
+                tmp = calBinNoLength(x)
+                return int(tmp[y])
         return 0
 
     # the only thing that matters will be 48 and 47

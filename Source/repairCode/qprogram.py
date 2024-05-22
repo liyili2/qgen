@@ -1,4 +1,4 @@
-from Source.pyggi.tree import TreeProgram
+from pyggi.tree import TreeProgram
 from .qresult import QResult
 
 import re
@@ -8,13 +8,6 @@ class QProgram(TreeProgram):
     """
     A Program 
     """
-
-    MINIMIZE = -1
-    MAXIMIZE = 1
-
-    MINIMIZE = -1
-    MAXIMIZE = 1
-
     def __init__(self, project_path):
         """
         :param number_of_variables: Number of decision variables of the problem.
@@ -51,6 +44,8 @@ class QProgram(TreeProgram):
         else:
             result.status  = 'PARSE_ERROR'
             result.fitness = 1000000 # Large Value
+        # Print Fitness
+        print(f'Fitness: {result.fitness}')
         return result
         
     def stopping_criterion(self, iters, fitness):

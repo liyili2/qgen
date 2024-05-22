@@ -1,4 +1,4 @@
-from Source.pyggi.base.edit import AbstractEdit
+from pyggi.base.edit import AbstractEdit
 from jmetal.core.problem import Problem
 from .qpatch import QPatch
 from .qprogram import QProgram

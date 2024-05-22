@@ -44,9 +44,9 @@ revexp: '<' PEXP 'gate' '=' '\'' 'Rev' '\'' '>' idexp '</' PEXP '>' ;
 
 qftexp: '<' PEXP 'gate' '=' '\'' 'QFT' '\'' '>' idexp vexp '</' PEXP '>' ;
 
-rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' '>' idexp vexp '</' PEXP '>' ;
+rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' '>' idexp '</' PEXP '>' ;
 
-op: Plus | Minus | Times | Div | Mod | Exp;
+op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 
 atype: Qubits | Nat | Bits;
 
