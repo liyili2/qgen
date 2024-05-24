@@ -3,8 +3,8 @@ from collections import ChainMap
 
 from antlr4 import ParserRuleContext
 
-from XMLExpParser import *
-from XMLExpVisitor import *
+from Source.quantumCode.AST_Scripts.XMLExpParser import *
+from Source.quantumCode.AST_Scripts.XMLExpVisitor import *
 
 NoneType = type(None)
 

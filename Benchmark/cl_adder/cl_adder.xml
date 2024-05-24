@@ -1,7 +1,7 @@
 <let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id> <id type = 'nat' > n </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
    </match>
 </let>
-< app > <id> f </id> <id> x </id> <id> y </id> <id> c </id> <vexp> 16 </vexp> </app> 
+<app> <id> f </id> <id> x </id> <id> y </id> <id> c </id> <vexp> 16 </vexp> </app>
