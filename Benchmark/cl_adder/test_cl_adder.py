@@ -7,6 +7,8 @@ from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.simulator import calBin, Coq_nval, Simulator, calInt
 
+# for the first step, the fitness is the percentage of correctness. How many test cases a program run correctly.
+# the correctness is defined as array, x, y and c, the input is (x,y,c), and the output is (x,x+y,c)
 
 def test_init(self):
         # //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
@@ -24,8 +26,8 @@ def test_init(self):
         val = 100 #init value
         valArray = calBin(val,num) #conver value to array
         #val = [False]*num # state for x
-        state = dict({"x" : Coq_nval(valArray,0), "M" : val}) #initial a chainMap having variable "x" to be 0 (list of False)
-        environment = dict({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
+        state = dict({"xa" : Coq_nval(valArray,0), "ya": ... , "ca" : ...., "na" : number}) #initial a chainMap having variable "x" to be 0 (list of False)
+        environment = dict({"xa" : num, "ya": num, "ca" : 1}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
         newState = y.get_state()

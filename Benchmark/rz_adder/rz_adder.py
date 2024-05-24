@@ -29,6 +29,8 @@ def test_scalene_triangles():
     triangles = [(5, 4, 3), (5, 3, 4), (4, 5, 3), (4, 3, 5), (3, 5, 4)]
     check_classification(triangles, TriangleType.SCALENE)
 
+# for the first step, the fitness is the percentage of correctness. How many test cases a program run correctly.
+# the correctness is defined as array, x, y and c, the input is (x) with a constant m, and the output is (x+m)
 
 def test_init(self):
         # //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
@@ -46,7 +48,7 @@ def test_init(self):
         val = 100 #init value
         valArray = calBin(val,num) #conver value to array
         #val = [False]*num # state for x
-        state = dict({"x" : Coq_nval(valArray,0), "M" : val}) #initial a chainMap having variable "x" to be 0 (list of False)
+        state = dict({"x" : Coq_nval(valArray,0), "na": num, "m" : val}) #initial a chainMap having variable "x" to be 0 (list of False)
         environment = dict({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
