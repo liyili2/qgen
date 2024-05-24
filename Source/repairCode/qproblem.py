@@ -57,7 +57,7 @@ class QProblem(Problem):
         edit_operator: AbstractEdit = random.choice(self.program.operators)
         opr = edit_operator.create(self.program)
         solution.add(opr)
+        print("solution obj",solution,"\nsoln diff",solution.diff)
         return solution
-
     def name(self):
         return 'QProblem'

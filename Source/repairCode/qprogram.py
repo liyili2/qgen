@@ -23,7 +23,9 @@ class QProgram(TreeProgram):
         """
         #print('start computing fitness')
         m = re.findall("runtime: ([0-9.]+)", stdout)
-        #print(f'Runtime: {m}')
+        #print("stdout",stdout)
+        #m = re.findall("runtime: (\d+\.\d+)s", stdout)
+        print(f'Runtime: {m}')
         if len(m) > 0:
             runtime = m[0]
             failed_list = re.findall("([0-9]+) failed", stdout)
@@ -45,9 +47,11 @@ class QProgram(TreeProgram):
             result.status  = 'PARSE_ERROR'
             result.fitness = 1000000 # Large Value
         # Print Fitness
+        print(f'Status: {result.status}')
         print(f'Fitness: {result.fitness}')
         return result
-        
+
+
     def stopping_criterion(self, iters, fitness):
         return fitness <= self.BEST
     
@@ -63,11 +67,13 @@ class QProgram(TreeProgram):
         '''
         self.apply(patch)
         # print(patch, "\n")
- 
         # return_code is the return code of the program execution
         tout = 10
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
         result = QResult('SUCCESS', None)
         self.compute_fitness(result, rcode, stdout, stderr, elapsed)
- 
+        # print("=== STDOUT ===")
+        # print(stdout)
+        # print("=== STDERR ===")
+        # print(stderr)
         return result

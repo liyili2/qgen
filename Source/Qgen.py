@@ -40,7 +40,6 @@ class MyXmlEngine(XmlEngine):
 class StoppingByEvaluationORFitness(StoppingByEvaluations):
     """
     Stopping by Evaluation or Fitness
-
     Default Target Fitness is 0
     """
     def __init__(self, max_evaluations: int, target_fitness: float = 0):
@@ -62,8 +61,8 @@ class StoppingByEvaluationORFitness(StoppingByEvaluations):
 
 def parser_generator():
     parser = argparse.ArgumentParser(description='PYGGI Bug Repair Example')
-    parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
-    #parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
+    #parser.add_argument('--project_path', type=str,   default='Benchmark/Triangle')
+    parser.add_argument('--project_path', type=str,   default='Benchmark/vqo_small_circuit_ex')
     parser.add_argument('--algorithm',    type=str,   default='ga')
     parser.add_argument('--epoch',        type=int,   default=1,            help='total epoch(default: 1)')
     parser.add_argument('--iter',         type=int,   default=50,            help='total iterations per epoch(default: 100)')
@@ -75,7 +74,7 @@ def parser_generator():
     parser.add_argument('--operators',    type=str,   default='[]',         help='Operators (default: [])')
     parser.add_argument('--targetfitness', type=str,   default='0',         help='Target Fitness (default: 0)')
     return parser.parse_args()
-
+1
 
 
 if __name__ == "__main__":
@@ -83,7 +82,8 @@ if __name__ == "__main__":
     # Make a Program
     program = QProgram(args.project_path)
     program.operators = args.operators  # Need to parse args into a list
-    program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
+    #program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
+    program.operators = [QGateDeletion,QGateInsertion,QGateReplacement]
     program.tags = args.tags
     # Make a Problem
     problem = QProblem(program, number_of_variables=1)
@@ -105,8 +105,10 @@ if __name__ == "__main__":
         raise Exception('Invalid Algorithm')
     # Run the algorithm
     algorithm.run()
-    solution = algorithm.solutions
+    solution = algorithm.get_result()
+    EditList = algorithm.solutions
+    print("EditList\n" , EditList)
     print("======================RESULT======================")
     print(solution)
-   # print(solution.program)
-    # program.remove_tmp_variant()
+    print(solution.program)
+    #program.remove_tmp_variant()

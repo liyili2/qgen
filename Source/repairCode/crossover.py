@@ -34,7 +34,7 @@ class PyGGiCrossover(Crossover[QPatch, QPatch]):
         parent_b.edit_list.extend(parent_a.edit_list[mid1:len_parent_a])
         del parent_a.edit_list[mid1:len_parent_a]
         del parent_b.edit_list[mid2:len_parent_b]
-
+        #print("parenta" , parent_a.diff,"/n parentb",parent_b.diff)
         return [parent_a, parent_b]
 
     def get_number_of_parents(self) -> int:
