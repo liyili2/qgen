@@ -5,5 +5,15 @@
    </match>
 </let>
 <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <id> x </id> <vexp> 16 </vexp> <vexp> 16 </vexp> <vexp> 10 </vexp> </app> 
+< app > <id> f </id> <id> x </id> <vexp> na </vexp> <vexp> na </vexp> <vexp> m </vexp> </app> 
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
+
+
+//  Fixpoint f (x:var) (n:nat) (size:nat) (M: nat -> bool) :=
+//  match n with 
+//  | 0 => SKIP (x,0)
+//  | S m => f x m size M ; if M m then SR (size - n) x else SKIP (x,m)
+//  end.
+//adder, adding natural number n to qubit array x
+// main: QFT x 0; f x n size M; RQFT x
+//x -> x + n, n

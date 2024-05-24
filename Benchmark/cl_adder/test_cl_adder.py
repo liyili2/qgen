@@ -7,6 +7,8 @@ from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.simulator import calBin, Coq_nval, Simulator, calInt
 
+# for the first step, the fitness is the percentage of correctness. How many test cases a program run correctly.
+# the correctness is defined as array, x, y and c, the input is (x,y,c), and the output is (x,x+y,c)
 
 def test_init():
     # //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
