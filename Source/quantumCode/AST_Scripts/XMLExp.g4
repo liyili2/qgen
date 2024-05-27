@@ -2,7 +2,7 @@ grammar XMLExp;
 
 program: exp (exp)* ;
 
-exp: letexp | appexp | ifexp | matchexp | skipexp | xexp | cuexp | rzexp | srexp | lshiftexp | rshiftexp | revexp | qftexp | rqftexp;
+exp: letexp | appexp | ifexp | matchexp | skipexp | xexp | cuexp | srexp | qftexp | rqftexp;
 
 idexp : '<' ID '>' Identifier '</' ID '>' ;
 
@@ -32,15 +32,15 @@ xexp: '<' PEXP 'gate' '=' '\'' 'X' '\'' '>' idexp vexp '</' PEXP '>' ;
 
 cuexp: '<' PEXP 'gate' '=' '\'' 'CU' '\'' '>' idexp vexp program '</' PEXP '>' ;
 
-rzexp: '<' PEXP 'gate' '=' '\'' 'RZ' '\'' '>' vexp idexp vexp '</' PEXP '>' ;
+//rzexp: '<' PEXP 'gate' '=' '\'' 'RZ' '\'' '>' vexp idexp vexp '</' PEXP '>' ;
 
 srexp: '<' PEXP 'gate' '=' '\'' 'SR' '\'' '>' vexp idexp '</' PEXP '>' ;
 
-lshiftexp: '<' PEXP 'gate' '=' '\'' 'Lshift' '\'' '>' idexp '</' PEXP '>' ;
+//lshiftexp: '<' PEXP 'gate' '=' '\'' 'Lshift' '\'' '>' idexp '</' PEXP '>' ;
 
-rshiftexp: '<' PEXP 'gate' '=' '\'' 'Rshift' '\'' '>' idexp '</' PEXP '>' ;
+//rshiftexp: '<' PEXP 'gate' '=' '\'' 'Rshift' '\'' '>' idexp '</' PEXP '>' ;
 
-revexp: '<' PEXP 'gate' '=' '\'' 'Rev' '\'' '>' idexp '</' PEXP '>' ;
+//revexp: '<' PEXP 'gate' '=' '\'' 'Rev' '\'' '>' idexp '</' PEXP '>' ;
 
 qftexp: '<' PEXP 'gate' '=' '\'' 'QFT' '\'' '>' idexp vexp '</' PEXP '>' ;
 
