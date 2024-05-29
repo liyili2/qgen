@@ -178,7 +178,7 @@ class Simulator(XMLExpVisitor):
                     ctx.exppair(i).exp().accept(self)
                     return
             else:
-                y = ctx.exppair(i).vexp().vexp().accept(self)
+                y = ctx.exppair(i).vexp().vexp(0).accept(self)
                 self.st.update({y: v - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
