@@ -167,6 +167,7 @@ class Simulator(XMLExpVisitor):
         i = 0
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
+            i += 1
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         f = ctx.idexp().accept(self)
