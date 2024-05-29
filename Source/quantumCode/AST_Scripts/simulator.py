@@ -406,6 +406,9 @@ class Simulator(XMLExpVisitor):
                 return int(tmp[y])
         return 0
 
+    def visitIda(self, ctx:XMLExpParser.IdaContext):
+        return ctx.Identifier().getText()
+
     # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
         if node.getSymbol().type == XMLExpParser.Identifier:
