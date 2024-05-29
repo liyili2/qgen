@@ -38,13 +38,13 @@ def test_init():
         {"xa": Coq_nval(val_array_x, 0),
          "ya": Coq_nval(val_array_y, 0),
          "ca": Coq_nval(val_array_ca, 0),
-         "na": na,
+         "n": na,
          })
     environment = dict(
         {"xa": num_qubits_x,
          "ya": num_qubits_y,
          "ca": num_qubits_ca,
-         "na": na,
+         "n": na,
          })
     # env has the same variables as state, but here, variable is initiliazed to its qubit num
     simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest

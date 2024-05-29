@@ -1,3 +1,4 @@
+import traceback
 from collections import ChainMap
 # from types import NoneType
 
@@ -167,24 +168,47 @@ class Simulator(XMLExpVisitor):
         self.st.update({f: ctx})
         ctx.exp().accept(self)
 
+    # def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
+    #     print('1')
+    #     return
+    #     match_ID = ctx.idexp().accept(self)
+    #     print('match_ID:', match_ID)
+    #     print(self.st)
+    #     match_state_value = self.st.get(match_ID)
+    #     i = 0
+    #     while ctx.exppair(i) is not None:
+    #         vexp_node = ctx.exppair(i).vexp()
+    #         if vexp_node.OP() is not None:
+    #             va = vexp_node.accept(self)
+    #             if match_state_value == va:
+    #                 # ctx.exppair(i).exp().accept(self)
+    #                 return
+    #         else:
+    #             # y : list= ctx.exppair(i).vexp().vexp()
+    #             y = ctx.exppair(i).vexp().vexp()
+    #             print('Y')
+    #             print(y)
+    #             print(type(y))
+    #             #self.st.update({y: match_state_value - 1})
+    #            # ctx.exppair(i).exp().accept(self)
+    #         i += 1
+
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        match_ID = ctx.idexp().accept(self)
-        match_state_value = self.st.get(match_ID)
+        x = ctx.idexp().accept(self)
+        v = self.st.get(x)
         i = 0
         while ctx.exppair(i) is not None:
-            vexp_node = ctx.exppair(i).vexp()
-            if vexp_node.OP() is not None:
-                va = vexp_node.accept(self)
-                if match_state_value == va:
+            if ctx.exppair(i).vexp().OP() is not None:
+                va = ctx.exppair(i).vexp().accept(self)
+                if v == va:
                     ctx.exppair(i).exp().accept(self)
                     return
             else:
-                idexp_node = vexp_node.idexp()
-                if idexp_node:
-                    y = idexp_node.accept(self)
-                    self.st.update({y: match_state_value - 1})
+                y = ctx.exppair(i).vexp().vexp(0).accept(self)
+                self.st.update({y: v - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
+
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         f = ctx.idexp().accept(self)
