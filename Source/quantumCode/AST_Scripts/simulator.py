@@ -169,6 +169,28 @@ class Simulator(XMLExpVisitor):
             ctx.exp(i).accept(self)
             i += 1
 
+    def visitExp(self, ctx:XMLExpParser.ExpContext):
+        if ctx.letexp() is not None:
+            return ctx.letexp().accept(self)
+        if ctx.appexp() is not None:
+            return ctx.appexp().accept(self)
+        if ctx.ifexp() is not None:
+            return ctx.ifexp().accept(self)
+        if ctx.matchexp() is not None:
+            return ctx.matchexp().accept(self)
+        if ctx.skipexp() is not None:
+            return ctx.skipexp().accept(self)
+        if ctx.xexp() is not None:
+            return ctx.xexp().accept(self)
+        if ctx.cuexp() is not None:
+            return ctx.cuexp().accept(self)
+        if ctx.srexp() is not None:
+            return ctx.srexp().accept(self)
+        if ctx.qftexp() is not None:
+            return ctx.qftexp().accept(self)
+        if ctx.rqftexp() is not None:
+            return ctx.rqftexp().accept(self)
+
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         f = ctx.idexp().accept(self)
         self.st.update({f: ctx})
