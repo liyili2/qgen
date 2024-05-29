@@ -124,20 +124,20 @@ def natminusmod(x, v, a):
         return x - v
 
 
-def calInt(v, n):
+def calInt(bit_array, num_qubits):
     val = 0
-    for i in range(n):
-        val += pow(2, i) * int(v[i])
+    for i in range(num_qubits):
+        val += pow(2, i) * int(bit_array[i])
     return val
 
 
-def calBin(v, n):
-    val = [False] * n
-    for i in range(n):
-        b = v % 2
-        v = v // 2
-        val[i] = bool(b)
-    return val
+def to_binary_arr(value, array_length):
+    binary_arr = [False] * array_length
+    for i in range(array_length):
+        b = value % 2
+        value = value // 2
+        binary_arr[i] = bool(b)
+    return binary_arr
 
 
 def calBinNoLength(v):
@@ -168,18 +168,21 @@ class Simulator(XMLExpVisitor):
         ctx.exp().accept(self)
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        x = ctx.idexp().accept(self)
-        v = self.st.get(x)
+        match_ID = ctx.idexp().accept(self)
+        match_state_value = self.st.get(match_ID)
         i = 0
         while ctx.exppair(i) is not None:
-            if ctx.exppair(i).vexp().OP() is not None:
-                va = ctx.exppair(i).vexp().accept(self)
-                if v == va:
+            vexp_node = ctx.exppair(i).vexp()
+            if vexp_node.OP() is not None:
+                va = vexp_node.accept(self)
+                if match_state_value == va:
                     ctx.exppair(i).exp().accept(self)
                     return
             else:
-                y = ctx.exppair(i).vexp().idexp().accept(self)
-                self.st.update({y: v - 1})
+                idexp_node = vexp_node.idexp()
+                if idexp_node:
+                    y = idexp_node.accept(self)
+                    self.st.update({y: match_state_value - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
 

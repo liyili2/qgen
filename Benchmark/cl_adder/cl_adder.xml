@@ -1,6 +1,6 @@
 <let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id> <id type = 'nat' > n </id>
    <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp> 0  </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
    </match>
 </let>
@@ -8,11 +8,11 @@
 
 <!--
 
-// X , CU gates, 
+// X , CU gates,
 //(* modmult adder based on classical circuits. *)
 //Definition MAJ a b c := CNOT c b ; CNOT c a ; CCX a b c.
 //Definition UMA a b c := CCX a b c ; CNOT c a ; CNOT a b.
-//(* The following defines n-bits MAJ and UMA circuit. 
+//(* The following defines n-bits MAJ and UMA circuit.
 //   Eventually, MAJ;UMA circuit takes [x][y] and produce [x][(x+y) % 2 ^ n] *)
 //Fixpoint MAJseq' n x y c : exp :=
 //  match n with

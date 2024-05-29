@@ -5,7 +5,7 @@ from antlr4 import InputStream, CommonTokenStream
 # from Benchmark.Triangle.triangle import TriangleType, classify_triangle # this might not be correct
 from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
-from Source.quantumCode.AST_Scripts.simulator import calBin, Coq_nval, Simulator, calInt
+from Source.quantumCode.AST_Scripts.simulator import to_binary_arr, Coq_nval, Simulator, calInt
 
 # for the first step, the fitness is the percentage of correctness. How many test cases a program run correctly.
 # the correctness is defined as array, x, y and c, the input is (x,y,c), and the output is (x,x+y,c)
@@ -23,18 +23,34 @@ def test_init():
 
     # the following shows an example of using 1 variable state. You can have a 10 variable state
     # see that a variable is a string.
-    num = 16  # Number of Qubits
-    val = 100  # init value
-    valArray = calBin(val, num)  # conver value to array
+    num_qubits_x = 16  # Number of Qubits
+    val_x = 100  # init value
+    val_array_x = to_binary_arr(val_x, num_qubits_x)  # convert value to array
+    num_qubits_y = 64
+    val_y = 10
+    val_array_y = to_binary_arr(val_y, num_qubits_y)
+    val_ca = 20
+    num_qubits_ca = 1
+    val_array_ca = to_binary_arr(val_ca, num_qubits_ca)
+    na = 7
     # val = [False]*num # state for x
     state = dict(
-        {"x": Coq_nval(valArray, 0), "M": val})  # initial a chainMap having variable "x" to be 0 (list of False)
+        {"xa": Coq_nval(val_array_x, 0),
+         "ya": Coq_nval(val_array_y, 0),
+         "ca": Coq_nval(val_array_ca, 0),
+         "na": na,
+         })
     environment = dict(
-        {"x": num})  # env has the same variables as state, but here, variable is initiliazed to its qubit num
-    y = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
-    y.visitProgram(tree)
-    newState = y.get_state()
-    assert (132 == calInt(newState.get('x').getBits(), num))
+        {"xa": num_qubits_x,
+         "ya": num_qubits_y,
+         "ca": num_qubits_ca,
+         "na": na,
+         })
+    # env has the same variables as state, but here, variable is initiliazed to its qubit num
+    simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
+    simulator.visitProgram(tree)
+    new_state = simulator.get_state()
+    assert (132 == calInt(new_state.get('y').getBits(), num_qubits_x))
 
     # Do assertion check that state is as expected
     # Add function to do state (binary-> int ) conversion  #TODO#

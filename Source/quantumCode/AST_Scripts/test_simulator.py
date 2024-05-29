@@ -62,7 +62,7 @@ class Test_Simulator(object):
         # see that a variable is a string.
         num = 16 # Number of Qubits
         val = 100 #init value
-        valArray = calBin(val,num) #conver value to array
+        valArray = to_binary_arr(val, num) #conver value to array
         #val = [False]*num # state for x
         state = dict({"x" : Coq_nval(valArray,0)}) #initial a chainMap having variable "x" to be 0 (list of False)
         environment = dict({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
