@@ -163,38 +163,11 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitProgram(self, ctx:XMLExpParser.ProgramContext):
-        i = 0
-        while ctx.exp(i) is not None:
-            ctx.exp(i).accept(self)
-            i += 1
-
-    def visitExp(self, ctx:XMLExpParser.ExpContext):
-        if ctx.letexp() is not None:
-            return ctx.letexp().accept(self)
-        if ctx.appexp() is not None:
-            return ctx.appexp().accept(self)
-        if ctx.ifexp() is not None:
-            return ctx.ifexp().accept(self)
-        if ctx.matchexp() is not None:
-            return ctx.matchexp().accept(self)
-        if ctx.skipexp() is not None:
-            return ctx.skipexp().accept(self)
-        if ctx.xexp() is not None:
-            return ctx.xexp().accept(self)
-        if ctx.cuexp() is not None:
-            return ctx.cuexp().accept(self)
-        if ctx.srexp() is not None:
-            return ctx.srexp().accept(self)
-        if ctx.qftexp() is not None:
-            return ctx.qftexp().accept(self)
-        if ctx.rqftexp() is not None:
-            return ctx.rqftexp().accept(self)
-
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         f = ctx.idexp().accept(self)
         self.st.update({f: ctx})
-        ctx.exp().accept(self)
+        print("f",ctx)
+        #ctx.exp().accept(self)
 
     # def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
     #     print('1')
@@ -224,6 +197,7 @@ class Simulator(XMLExpVisitor):
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
         x = ctx.idexp().accept(self)
         v = self.st.get(x)
+        print("v", v)
         i = 0
         while ctx.exppair(i) is not None:
             if ctx.exppair(i).vexp().OP() is None:
@@ -233,18 +207,22 @@ class Simulator(XMLExpVisitor):
                     return
             else:
                 y = ctx.exppair(i).vexp().vexp(0).accept(self)
-                self.st.update({y: v - 1})
+
+                self.st.update({y: int(v) - 1})
                 ctx.exppair(i).exp().accept(self)
             i += 1
 
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
+        print("here")
         f = ctx.idexp().accept(self)
         ctxa = self.st.get(f)
         i = 0
         while ctxa.ida(i) is not None:
             x = ctxa.ida(i).Identifier().accept(self)
+            print("var: ",x)
             v = ctx.vexp(i).accept(self)
+            print("val: ", v)
             self.st.update({x: v})
             i += 1
         ctxa.exp().accept(self)

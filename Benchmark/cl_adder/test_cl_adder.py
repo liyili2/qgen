@@ -38,19 +38,18 @@ def test_init():
         {"xa": Coq_nval(val_array_x, 0),
          "ya": Coq_nval(val_array_y, 0),
          "ca": Coq_nval(val_array_ca, 0),
-         "n": na,
+         "na": na,
          })
     environment = dict(
         {"xa": num_qubits_x,
          "ya": num_qubits_y,
          "ca": num_qubits_ca,
-         "n": na,
          })
     # env has the same variables as state, but here, variable is initiliazed to its qubit num
     simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    assert (132 == calInt(new_state.get('y').getBits(), num_qubits_x))
+    assert (10 == calInt(new_state.get('y').getBits(), num_qubits_x))
 
     # Do assertion check that state is as expected
     # Add function to do state (binary-> int ) conversion  #TODO#
