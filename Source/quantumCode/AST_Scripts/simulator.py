@@ -163,6 +163,11 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
+    def visitProgram(self, ctx:XMLExpParser.ProgramContext):
+        i = 0
+        while ctx.exp(i) is not None:
+            ctx.exp(i).accept(self)
+
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         f = ctx.idexp().accept(self)
         self.st.update({f: ctx})
