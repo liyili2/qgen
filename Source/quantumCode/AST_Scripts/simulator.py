@@ -198,7 +198,7 @@ class Simulator(XMLExpVisitor):
         v = self.st.get(x)
         i = 0
         while ctx.exppair(i) is not None:
-            if ctx.exppair(i).vexp().OP() is not None:
+            if ctx.exppair(i).vexp().OP() is None:
                 va = ctx.exppair(i).vexp().accept(self)
                 if v == va:
                     ctx.exppair(i).exp().accept(self)
