@@ -6,6 +6,9 @@
 </let>
 <app> <id> f </id> <id> xa </id> <id> ya </id> <id> ca </id> <id> na </id> </app>
 
+//Definition CNOT (x y : posi) := CU x (X y).
+//Definition SWAP (x y : posi) := if (x ==? y) then (SKIP x) else (CNOT x y; CNOT y x; CNOT x y).
+//Definition CCX (x y z : posi) := CU x (CNOT y z).
 // X , CU gates, 
 //(* modmult adder based on classical circuits. *)
 //Definition MAJ a b c := CNOT c b ; CNOT c a ; CCX a b c.
@@ -29,3 +32,9 @@
 //Definition adder01 n x y c: exp := MAJseq n x y c; UMAseq n x y c.
 //bitstring                       x, y &ndash;&gt; x, x + y
 //adding the content in array x to array y.
+
+//  match n with
+//  | 0 => MAJ c (y,0) (x,0) ; UMA c (y,0) (x,0)
+//  | S m => MAJseq' m x y c; MAJ (x, m) (y, n) (x, n)
+//  end.
+
