@@ -143,6 +143,33 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#lshiftexp.
+    def enterLshiftexp(self, ctx:XMLExpParser.LshiftexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#lshiftexp.
+    def exitLshiftexp(self, ctx:XMLExpParser.LshiftexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#rshiftexp.
+    def enterRshiftexp(self, ctx:XMLExpParser.RshiftexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#rshiftexp.
+    def exitRshiftexp(self, ctx:XMLExpParser.RshiftexpContext):
+        pass
+
+
+    # Enter a parse tree produced by XMLExpParser#revexp.
+    def enterRevexp(self, ctx:XMLExpParser.RevexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#revexp.
+    def exitRevexp(self, ctx:XMLExpParser.RevexpContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#qftexp.
     def enterQftexp(self, ctx:XMLExpParser.QftexpContext):
         pass

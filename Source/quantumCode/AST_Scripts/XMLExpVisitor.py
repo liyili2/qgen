@@ -84,6 +84,21 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by XMLExpParser#lshiftexp.
+    def visitLshiftexp(self, ctx:XMLExpParser.LshiftexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by XMLExpParser#rshiftexp.
+    def visitRshiftexp(self, ctx:XMLExpParser.RshiftexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by XMLExpParser#revexp.
+    def visitRevexp(self, ctx:XMLExpParser.RevexpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by XMLExpParser#qftexp.
     def visitQftexp(self, ctx:XMLExpParser.QftexpContext):
         return self.visitChildren(ctx)

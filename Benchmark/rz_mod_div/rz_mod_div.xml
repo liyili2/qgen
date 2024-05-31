@@ -1,0 +1,49 @@
+<let> <id> g </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'nat' > j </id> <id type = 'bits' > M </id> 
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+   </match>
+</let>
+
+<let> <id> h </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'bits' > M </id> 
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+   </match>
+</let>
+   
+<let> <id> f </id> <id type = 'nat' > j </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'bits' > M </id> 
+   <match> <id> j </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+   </match>
+</let>
+
+<let> <id> nlshift </id> <id type = 'nat' > n </id> <id type = 'qubits' > x </id>
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = 'plus'> <id> m </id> <vexp> 1 </vexp> </vexp> <pexp gate = 'Lshift' > <id> x </id> </pexp> <app> <id> nlshift </id> <id> m </id> <id> x </id> </app> </pair>   
+   </match>
+</let>
+                     
+<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
+< app > <id> f </id> <vexp op = 'plus' > <id> j </id> <vexp> 1 </vexp> <id> x </id> <id> na </id> <id> c </id> <id> a </id> <id> m </id> </app> 
+<pexp gate = 'RQFT' > <id> x </id> </pexp>
+<app> <id> nlshift </id> <vexp op = 'plus' > <id> j </id> <vexp> 1 </vexp> </vexp> <id> x </id> </app>
+
+//x and y are two qubit arrays, n bit length, and m is a value betweeo 1 and 2^n, in the end, the value is that (x, y ) --> (x % m, y / m), 
+
+//Fixpoint f i (n:nat) (b:nat) (x ex:var) (M:nat -> bool) := 
+//     match i with 0 =>  (SKIP (x,0))
+//           | S j => appx_compare_half3 x n b (ex,j) M ;  rshift_by_swap n x;
+//                     QFT x (b-1); (CU (ex,j) ((appx_adder x n (b-1) M)));
+//                      (X (ex,j)); 
+//                     f j n (b-1) x ex (cut_n (div_two_spec M) n)
+//     end.
+     
+     
+//Definition appx_div_mod (n:nat) (x ex:var) (M:nat) := 
+//    let i := findnum M (n-1) in 
+//         (Rev x); QFT x n;
+//            appx_moder' (S i) n n x ex (nat2fb (2^i * M)); RQFT x (n - S i); nLshift x (S i);
+//         Rev x.
