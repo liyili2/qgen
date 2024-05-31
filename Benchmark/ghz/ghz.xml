@@ -1,0 +1,12 @@
+<let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id>
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+   </match>
+</let>
+<app> <id> f </id> <id> x </id> <id> n </id> </app>
+
+//this is the second half of the ghz ciruit
+//assume that a Had is already applied in the first simulator.
+//input x and n, x is n qubit array, result (x[0], .., x[n-1]) --> (x[0], x[0] xor x[1], x[0] xor x[1] xor x[2], .... , x[0] xor x[1] xor x[2] ... xor x[n-1])
+
