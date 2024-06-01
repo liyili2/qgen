@@ -1,35 +1,34 @@
 <let> <id> g </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'nat' > j </id> <id type = 'bits' > M </id> 
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
    </match>
 </let>
 
 <let> <id> h </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'bits' > M </id> 
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
    </match>
 </let>
    
 <let> <id> f </id> <id type = 'nat' > j </id> <id type = 'nat' > n </id> <id type = 'nat' > b </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'bits' > M </id> 
    <match> <id> j </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = 'plus'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
+          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
    </match>
 </let>
 
 <let> <id> nlshift </id> <id type = 'nat' > n </id> <id type = 'qubits' > x </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = 'plus'> <id> m </id> <vexp> 1 </vexp> </vexp> <pexp gate = 'Lshift' > <id> x </id> </pexp> <app> <id> nlshift </id> <id> m </id> <id> x </id> </app> </pair>   
+          <pair> <vexp op = '+'> <id> m </id> <vexp> 1 </vexp> </vexp> <pexp gate = 'Lshift' > <id> x </id> </pexp> <app> <id> nlshift </id> <id> m </id> <id> x </id> </app> </pair>   
    </match>
 </let>
                      
 <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <vexp op = 'plus' > <id> j </id> <vexp> 1 </vexp> <id> x </id> <id> na </id> <id> c </id> <id> a </id> <id> m </id> </app> 
+< app > <id> f </id> <vexp op = '+' > <id> i </id> <vexp> 1 </vexp> <id> x </id> <id> ex </id> <id> na </id> <vexp op = '*' > <vexp op = '^' > <vexp> 2 </vexp> <id> i </id> </vexp> <id> m </id> </vexp> </app> 
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
-<app> <id> nlshift </id> <vexp op = 'plus' > <id> j </id> <vexp> 1 </vexp> </vexp> <id> x </id> </app>
 
 //x and y are two qubit arrays, n bit length, and m is a value betweeo 1 and 2^n, in the end, the value is that (x, y ) --> (x % m, y / m), 
 

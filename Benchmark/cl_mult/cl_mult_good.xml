@@ -1,0 +1,56 @@
+
+<let> <id> maj </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> 
+                     <id type = 'qubits' > y </id> <id type = 'nat' > m </id> 
+                     <id type = 'qubits' > z </id> <id type = 'nat' > j </id>
+    <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp> </pexp>
+    <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp> </pexp>
+    <pexp gate = 'CU' > <id> x </id>  <vexp> n </vexp> <pexp gate = 'CU' > <id> y </id>  <vexp> m </vexp> <pexp gate = 'X' > <id> z </id>  <vexp> j </vexp> </pexp> </pexp></pexp>
+</let>
+
+<let> <id> uma </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> 
+                     <id type = 'qubits' > y </id> <id type = 'nat' > m </id> 
+                     <id type = 'qubits' > z </id> <id type = 'nat' > j </id>
+    <pexp gate = 'CU' > <id> x </id>  <vexp> n </vexp> <pexp gate = 'CU' > <id> y </id>  <vexp> m </vexp> <pexp gate = 'X' > <id> z </id>  <vexp> j </vexp> </pexp> </pexp></pexp>
+    <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp></pexp>
+    <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp></pexp>
+</let>
+
+<let> <id> majseq </id> <id type = 'nat' > n </id>  <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id> <id type = 'nat' > i </id>
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <app><id> maj </id> <id> c </id> <vexp> 0 </vexp> <id> y </id> <id> i </id> <id> x </id> <vexp> 0 </vexp> </app> </pair>
+          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
+          <app> <id> majseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
+          <app> <id> maj </id> <id> x </id> <id> m </id> <id> y </id> <vexp op = '+' > <id> n </id> <id> i </id> </vexp> <id> x </id> <id> n </id> </app>
+          </pair>
+   </match>
+</let>
+
+<let> <id> umaseq </id> <id type = 'nat' > n </id>  <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id> <id type = 'nat' > i </id>
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <app><id> uma </id> <id> c </id> <vexp> 0 </vexp> <id> y </id> <id> i </id> <id> x </id> <vexp> 0 </vexp> </app> </pair>
+          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
+          <app> <id> uma </id> <id> x </id> <id> m </id> <id> y </id> <vexp op = '+' > <id> n </id> <id> i </id> </vexp> <id> x </id> <id> n </id> </app>
+          <app> <id> umaseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> </app>
+          </pair>
+   </match>
+</let>
+
+<let> <id> adder </id> <id type = 'nat' > n </id>  <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id><id type = 'nat' > i </id>
+             <app> <id> majseq </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp>  <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
+             <app> <id> umaseq </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp>  <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
+</let>
+
+<let> <id> f </id> <id type = 'nat' > n </id> <id type = 'nat' > size </id>  <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > re </id> <id type = 'qubits' > c </id>
+   <match> <id> n </id>
+          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> re </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
+
+          <app> <id> f </id> <id> m </id> <id> size </id> <id> x </id> <id> y </id> <id> c </id> </app>
+    <pexp gate = 'CU' > <id> y </id>  <id> m </id> <app> <id> adder </id> <vexp op = '-'> <id> size </id> <id> m </id> </vexp> <id> x </id> <id> re </id> <id> c </id> <id> m </id> </app> </pexp>
+          </pair>
+   </match>
+</let>   
+
+<app> <id> f </id> <id> na </id> <id> na </id> <id> xa </id> <id> ya </id> <id> re </id> <id> ca </id> </app>
+
+
