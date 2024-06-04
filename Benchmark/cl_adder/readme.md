@@ -8,7 +8,7 @@ na: Natural number representing the length of xa and ya (int)
 Output of the program:
 
 xa: unchanged, 
-ya: (xa + ya) % 2^na  --modified in situ,
+ya: (xa + ya) % 2^na (modified in place),
 ca: unchanged, 
 na: unchanged
 

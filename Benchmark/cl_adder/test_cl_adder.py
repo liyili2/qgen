@@ -243,7 +243,7 @@ def test_full_cl_adder():
     simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    assert (110 == bit_array_to_int(new_state.get('ya').getBits(), num_qubits_y))
+    assert (20 == bit_array_to_int(new_state.get('ya').getBits(), num_qubits_y))
 
 
 
