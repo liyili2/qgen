@@ -406,12 +406,8 @@ class Simulator(XMLExpVisitor):
             self.st.update({x: Coq_nval(result, val.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
-<<<<<<< Updated upstream
         x = ctx.idexp().Identifier().accept(self)
-=======
         print("rqftexp")
-        x = ctx.idexp().accept(self)
->>>>>>> Stashed changes
         self.turn_rqft(x)
         print("rqftexp end")
 

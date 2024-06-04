@@ -63,7 +63,6 @@ def test_rz_adder():
 
 
 # Fixture to measure runtime
->>>>>>> 5f20a99a2fc2779a2feb3f8caa2f0e3c98420716
 @pytest.fixture(scope="session", autouse=True)
 def starter(request):
     start_time = time.time()
