@@ -49,11 +49,6 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by XMLExpParser#ida.
-    def visitIda(self, ctx:XMLExpParser.IdaContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by XMLExpParser#vexp.
     def visitVexp(self, ctx:XMLExpParser.VexpContext):
         return self.visitChildren(ctx)
@@ -111,11 +106,6 @@ class XMLExpVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by XMLExpParser#op.
     def visitOp(self, ctx:XMLExpParser.OpContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by XMLExpParser#atype.
-    def visitAtype(self, ctx:XMLExpParser.AtypeContext):
         return self.visitChildren(ctx)
 
 

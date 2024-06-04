@@ -1,4 +1,4 @@
-<let> <id> adder </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> <id type = 'nat' > size </id> <id type = 'bits' > M </id> 
+<let> <id> adder </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id> 
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
            <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
@@ -11,7 +11,7 @@
    </match>
 </let>
 
-<let> <id> sub </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> <id type = 'nat' > size </id> <id type = 'bits' > M </id> 
+<let> <id> sub </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id> 
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
            <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
@@ -24,14 +24,14 @@
    </match>
 </let>
 
-<let> <id> compare </id> <id type = 'qubits' > x </id> <id type = 'nat' > n </id> <id type = 'qubits' > c </id> <id type = 'nat' > m </id>
+<let> <id> compare </id> <id > x </id> <id > n </id> <id > c </id> <id > m </id>
     <app> <id> sub </id> <id> x </id> <id> n </id> <id> m </id> </app>
     <pexp gate = 'RQFT' > <id> x </id> </pexp>
         <pexp gate = 'CU' > <id> x </id>  <vexp> 0 </vexp> <pexp gate = 'X' > <id> c </id>  <vexp> 0 </vexp> </pexp></pexp>
 </let>   
 
 
-<let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'nat' > i </id> <id type = 'nat' > n </id> <id type = 'qubits' > ex </id> <id type = 'bits' > M </id> 
+<let> <id> f </id> <id > x </id> <id > i </id> <id > n </id> <id > ex </id> <id > M </id> 
    <match> <id> i </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
            <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 

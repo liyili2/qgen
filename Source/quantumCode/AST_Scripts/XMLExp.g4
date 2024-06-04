@@ -6,17 +6,17 @@ exp: letexp | appexp | ifexp | matchexp | skipexp | xexp | cuexp | srexp | qftex
 
 idexp : '<' ID '>' Identifier '</' ID '>' ;
 
-exppair : '<' Pair '>' vexp exp '</' Pair '>' ;
+exppair : '<' Pair '>' vexp program '</' Pair '>' ;
 
 matchexp : '<' Match '>' idexp exppair (exppair)* '</' Match '>' ;
 
-letexp : '<' Let '>' idexp (ida)* exp '</' Let '>' ;
+letexp : '<' Let '>' idexp (idexp)* exp '</' Let '>' ;
 
 ifexp : '<' Ifa '>' vexp exp exp '</' Ifa '>';
 
 appexp : '<' APP '>' idexp (vexp)* '</' APP '>';
 
-ida : '<' ID 'type' '=' '\'' atype '\'' '>' Identifier '</' ID '>' ;
+//ida : '<' ID 'type' '=' '\'' atype '\'' '>' Identifier '</' ID '>' ;
         
 vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
     | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
@@ -48,7 +48,7 @@ rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' '>' idexp '</' PEXP '>' ;
 
 op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 
-atype: Qubits | Nat | Bits;
+//atype: Qubits | Nat | Bits;
 
 boolexp: TrueLiteral | FalseLiteral;
 

@@ -164,9 +164,9 @@ class Simulator(XMLExpVisitor):
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
-        f = ctx.idexp().accept(self)
+        f = ctx.idexp(0).Identifier().accept(self)
         self.st.update({f: ctx})
-        print("f", ctx)
+        #print("f", ctx)
         # ctx.exp().accept(self)
 
     # def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
@@ -195,40 +195,59 @@ class Simulator(XMLExpVisitor):
     #         i += 1
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         v = self.st.get(x)
-        print("v", v)
+        #print("v", v)
         i = 0
         while ctx.exppair(i) is not None:
             if ctx.exppair(i).vexp().OP() is None:
                 va = ctx.exppair(i).vexp().accept(self)
                 if v == va:
-                    ctx.exppair(i).exp().accept(self)
+                    ctx.exppair(i).program().accept(self)
                     return
             else:
-                y = ctx.exppair(i).vexp().vexp(0).accept(self)
-
+                y = ctx.exppair(i).vexp().vexp(0).idexp().Identifier().accept(self)
+                #print("var",y)
+                tmpv = self.st.get(y)
                 self.st.update({y: int(v) - 1})
-                ctx.exppair(i).exp().accept(self)
+                #print("valb",int(v)-1)
+                #print("here")
+                ctx.exppair(i).program().accept(self)
+                if tmpv is not None:
+                    self.st.update({y:tmpv})
             i += 1
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        print("here")
-        f = ctx.idexp().accept(self)
-        ctxa = self.st.get(f)
+        #print("here1")
+        ctxa = ctx.idexp().accept(self)
+        #ctxa = self.st.get(f)
         i = 0
-        while ctxa.ida(i) is not None:
-            x = ctxa.ida(i).Identifier().accept(self)
-            print("var: ", x)
+        tmpv = dict()
+        while ctxa.idexp(i+1) is not None:
+            x = ctxa.idexp(i+1).Identifier().accept(self)
+            #print("var: ", x)
             v = ctx.vexp(i).accept(self)
-            print("val: ", v)
-            self.st.update({x: v})
+            #print("val: ", v)
+            if not isinstance(v, Coq_nval) and not isinstance(v, Coq_qval):
+                if self.st.get(x) is not None:
+                    tmpv.update({x:self.st.get(x)})
+                #print("var",x)
+                #print("val",v)
+                self.st.update({x: v})
             i += 1
         ctxa.exp().accept(self)
+        while len(tmpv) != 0:
+            xv,re = tmpv.popitem()
+            #print("val",re)
+            self.st.update({xv:re})
+            #print("var",xv)
+            #print("val",re)
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
+        #print("here1")
         v = ctx.vexp().accept(self)
         if v == 1:
+            #print("here1")
             ctx.exp(0).accept(self)
         else:
             ctx.exp(1).accept(self)
@@ -238,15 +257,17 @@ class Simulator(XMLExpVisitor):
 
     def sr_rotate(self, x, n):
         val = self.st.get(x)
+        #print("here1")
         if isinstance(val, Coq_qval):
+            #print("var",(val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()))
             self.st.update(
-                {x: Coq_qval(val.r1, (val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()), val.getNum())})
+                {x: Coq_qval(val.r1, (val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()), val.getRest(), val.getNum())})
 
     def srr_rotate(self, x, n):
         val = self.st.get(x)
         if isinstance(val, Coq_qval):
             self.st.update({x: Coq_qval(val.r1, natminusmod(val.r2, pow(2, val.getNum() - n - 1),
-                                                            pow(2, val.getNum())), val.getNum())})
+                                                            pow(2, val.getNum())), val.getRest(), val.getNum())})
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
@@ -256,7 +277,7 @@ class Simulator(XMLExpVisitor):
     def visitXexp(self, ctx: XMLExpParser.XexpContext):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
-        exchange(self.st.get(x), p)
+        exchange(x, p)
         # print(M_find(x, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
@@ -264,7 +285,7 @@ class Simulator(XMLExpVisitor):
     def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
-        if self.st.get(x).getBits()[p]:
+        if x.getBits()[p]:
             ctx.program().accept(self)
         else:
             return  # do nothing
@@ -285,8 +306,12 @@ class Simulator(XMLExpVisitor):
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
+        #print("here1")
         n = int(ctx.vexp().accept(self))
-        x = ctx.idexp().accept(self)
+        #print("varl",n)
+        #print("vara",self.st.get("m"))
+        x = ctx.idexp().Identifier().accept(self)
+        #print("here1")
         if n >= 0:
             self.sr_rotate(x, n)
         else:
@@ -304,7 +329,7 @@ class Simulator(XMLExpVisitor):
         return self.st.update({x: Coq_nval(tmp, self.st.get(x).getPhase())})
 
     def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         return self.lshift(x, self.env.get(x))
 
     def rshift(self, x, n):
@@ -320,7 +345,7 @@ class Simulator(XMLExpVisitor):
         self.st.update({x: Coq_nval(tmp, self.st.get(x).getPhase())})
 
     def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         return self.rshift(x, self.env.get(x))
 
     def reverse(self, x, n):
@@ -335,7 +360,7 @@ class Simulator(XMLExpVisitor):
         self.st.update({x: Coq_nval(tmp, self.st.get(x).getPhase())})
 
     def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         return self.reverse(x, self.env.get(x))
 
     def turn_qft(self, x, n):
@@ -346,16 +371,18 @@ class Simulator(XMLExpVisitor):
             for i in range(n):
                 r2 = (r2 + pow(2, i) * int(val.getBits()[i])) % pow(2, n)
         result = val.getBits()[n:]
+        #print("val", result)
         self.st.update({x: Coq_qval(r1, r2, result, n)})
 
         # actually, we need to change the QFT function
         # the following QFT is only for full QFT, we did not have the case for AQFT
 
     def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         b = int(ctx.vexp().accept(self))
         self.turn_qft(x, self.env.get(x) - b)
-
+        #print("val",self.env.get(x)-b)
+        #print("x",self.st.get(x))
         # TODO implement
 
     def turn_rqft(self, x):
@@ -372,7 +399,7 @@ class Simulator(XMLExpVisitor):
             self.st.update({x: Coq_nval(result, val.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
-        x = ctx.idexp().accept(self)
+        x = ctx.idexp().Identifier().accept(self)
         self.turn_rqft(x)
 
     def visit(self, ctx: ParserRuleContext):
@@ -382,40 +409,52 @@ class Simulator(XMLExpVisitor):
             return self.visitTerminal(ctx)
 
     def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        return ctx.Identifier().accept(self)
+        #print("var",ctx.Identifier().accept(self))
+        #print("val",self.get_state().get(ctx.Identifier().accept(self)))
+        return self.get_state().get(ctx.Identifier().accept(self))
 
         # Visit a parse tree produced by XMLExpParser#vexp.
 
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
-        if ctx.OP() is None:
+        if ctx.op() is None:
+            #print("here1")
             if ctx.numexp() is not None:
                 return ctx.numexp().accept(self)
             elif ctx.idexp() is not None:
                 x = ctx.idexp().accept(self)
-                return self.st.get(x)
+                return x
             elif ctx.boolexp() is not None:
                 if ctx.boolexp().TrueLiteral() is not None:
                     return 1
                 else:
                     return 0
         else:
+            #print("here")
+            #print("op",ctx.op())
             x = ctx.vexp(0).accept(self)
             y = ctx.vexp(1).accept(self)
-            if ctx.OP() == XMLExpParser.Plus:
+            #print("val",y)
+            if ctx.op().Plus() is not None:
                 return x + y
-            elif ctx.OP() == XMLExpParser.Minus:
+            elif ctx.op().Minus() is not None:
                 return x - y
-            elif ctx.OP() == XMLExpParser.Times:
+            elif ctx.op().Times() is not None:
                 return x * y
-            elif ctx.OP() == XMLExpParser.Div:
+            elif ctx.op().Div() is not None:
                 return x // y
-            elif ctx.op() == XMLExpParser.GNum:
-                tmp = calBinNoLength(x)
-                return int(tmp[y])
+            elif ctx.op().GNum() is not None:
+                #print("here1")
+                tmp = (calBinNoLength(x))
+                #print("val",tmp)
+                #print("val",tmp)
+                #print("vala", y)
+                if y < len(tmp):
+                    #print("val",tmp[y])
+                    return int(tmp[y])
         return 0
 
-    def visitIda(self, ctx: XMLExpParser.IdaContext):
-        return ctx.Identifier().getText()
+    #def visitIda(self, ctx: XMLExpParser.IdaContext):
+    #    return ctx.Identifier().getText()
 
         # the only thing that matters will be 48 and 47
 

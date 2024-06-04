@@ -1,11 +1,11 @@
-<let> <id> g </id> <id type = 'qubits' > x </id> <id type = 'qubits' > re </id> <id type = 'qubits' > c </id> <id type = 'qubits' > ca </id> <id type = 'nat' > n </id> <id type = 'nat' > j </id>
+<let> <id> g </id> <id > x </id> <id > re </id> <id > c </id> <id > ca </id> <id > n </id> <id > j </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
    </match>
 </let>
 
-<let> <id> f </id> <id type = 'nat' > n </id> <id type = 'nat' > size </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > re </id> <id type = 'qubits' > c </id>
+<let> <id> f </id> <id > n </id> <id > size </id> <id > x </id> <id > y </id> <id > re </id> <id > c </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>

@@ -80,15 +80,6 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by XMLExpParser#ida.
-    def enterIda(self, ctx:XMLExpParser.IdaContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#ida.
-    def exitIda(self, ctx:XMLExpParser.IdaContext):
-        pass
-
-
     # Enter a parse tree produced by XMLExpParser#vexp.
     def enterVexp(self, ctx:XMLExpParser.VexpContext):
         pass
@@ -194,15 +185,6 @@ class XMLExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by XMLExpParser#op.
     def exitOp(self, ctx:XMLExpParser.OpContext):
-        pass
-
-
-    # Enter a parse tree produced by XMLExpParser#atype.
-    def enterAtype(self, ctx:XMLExpParser.AtypeContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#atype.
-    def exitAtype(self, ctx:XMLExpParser.AtypeContext):
         pass
 
 

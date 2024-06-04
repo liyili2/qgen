@@ -1,4 +1,4 @@
-<let> <id> f </id> <id type = 'qubits' > x </id> <id type = 'qubits' > y </id> <id type = 'qubits' > c </id> <id type = 'nat' > n </id>
+<let> <id> f </id> <id > x </id> <id > y </id> <id > c </id> <id > n </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
