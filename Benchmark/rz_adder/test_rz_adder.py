@@ -3,7 +3,8 @@ import pytest
 from antlr4 import InputStream, CommonTokenStream
 from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
-from Source.quantumCode.AST_Scripts.simulator import  Coq_nval, Simulator, calInt,to_binary_arr
+from Source.quantumCode.AST_Scripts.simulator import CoqNVal, Simulator, bit_array_to_int, to_binary_arr
+
 
 
 # Test function to initialize and run the rz_adder simulation
@@ -29,8 +30,8 @@ def test_init(x,na,m):
 
     valArray_x = to_binary_arr(x ,na) 
     valArray_y = to_binary_arr(m,na)
-    state = dict({"x" : Coq_nval(valArray_x,0), 
-                  "m" : Coq_nval(valArray_y,0),
+    state = dict({"x" : CoqNVal(valArray_x,0),
+                  "m" : CoqNVal(valArray_y,0),
                   "na": na}) #initial a chainMap having variable "x" to be 0 (list of False)
     environment = {
         "x" : na,
@@ -44,7 +45,7 @@ def test_init(x,na,m):
 
 # Helper function to check the result
 def check_rz_adder_result(new_state, expected_result, num_qubits):
-    final_x_value = calInt(new_state.get('x').getBits(), num_qubits)
+    final_x_value = bit_array_to_int(new_state.get('x').getBits(), num_qubits)
     assert final_x_value == expected_result, \
         f"Expected {expected_result}, Final {final_x_value}"
 

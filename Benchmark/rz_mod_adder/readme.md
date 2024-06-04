@@ -1,7 +1,15 @@
-input of the program:
+Input of the program:
 
-x: qubits(na),na: nat, c: qubits(1) (c requires to be zero), a:nat, m : nat
+x: qubit array of length na (CoqNVal),
+na: Natural number representing the length of x (int) 
+c: qubits array of length one, used as carry register. c must be initialized to zero (CoqNVal),
+a: addend to be added to x (int), 
+m : modulo divisor (int)
 
-ouptu of the program:
+Output of the program:
 
-x: (old(x) + a) % m, c: same, na: same, a:same, m : same 
+x: (old(x) + a) % m,
+c: unchanged,
+na: unchanged,
+a: unchanged,
+m : unchanged 

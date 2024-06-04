@@ -1,9 +1,15 @@
-input of the program:
+Input of the program:
 
-xa: qubits(na), ya:qubits(na), ca:qubits(1) (ca is required to be zero), na: nat
+xa: qubit array of length na to be added to ya (CoqNVal),
+ya: qubit array of length na (CoqNVal), 
+ca: qubit array of length 1, initialized as 0 (CoqNVal),
+na: Natural number representing the length of xa and ya (int)
 
-ouptu of the program:
+Output of the program:
 
-xa: same, ya: (xa + ya) % 2^na, ca: same, na:same
+xa: unchanged, 
+ya: (xa + ya) % 2^na  --modified in situ,
+ca: unchanged, 
+na: unchanged
 
 xa and ya have the same length

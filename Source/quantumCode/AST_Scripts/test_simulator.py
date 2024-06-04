@@ -64,12 +64,12 @@ class Test_Simulator(object):
         val = 100 #init value
         valArray = to_binary_arr(val, num) #conver value to array
         #val = [False]*num # state for x
-        state = dict({"x" : Coq_nval(valArray,0)}) #initial a chainMap having variable "x" to be 0 (list of False)
+        state = dict({"x" : CoqNVal(valArray, 0)}) #initial a chainMap having variable "x" to be 0 (list of False)
         environment = dict({"x" : num}) #env has the same variables as state, but here, variable is initiliazed to its qubit num
         y = Simulator(state, environment) # Environment is same, initial state varies by pyTest
         y.visitProgram(tree)
         newState = y.get_state()
-        assert(132 == calInt(newState.get('x').getBits(), num))
+        assert(132 == bit_array_to_int(newState.get('x').getBits(), num))
 
         # Do assertion check that state is as expected
         # Add function to do state (binary-> int ) conversion  #TODO#

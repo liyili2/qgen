@@ -1,9 +1,11 @@
-input of the program:
+Input of the program:
 
-x: qubits(n+1), n: nat
+x: qubit array of length n+1 (CoqNVal),
+n: natural number (int)
 
-ouptu of the program:
+Output of the program:
 
-x: x[0], x[0] xor x[1], ... , x[0] xor x[1] xor ... xor x[n-1], n: same
+x: x[0], x[0] xor x[1], ... , x[0] xor x[1] xor ... xor x[n-1], 
+n: unchanged
 
-x[0], x[0] xor x[1], ... , x[0] xor x[1] xor ... xor x[n-1] means a list of qubit x from 0-th position to n-1 th position.
+Where x[0], x[0] xor x[1], ... , x[0] xor x[1] xor ... xor x[n-1] means a list of qubit x from 0-th position to n-1 th position.
