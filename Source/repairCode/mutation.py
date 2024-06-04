@@ -65,7 +65,7 @@ class PyGGiMutation(Mutation[QPatch]):
                     if j < edit_list_length:
                         solution.edit_list[j] = edit_operator.create(solution.program)
 
-        print("Mutation Solution",solution.diff)
+        #print("Mutation Solution",solution.diff)
         return solution
 
     def get_name(self):
