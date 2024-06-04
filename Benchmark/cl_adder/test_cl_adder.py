@@ -50,29 +50,10 @@ def test_skip():
     simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    print(calInt(new_state.get('x').getBits(), num_qubits_x) )
-    assert (10 == calInt(new_state.get('y').getBits(), num_qubits_y))
+    assert (11 == calInt(new_state.get('ya').getBits(), num_qubits_y))
 
 def test_x_ccv():
-    str = '''
-    <pexp gate="X" type="Nor">
-    <idexp>x</idexp>
-    <vexp>0</vexp>
-</pexp>
-<pexp gate="CU" type="Nor">
-    <idexp>x</idexp>
-    <vexp>0</vexp>
-    <pexp gate="CU" type="Nor">
-        <idexp>x</idexp>
-        <vexp>1</vexp>
-        <pexp gate="X" type="Nor">
-            <idexp>y</idexp>
-            <vexp>1</vexp>
-        </pexp>
-    </pexp>
-</pexp>
-<app> <id> f </id> <id> xa </id> <id> ya </id> <id> ca </id> <id> na </id> </app>
-'''
+    str = X_CCV
     i_stream = InputStream(str)
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
@@ -222,6 +203,45 @@ def test_ccx_basic():
     new_state = simulator.get_state()
     # print(calInt(new_state.get('xa').getBits(), num_qubits_x) )
     assert (10 == calInt(new_state.get('ya').getBits(), num_qubits_y))
+
+def test_full_cl_adder():
+    with open("Benchmark/cl_adder/cl_adder_good.xml", 'r') as f:
+        str = f.read()
+    i_stream = InputStream(str)
+    lexer = XMLExpLexer(i_stream)
+    t_stream = CommonTokenStream(lexer)
+    parser = XMLExpParser(t_stream)
+    tree = parser.program()
+    print(tree.toStringTree(recog=parser))
+
+    num_qubits_x = 16  # Number of Qubits
+    val_x = 100  # init value
+    val_array_x = to_binary_arr(val_x, num_qubits_x)  # convert value to array
+    num_qubits_y = 16
+    val_y = 10
+    val_array_y = to_binary_arr(val_y, num_qubits_y)
+    val_ca = 0
+    num_qubits_ca = 1
+    val_array_ca = to_binary_arr(val_ca, num_qubits_ca)
+    na = 16
+    # val = [False]*num # state for x
+    state = dict(
+        {"xa": Coq_nval(val_array_x, 0),
+         "ya": Coq_nval(val_array_y, 0),
+         "ca": Coq_nval(val_array_ca, 0),
+         "na": na,
+         })
+    environment = dict(
+        {"xa": num_qubits_x,
+         "ya": num_qubits_y,
+         "ca": num_qubits_ca,
+         })
+    # env has the same variables as state, but here, variable is initiliazed to its qubit num
+    simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
+    simulator.visitProgram(tree)
+    new_state = simulator.get_state()
+    assert (110 == calInt(new_state.get('ya').getBits(), num_qubits_y))
+
 
 
 

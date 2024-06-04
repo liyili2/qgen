@@ -10,7 +10,7 @@ SKIP_XML = """
 
 # applying X gate, and then a CCX gate controlling at (x,0) and (x,1) and flip of (y,1)
 X_CCV = '''
-<pexp gate="X" type="Nor">
+    <pexp gate="X" type="Nor">
     <id>x</id>
     <vexp>0</vexp>
 </pexp>
@@ -26,6 +26,7 @@ X_CCV = '''
         </pexp>
     </pexp>
 </pexp>
+<app> <id> f </id> <id> xa </id> <id> ya </id> <id> ca </id> <id> na </id> </app>
 '''
 
 FLIP_X_ZERO_ROTATE_PHASE = """

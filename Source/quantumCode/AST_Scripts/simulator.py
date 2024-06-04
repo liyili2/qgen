@@ -18,13 +18,13 @@ class Coq_nval(Coq_Val):
 
     def __init__(self, b: [bool], r: int):
         self.boolean_binary = b
-        self.r = r
+        self.phase = r
 
     def getBits(self):
         return self.boolean_binary
 
     def getPhase(self):
-        return self.r
+        return self.phase
 
 
 class Coq_qval(Coq_Val):
@@ -101,7 +101,7 @@ def times_r_rotate(v, q, rmax):
 def up_h(v, rmax):
     if isinstance(v, Coq_nval):
         b = v.boolean_binary
-        r = v.r
+        r = v.phase
         if b:
             return Coq_qval(
                 r,
@@ -139,6 +139,9 @@ def to_binary_arr(value, array_length):
         value = value // 2
         binary_arr[i] = bool(b)
     return binary_arr
+
+def calBin(val, num):
+    return to_binary_arr(val, num)
 
 
 def calBinNoLength(v):
@@ -216,6 +219,7 @@ class Simulator(XMLExpVisitor):
                 if tmpv is not None:
                     self.st.update({y:tmpv})
             i += 1
+        print("matchexp end")
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         #print("here1")
@@ -251,6 +255,7 @@ class Simulator(XMLExpVisitor):
             ctx.exp(0).accept(self)
         else:
             ctx.exp(1).accept(self)
+        print("ifexp end")
 
     def get_state(self):
         return self.st
@@ -271,6 +276,7 @@ class Simulator(XMLExpVisitor):
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
+        print("skipexp")
         return
 
     # X posi, changed the following for an example
@@ -306,7 +312,7 @@ class Simulator(XMLExpVisitor):
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        #print("here1")
+        # print("srexp")
         n = int(ctx.vexp().accept(self))
         #print("varl",n)
         #print("vara",self.st.get("m"))
@@ -316,6 +322,7 @@ class Simulator(XMLExpVisitor):
             self.sr_rotate(x, n)
         else:
             self.srr_rotate(x, abs(n))
+        print("srexp end")
 
     def lshift(self, x, n):
         if n == 0:
@@ -381,8 +388,8 @@ class Simulator(XMLExpVisitor):
         x = ctx.idexp().Identifier().accept(self)
         b = int(ctx.vexp().accept(self))
         self.turn_qft(x, self.env.get(x) - b)
-        #print("val",self.env.get(x)-b)
-        #print("x",self.st.get(x))
+        #print("qft_exp val",self.env.get(x)-b)
+        #print("qft_exp x",self.st.get(x))
         # TODO implement
 
     def turn_rqft(self, x):
@@ -399,8 +406,14 @@ class Simulator(XMLExpVisitor):
             self.st.update({x: Coq_nval(result, val.getPhase())})
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
+<<<<<<< Updated upstream
         x = ctx.idexp().Identifier().accept(self)
+=======
+        print("rqftexp")
+        x = ctx.idexp().accept(self)
+>>>>>>> Stashed changes
         self.turn_rqft(x)
+        print("rqftexp end")
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:
@@ -409,15 +422,15 @@ class Simulator(XMLExpVisitor):
             return self.visitTerminal(ctx)
 
     def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        #print("var",ctx.Identifier().accept(self))
-        #print("val",self.get_state().get(ctx.Identifier().accept(self)))
+        #print("idexp var",ctx.Identifier().accept(self))
+        #print("idexp val",self.get_state().get(ctx.Identifier().accept(self)))
         return self.get_state().get(ctx.Identifier().accept(self))
 
         # Visit a parse tree produced by XMLExpParser#vexp.
 
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
         if ctx.op() is None:
-            #print("here1")
+            #print("vexp none op")
             if ctx.numexp() is not None:
                 return ctx.numexp().accept(self)
             elif ctx.idexp() is not None:
@@ -459,6 +472,7 @@ class Simulator(XMLExpVisitor):
         # the only thing that matters will be 48 and 47
 
     def visitTerminal(self, node):
+        print("terminal")
         if node.getSymbol().type == XMLExpParser.Identifier:
             return node.getText()
         if node.getSymbol().type == XMLExpParser.Number:
