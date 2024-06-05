@@ -4,13 +4,13 @@
                      <id > z </id> <id > j </id>
     <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp></pexp>
     <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp></pexp>
-    <pexp gate = 'CU' > <id> x </id>  <vexp> n </vexp> <pexp gate = 'CU' > <id> y </id>  <vexp> m </vexp> <pexp gate = 'X' > <id> z </id>  <vexp> j </vexp> </pexp> </pexp></pexp>
+    <pexp gate = 'CU' > <id> x </id>  <id> n </id> <pexp gate = 'CU' > <id> y </id>  <id> m </id> <pexp gate = 'X' > <id> z </id>  <id> j </id> </pexp> </pexp></pexp>
 </let>
 
 <let> <id> uma </id> <id > x </id> <id > n </id> 
                      <id > y </id> <id > m </id> 
                      <id > z </id> <id > j </id>
-    <pexp gate = 'CU' > <id> x </id>  <vexp> n </vexp> <pexp gate = 'CU' > <id> y </id>  <vexp> m </vexp> <pexp gate = 'X' > <id> z </id>  <vexp> j </vexp> </pexp> </pexp></pexp>
+    <pexp gate = 'CU' > <id> x </id>  <id> n </id> <pexp gate = 'CU' > <id> y </id>  <id> m </id> <pexp gate = 'X' > <id> z </id>  <id> j </id> </pexp> </pexp></pexp>
     <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp></pexp>
     <pexp gate = 'CU' > <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp></pexp>
 </let>

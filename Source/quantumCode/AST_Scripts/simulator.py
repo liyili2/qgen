@@ -200,7 +200,7 @@ class Simulator(XMLExpVisitor):
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
         x = ctx.idexp().Identifier().accept(self)
         value = self.st.get(x)
-        print("value match", value)
+        #print("value match", value)
         i = 0
         while ctx.exppair(i) is not None:
             if ctx.exppair(i).vexp().OP() is None:
@@ -210,61 +210,43 @@ class Simulator(XMLExpVisitor):
                     return
             else:
                 y = ctx.exppair(i).vexp().vexp(0).idexp().Identifier().accept(self)
-                #print("var",y)
                 tmpv = self.st.get(y)
                 self.st.update({y: int(value) - 1})
-                #print("valb",int(v)-1)
-                #print("here")
                 ctx.exppair(i).program().accept(self)
                 if tmpv is not None:
                     self.st.update({y:tmpv})
             i += 1
-        print("matchexp end")
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        #print("here1")
         ctxa = ctx.idexp().accept(self)
         #ctxa = self.st.get(f)
         i = 0
         tmpv = dict()
         while ctxa.idexp(i+1) is not None:
             x = ctxa.idexp(i+1).Identifier().accept(self)
-            #print("var: ", x)
             v = ctx.vexp(i).accept(self)
-            #print("val: ", v)
-            if not isinstance(v, CoqNVal) and not isinstance(v, CoqQVal):
-                if self.st.get(x) is not None:
-                    tmpv.update({x:self.st.get(x)})
-                #print("var",x)
-                #print("val",v)
-                self.st.update({x: v})
+            if self.st.get(x) is not None:
+                tmpv.update({x:self.st.get(x)})
+            self.st.update({x: v})
             i += 1
-        ctxa.exp().accept(self)
+        ctxa.program().accept(self)
         while len(tmpv) != 0:
             xv,re = tmpv.popitem()
-            #print("val",re)
             self.st.update({xv:re})
-            #print("var",xv)
-            #print("val",re)
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
-        #print("here1")
         v = ctx.vexp().accept(self)
         if v == 1:
-            #print("here1")
             ctx.exp(0).accept(self)
         else:
             ctx.exp(1).accept(self)
-        print("ifexp end")
 
     def get_state(self):
         return self.st
 
     def sr_rotate(self, x, n):
         val = self.st.get(x)
-        #print("here1")
         if isinstance(val, CoqQVal):
-            #print("var",(val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()))
             self.st.update(
                 {x: CoqQVal(val.r1, (val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()), val.getRest(), val.getNum())})
 
@@ -276,7 +258,6 @@ class Simulator(XMLExpVisitor):
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
-        print("skipexp")
         return
 
     # X posi, changed the following for an example
@@ -284,7 +265,6 @@ class Simulator(XMLExpVisitor):
         x = ctx.idexp().accept(self)
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         exchange(x, p)
-        # print(M_find(x, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recursively call ctx.exp
@@ -312,17 +292,12 @@ class Simulator(XMLExpVisitor):
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        # print("srexp")
         n = int(ctx.vexp().accept(self))
-        #print("varl",n)
-        #print("vara",self.st.get("m"))
         x = ctx.idexp().Identifier().accept(self)
-        #print("here1")
         if n >= 0:
             self.sr_rotate(x, n)
         else:
             self.srr_rotate(x, abs(n))
-        print("srexp end")
 
     def lshift(self, x, n):
         if n == 0:
@@ -408,7 +383,7 @@ class Simulator(XMLExpVisitor):
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.idexp().Identifier().accept(self)
         self.turn_rqft(x)
-        print("rqftexp end")
+        #print("rqftexp end")
 
     def visit(self, ctx: ParserRuleContext):
         if ctx.getChildCount() > 0:

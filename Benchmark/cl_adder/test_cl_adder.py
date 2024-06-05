@@ -27,13 +27,13 @@ def test_skip():
     num_qubits_x = 16  # Number of Qubits
     val_x = 100  # init value
     val_array_x = to_binary_arr(val_x, num_qubits_x)  # convert value to array
-    num_qubits_y = 64
+    num_qubits_y = 16
     val_y = 10
     val_array_y = to_binary_arr(val_y, num_qubits_y)
-    val_ca = 20
+    val_ca = 0
     num_qubits_ca = 1
     val_array_ca = to_binary_arr(val_ca, num_qubits_ca)
-    na = 7
+    na = 16
     state = dict(
         {"xa": CoqNVal(val_array_x, 0),
          "ya": CoqNVal(val_array_y, 0),

@@ -10,7 +10,7 @@ exppair : '<' Pair '>' vexp program '</' Pair '>' ;
 
 matchexp : '<' Match '>' idexp exppair (exppair)* '</' Match '>' ;
 
-letexp : '<' Let '>' idexp (idexp)* exp '</' Let '>' ;
+letexp : '<' Let '>' idexp (idexp)* program '</' Let '>' ;
 
 ifexp : '<' Ifa '>' vexp exp exp '</' Ifa '>';
 

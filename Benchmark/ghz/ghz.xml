@@ -4,7 +4,7 @@
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
    </match>
 </let>
-<app> <id> f </id> <id> x </id> <id> n </id> </app>
+<app> <id> f </id> <id> x </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp> </app>
 
 //this is the second half of the ghz ciruit
 //assume that a Had is already applied in the first simulator.
