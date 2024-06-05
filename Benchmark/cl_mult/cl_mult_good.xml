@@ -1,4 +1,3 @@
-
 <let> <id> maj </id> <id > x </id> <id > n </id> 
                      <id > y </id> <id > m </id> 
                      <id > z </id> <id > j </id>
@@ -30,7 +29,7 @@
           <pair> <vexp> 0 </vexp> <app><id> uma </id> <id> c </id> <vexp> 0 </vexp> <id> y </id> <id> i </id> <id> x </id> <vexp> 0 </vexp> </app> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
           <app> <id> uma </id> <id> x </id> <id> m </id> <id> y </id> <vexp op = '+' > <id> n </id> <id> i </id> </vexp> <id> x </id> <id> n </id> </app>
-          <app> <id> umaseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> </app>
+          <app> <id> umaseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> <id > i </id> </app>
           </pair>
    </match>
 </let>
@@ -44,13 +43,11 @@
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> re </id> <vexp> 0 </vexp> </pexp> </pair>
           <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
-
-          <app> <id> f </id> <id> m </id> <id> size </id> <id> x </id> <id> y </id> <id> c </id> </app>
-    <pexp gate = 'CU' > <id> y </id>  <id> m </id> <app> <id> adder </id> <vexp op = '-'> <id> size </id> <id> m </id> </vexp> <id> x </id> <id> re </id> <id> c </id> <id> m </id> </app> </pexp>
+          <app> <id> f </id> <id> m </id> <id> size </id> <id> x </id> <id> y </id> <id > re </id> <id> c </id> </app>
+    <pexp gate = 'CU' > <id> y </id>  <id> m </id>
+         <app> <id> adder </id> <vexp op = '-'> <id> size </id> <id> m </id> </vexp> <id> x </id> <id> re </id> <id> c </id> <id> m </id> </app> </pexp>
           </pair>
    </match>
 </let>   
 
 <app> <id> f </id> <id> na </id> <id> na </id> <id> xa </id> <id> ya </id> <id> result </id> <id> ca </id> </app>
-
-

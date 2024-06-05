@@ -34,10 +34,10 @@ def test_full_cl_mult():
     val_array_result = to_binary_arr(val_result, na)
 
     state = dict(
-        {"xa": CoqNVal(val_array_x, 0),
-         "ya": CoqNVal(val_array_y, 0),
-         "ca": CoqNVal(val_array_ca, 0),
-         "result": CoqNVal(val_array_result, 0),
+        {"xa": [CoqNVal(val_array_x, 0)],
+         "ya": [CoqNVal(val_array_y, 0)],
+         "ca": [CoqNVal(val_array_ca, 0)],
+         "result": [CoqNVal(val_array_result, 0)],
          "na": na,
          })
     environment = dict(
@@ -50,7 +50,7 @@ def test_full_cl_mult():
     simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    assert (20 == bit_array_to_int(new_state.get('result').getBits(), na))
+    assert (20 == bit_array_to_int(new_state.get('result')[0].getBits(), na))
 
 
 @pytest.fixture(scope="session", autouse=True)
