@@ -230,9 +230,9 @@ def test_full_cl_adder():
 
 
     state = dict(
-        {"xa": CoqNVal(val_array_x, 0),
-         "ya": CoqNVal(val_array_y, 0),
-         "ca": CoqNVal(val_array_ca, 0),
+        {"xa": [CoqNVal(val_array_x, 0)],
+         "ya": [CoqNVal(val_array_y, 0)],
+         "ca": [CoqNVal(val_array_ca, 0)],
          "na": na,
          })
     environment = dict(
@@ -248,7 +248,7 @@ def test_full_cl_adder():
     simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    assert (20 == bit_array_to_int(new_state.get('ya').getBits(), num_qubits_y))
+    assert (20 == bit_array_to_int(new_state.get('ya')[0].getBits(), num_qubits_y))
 
 
 

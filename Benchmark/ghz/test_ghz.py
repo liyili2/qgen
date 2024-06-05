@@ -26,7 +26,7 @@ def test_full_cl_ghz():
     val_array_x = to_binary_arr(val_x, n)
 
     state = dict(
-        {"x": CoqNVal(val_array_x, 0),
+        {"x": [CoqNVal(val_array_x, 0)],
          "n": n,
          })
     environment = dict(
@@ -36,7 +36,7 @@ def test_full_cl_ghz():
     simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
-    assert (65535 == bit_array_to_int(new_state.get('x').getBits(), n))
+    assert (65535 == bit_array_to_int(new_state.get('x')[0].getBits(), n))
 
 @pytest.fixture(scope="session", autouse=True)
 def starter(request):

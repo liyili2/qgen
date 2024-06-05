@@ -9,7 +9,7 @@
                </if>
            </pair>   
    </match>
+</let>
 <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
 <app> <id> f </id> <id> x </id> <id> na </id> <id> na </id> <id> m </id> </app> 
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
-</let>
