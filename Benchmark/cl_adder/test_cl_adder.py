@@ -177,13 +177,13 @@ def test_ccx_basic():
     num_qubits_x = 16  # Number of Qubits
     val_x = 100  # init value
     val_array_x = to_binary_arr(val_x, num_qubits_x)  # convert value to array
-    num_qubits_y = 64
+    num_qubits_y = 16
     val_y = 10
     val_array_y = to_binary_arr(val_y, num_qubits_y)
-    val_ca = 20
+    val_ca = 0
     num_qubits_ca = 1
     val_array_ca = to_binary_arr(val_ca, num_qubits_ca)
-    na = 7
+    na = 16
     # val = [False]*num # state for x
     state = dict(
         {"xa": CoqNVal(val_array_x, 0),
@@ -201,7 +201,7 @@ def test_ccx_basic():
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
     # print(calInt(new_state.get('xa').getBits(), num_qubits_x) )
-    assert (10 == bit_array_to_int(new_state.get('ya').getBits(), num_qubits_y))
+    assert (110 == bit_array_to_int(new_state.get('ya').getBits(), num_qubits_y))
 
 def test_full_cl_adder():
     with open("Benchmark/cl_adder/cl_adder_good.xml", 'r') as f:
@@ -218,6 +218,7 @@ def test_full_cl_adder():
     num_qubits_x = na
     val_x = 10
     val_array_x = to_binary_arr(val_x, num_qubits_x)
+    #print("val", val_array_x)
 
     num_qubits_y = na
     val_y = 10
@@ -240,6 +241,10 @@ def test_full_cl_adder():
          "ca": num_qubits_ca,
          })
     # env has the same variables as state, but here, variable is initiliazed to its qubit num
+    print("xa",state.get("xa"))
+    print("ya",state.get("ya"))
+    print("ca",state.get("ca"))
+
     simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()

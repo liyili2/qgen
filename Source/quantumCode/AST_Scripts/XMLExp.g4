@@ -2,7 +2,7 @@ grammar XMLExp;
 
 program: exp (exp)* ;
 
-exp: letexp | appexp | ifexp | matchexp | skipexp | xexp | cuexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
+exp: letexp | appexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
 
 idexp : '<' ID '>' Identifier '</' ID '>' ;
 

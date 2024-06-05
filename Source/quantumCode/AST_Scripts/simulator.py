@@ -166,6 +166,42 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
+    def visitProgram(self, ctx):
+
+        i = 0
+        while ctx.exp(i) is not None:
+            ctx.exp(i).accept(self)
+            i += 1
+
+    def visitExp(self, ctx):
+        if ctx.letexp() is not None:
+            ctx.letexp().accept(self)
+        elif ctx.appexp() is not None:
+            ctx.appexp().accept(self)
+        elif ctx.ifexp() is not None:
+            ctx.ifexp().accept(self)
+        elif ctx.matchexp() is not None:
+            ctx.matchexp().accept(self)
+        elif ctx.cuexp() is not None:
+            self.visitCUexp(ctx.cuexp())
+        elif ctx.skipexp() is not None:
+            ctx.skipexp().accept(self)
+        elif ctx.xexp() is not None:
+            ctx.xexp().accept(self)
+        elif ctx.srexp() is not None:
+            ctx.srexp().accept(self)
+        elif ctx.qftexp() is not None:
+            ctx.qftexp().accept(self)
+        elif ctx.lshiftexp() is not None:
+            ctx.lshiftexp().accept(self)
+        elif ctx.rshiftexp() is not None:
+            ctx.rshiftexp().accept(self)
+        elif ctx.revexp() is not None:
+            ctx.revexp().accept(self)
+        elif ctx.rqftexp() is not None:
+            ctx.rqftexp().accept(self)
+
+
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         f = ctx.idexp(0).Identifier().accept(self)
         self.st.update({f: ctx})
@@ -222,17 +258,28 @@ class Simulator(XMLExpVisitor):
         #ctxa = self.st.get(f)
         i = 0
         tmpv = dict()
+        tmpa = dict()
         while ctxa.idexp(i+1) is not None:
             x = ctxa.idexp(i+1).Identifier().accept(self)
             v = ctx.vexp(i).accept(self)
-            if self.st.get(x) is not None:
-                tmpv.update({x:self.st.get(x)})
-            self.st.update({x: v})
+            tmpv.update({x:self.st.get(x)})
+            tmpa.update({x:v})
             i += 1
+
+        while len(tmpa) != 0:
+            xv,re = tmpa.popitem()
+            self.st.update({xv: re})
+
         ctxa.program().accept(self)
         while len(tmpv) != 0:
             xv,re = tmpv.popitem()
-            self.st.update({xv:re})
+            if re is not None:
+                self.st.update({xv:re})
+            else:
+                self.st.pop(xv, None)
+
+            #print ("var",xv)
+            #print("val",re)
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
