@@ -255,13 +255,17 @@ class Simulator(XMLExpVisitor):
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         ctxa = ctx.idexp().accept(self)
+        #print("here",ctx.idexp().Identifier())
+        #print("herea",ctxa.idexp(0).Identifier())
         #ctxa = self.st.get(f)
         i = 0
         tmpv = dict()
         tmpa = dict()
         while ctxa.idexp(i+1) is not None:
             x = ctxa.idexp(i+1).Identifier().accept(self)
+            #print("var",ctxa.idexp(i+1).Identifier())
             v = ctx.vexp(i).accept(self)
+            #print("val",v)
             tmpv.update({x:self.st.get(x)})
             tmpa.update({x:v})
             i += 1
@@ -269,6 +273,7 @@ class Simulator(XMLExpVisitor):
         while len(tmpa) != 0:
             xv,re = tmpa.popitem()
             self.st.update({xv: re})
+            #print("vara",xv,"vala",re)
 
         ctxa.program().accept(self)
         while len(tmpv) != 0:
