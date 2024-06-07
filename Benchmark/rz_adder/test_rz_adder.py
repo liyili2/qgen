@@ -6,7 +6,6 @@ from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.simulator import CoqNVal, Simulator, bit_array_to_int, to_binary_arr
 
 
-
 # Test function to initialize and run the rz_adder simulation
 def run_rz_adder_test(num_qubits,val,addend):
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
