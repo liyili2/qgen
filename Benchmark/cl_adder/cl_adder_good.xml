@@ -1,4 +1,4 @@
-
+<root>
 <let> <id> maj </id> <id > x </id> <id > n </id> 
                      <id > y </id> <id > m </id> 
                      <id > z </id> <id > j </id>
@@ -40,5 +40,5 @@
              <app> <id> umaseq </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp>  <id> x </id> <id> y </id> <id> c </id> </app>
 </let>
 <app> <id> f </id> <id> na </id> <id> xa </id> <id> ya </id> <id> ca </id> </app>
-
+</root>
 

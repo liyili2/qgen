@@ -8,6 +8,15 @@ else:
 # This class defines a complete listener for a parse tree produced by XMLExpParser.
 class XMLExpListener(ParseTreeListener):
 
+    # Enter a parse tree produced by XMLExpParser#root.
+    def enterRoot(self, ctx:XMLExpParser.RootContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#root.
+    def exitRoot(self, ctx:XMLExpParser.RootContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#program.
     def enterProgram(self, ctx:XMLExpParser.ProgramContext):
         pass

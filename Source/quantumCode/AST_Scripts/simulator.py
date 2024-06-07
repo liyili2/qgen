@@ -166,14 +166,17 @@ class Simulator(XMLExpVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitProgram(self, ctx):
+    def visitRoot(self, ctx:XMLExpParser.RootContext):
+        ctx.program().accept(self)
+
+    def visitProgram(self, ctx: XMLExpParser.ProgramContext):
 
         i = 0
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
             i += 1
 
-    def visitExp(self, ctx):
+    def visitExp(self, ctx: XMLExpParser.ExpContext):
         if ctx.letexp() is not None:
             ctx.letexp().accept(self)
         elif ctx.appexp() is not None:
@@ -206,7 +209,7 @@ class Simulator(XMLExpVisitor):
         f = ctx.idexp(0).Identifier().accept(self)
         self.st.update({f: ctx})
         #print("f", ctx)
-        # ctx.exp().accept(self)
+        #ctx.exp().accept(self)
 
     # def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
     #     print('1')

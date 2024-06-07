@@ -1,5 +1,7 @@
 grammar XMLExp;
 
+root: '<' Root '>' program '</' Root '>';
+
 program: exp (exp)* ;
 
 exp: letexp | appexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
@@ -51,6 +53,8 @@ op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 //atype: Qubits | Nat | Bits;
 
 boolexp: TrueLiteral | FalseLiteral;
+
+Root : 'root';
 
 Let : 'let';
 

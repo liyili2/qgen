@@ -14,7 +14,7 @@ def run_rz_adder_test(num_qubits,val,addend):
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    return parser.program()
+    tree = parser.root()
 
     # num_qubits = 16  # Number of Qubits
     # val = 100  # init value
@@ -26,15 +26,15 @@ def run_rz_adder_test(num_qubits,val,addend):
     environment = dict(
         {"x": num_qubits})  # env has the same variables as state, but here, variable is initiliazed to its qubit num
     y = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
-    y.visitProgram(tree)
+    y.visitRoot(tree)
     new_state = y.get_state()
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
 
 def test_basic_addition():
-    assert run_rz_adder_test(16, 5, 4) == 9
+    assert (run_rz_adder_test(4, 5, 4) == 9)
 
 def test_carry_propagation():
-    assert run_rz_adder_test(4, 14, 3) == 1  # 1110 + 0011 = 10001 % 2^4 = 0001
+   assert run_rz_adder_test(4, 14, 3) == 1  # 1110 + 0011 = 10001 % 2^4 = 0001
 
 def test_array_size_limit():
     assert run_rz_adder_test(4, 3, 13) == 0  # 0011 + 1101 = 10000 % 2^4 = 0000

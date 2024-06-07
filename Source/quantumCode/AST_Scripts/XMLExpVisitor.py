@@ -9,6 +9,11 @@ else:
 
 class XMLExpVisitor(ParseTreeVisitor):
 
+    # Visit a parse tree produced by XMLExpParser#root.
+    def visitRoot(self, ctx:XMLExpParser.RootContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by XMLExpParser#program.
     def visitProgram(self, ctx:XMLExpParser.ProgramContext):
         return self.visitChildren(ctx)

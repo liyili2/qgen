@@ -28,7 +28,7 @@ def simulate_cl_adder(x_array_value, y_array_value, c_array_value, num_qubits):
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    tree = parser.program()
+    tree = parser.root()
     # print(tree.toStringTree(recog=parser))
 
     val_array_x = to_binary_arr(x_array_value, num_qubits)
@@ -52,7 +52,7 @@ def simulate_cl_adder(x_array_value, y_array_value, c_array_value, num_qubits):
     print("ya",state.get("ya"))
     print("ca",state.get("ca"))
     simulator = Simulator(state, environment)
-    simulator.visitProgram(tree)
+    simulator.visitRoot(tree)
     new_state = simulator.get_state()
     return new_state
 
