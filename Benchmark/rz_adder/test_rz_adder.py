@@ -9,23 +9,25 @@ from Source.quantumCode.AST_Scripts.simulator import CoqNVal, Simulator, bit_arr
 # for the first step, the fitness is the percentage of correctness. How many test cases a program run correctly.
 # the correctness is defined as array, x, y and c, the input is (x) with a constant m, and the output is (x+m)
 
-def simulate_qubit_adder(num_qubits, val_qubit, addend):
+@pytest.fixture
+def tree():
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
-        str = f.read()
-    i_stream = InputStream(str)
+        string = f.read()
+    i_stream = InputStream(string)
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    tree = parser.program()
-    print(tree.toStringTree(recog=parser))
+    return parser.program()
 
-    val_binary_array = to_binary_arr(val_qubit, num_qubits)  # conver value to array
+
+def simulate_qubit_adder(num_qubits, val_qubit, addend, tree):
+    val_binary_array = to_binary_arr(val_qubit, num_qubits)
     state = dict({"x": [CoqNVal(val_binary_array, 0)],
                   "na": num_qubits,
-                  "m": addend})  # initial a chainMap having variable "x" to be 0 (list of False)
+                  "m": addend})
     environment = dict(
-        {"x": num_qubits})  # env has the same variables as state, but here, variable is initiliazed to its qubit num
-    simulator = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
+        {"x": num_qubits})  # env has the same keys of qubit arrays
+    simulator = Simulator(state, environment)
     simulator.visitProgram(tree)
     new_state = simulator.get_state()
     return new_state
@@ -34,10 +36,10 @@ def simulate_qubit_adder(num_qubits, val_qubit, addend):
 def check_rz_adder_result(new_state, expected_result, num_qubits):
     final_x_value = bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
     assert final_x_value == expected_result, \
-        f"Expected {expected_result}, Final {final_x_value}"
+        f"Expected {expected_result}, Actual {final_x_value}"
 
 
-def test_rz_adder():
+def test_rz_adder(tree):
     test_cases = [
         {"num_qubits": 16, "val_x": 22, "val_m": 971, "expected_result": 993, "description": "Small Even, Large Odd"},
         {"num_qubits": 16, "val_x": 150, "val_m": 25, "expected_result": 175, "description": "Medium Even, Small Odd"},
@@ -47,7 +49,7 @@ def test_rz_adder():
     ]
 
     for case in test_cases:
-        new_state = simulate_qubit_adder(case["num_qubits"], case["val_x"], case["val_m"])
+        new_state = simulate_qubit_adder(case["num_qubits"], case["val_x"], case["val_m"], tree)
         check_rz_adder_result(new_state, case["expected_result"], case["num_qubits"])
 
 
