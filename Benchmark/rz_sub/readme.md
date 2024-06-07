@@ -2,7 +2,7 @@ Input of the program:
 
     x: Qubit array of length na (CoqNVal)
     na: Natural number representing the length of x (int)
-    m: Natural number used as the modulo divisor (int)
+    m: Natural to subtract from x (int)
 
 Output of the program:
 
