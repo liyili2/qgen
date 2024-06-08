@@ -14,8 +14,8 @@ def simulate_rz_sub(val_array_x, subtrahend, num_qubits):
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    tree = parser.program()
-    print(tree.toStringTree(recog=parser))
+    tree = parser.root()
+    #print(tree.toStringTree(recog=parser))
 
     val_array_x = to_binary_arr(val_array_x, num_qubits)
 
@@ -28,7 +28,7 @@ def simulate_rz_sub(val_array_x, subtrahend, num_qubits):
         {"x": num_qubits,
          })
     simulator = Simulator(state, environment)
-    simulator.visitProgram(tree)
+    simulator.visitRoot(tree)
     new_state = simulator.get_state()
     return new_state
 

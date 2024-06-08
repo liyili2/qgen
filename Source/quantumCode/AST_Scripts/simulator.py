@@ -302,13 +302,14 @@ class Simulator(XMLExpVisitor):
     def sr_rotate(self, x, n):
         val = self.st.get(x)[0]
         if isinstance(val, CoqQVal):
-            self.st.get(x)[0] = CoqQVal(val.r1, (val.r2 + pow(2, val.getNum() - n - 1)) % pow(2, val.getNum()), val.getRest(), val.getNum())
+            self.st.get(x)[0] = CoqQVal(val.r1, (val.r2 + pow(2, val.getNum() - n)) % pow(2, val.getNum()), val.getRest(), val.getNum())
 
     def srr_rotate(self, x, n):
-        val = self.st.get(x)
+        #print("here")
+        val = self.st.get(x)[0]
         if isinstance(val, CoqQVal):
-            self.st.get(x)[0] = CoqQVal(val.r1, natminusmod(val.r2, pow(2, val.getNum() - n - 1),
-                                                           pow(2, val.getNum())), val.getRest(), val.getNum())
+            self.st.get(x)[0] = CoqQVal(val.r1,((val.r2 +
+                pow(2, val.getNum()) - pow(2, val.getNum() - n))%pow(2, val.getNum())), val.getRest(), val.getNum())
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):

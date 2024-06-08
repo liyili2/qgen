@@ -5,7 +5,7 @@
            <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
                   <app> <id> f </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app>
                <if> <vexp op = '$' > <id> M </id> <id> m </id> </vexp>
-                      <pexp gate = 'SR' > <vexp op = '-' > <id> size </id> <id> n </id> </vexp> <id> x </id> </pexp>
+                      <pexp gate = 'SR' > <vexp op = '-' > <id> size </id> <id> m </id> </vexp> <id> x </id> </pexp>
                       <pexp gate = 'SKIP' > <id> x </id> <id> m </id> </pexp>
                </if>
            </pair>   
