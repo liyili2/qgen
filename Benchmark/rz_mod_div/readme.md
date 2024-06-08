@@ -6,7 +6,20 @@ Input of the program:
     ex: Qubit array of length na, initialized as zeroes (CoqNVal)
     na: Natural number representing the length of x and ex (int)
     m: Modulo divisor, natural number (int)
-    i: Natural number related to m, such that 2^{n−1} ≤ 2^i <2^n (int)
+    i: Natural number related to m, such that 2^{n−2} ≤ 2^i <2^{n-1} (int)
+
+
+all the numbers must be in the range of 0 to 2^{n-1}, so n bit nat number here can only store n-1 bit because the highest bit need to be used for storing overflow indicator
+i must be a value that is associated with m. i can be find by the findnum function below.
+
+(* Example Circuits that are definable by OQASM. *)
+(* find a number that is great-equal than 2^(n-1), assume that the number is less than 2^n *)
+Fixpoint findnum' (size:nat) (x:nat) (y:nat) (i:nat) := 
+       match size with 0 => i
+              | S n => if y <=? x then i else findnum' n (2 * x) y (i+1)
+       end.
+
+Definition findnum (x:nat) (n:nat) := findnum' n x (2^(n-1)) 0.
 
 Output of the program:
 
