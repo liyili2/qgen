@@ -15,7 +15,7 @@ def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    tree = parser.program()
+    tree = parser.root()
     print(tree.toStringTree(recog=parser))
 
     val_array_x = to_binary_arr(val_x, num_qubits)
@@ -25,7 +25,7 @@ def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
         {"x": [CoqNVal(val_array_x, 0)],
          "ex": [CoqNVal(val_array_ex, 0)],
          "na": num_qubits,
-         "modulo": modulo,
+         "m": modulo,
          "i": i,
          })
     environment = dict(
@@ -34,7 +34,7 @@ def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
          })
     # env has the same variables as state, but here, variable is initiliazed to its qubit num
     simulator = Simulator(state, environment)
-    simulator.visitProgram(tree)
+    simulator.visitRoot(tree)
     new_state = simulator.get_state()
     return new_state
 

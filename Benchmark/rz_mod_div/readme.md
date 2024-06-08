@@ -19,3 +19,31 @@ Output of the program:
 <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
 < app > <id> f </id> <vexp op = 'plus' > <id> i </id> <vexp> 1 </vexp> <id> x </id> <id> ex </id> <id> na </id> <id> m </id> </app> 
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
+
+
+//x is na qubit array, c is one qubit, a and m are two numbers
+//m is between 0 and 2^na, b is between 0 and m, c is initialally bit 0 (coq_nval 0) and its result will remain the same.
+//result will produce x --> (x + a) % m 
+
+//Definition rz_compare_half (x:var) (n:nat) (c:posi) (M:nat) := 
+//   (rz_sub x n (nat2fb M)) ; RQFT x n; (CNOT (x,0) c).
+
+//Definition rz_compare (x:var) (n:nat) (c:posi) (M:nat) := 
+// rz_compare_half x n c M ; (inv_exp ( (rz_sub x n (nat2fb M)) ; RQFT x n)).
+
+//Definition qft_cu (x:var) (c:posi) (n:nat) := 
+//  RQFT x n;  (CNOT (x,0) c) ; QFT x n.
+
+//Definition qft_acu (x:var) (c:posi) (n:nat) := 
+//  RQFT x n;  (X (x,0); CNOT (x,0) c; X (x,0)) ; QFT x n.
+
+//Definition one_cu_adder (x:var) (n:nat) (c:posi) (M:nat -> bool) := CU c (rz_adder x n M).
+
+//Definition mod_adder_half (x:var) (n:nat) (c:posi) (A:nat -> bool) (M:nat -> bool) :=
+//   (rz_adder x n A; (rz_sub x n M)) ; qft_cu x c n;  (one_cu_adder x n c M).
+
+//Definition clean_hbit (x:var) (n:nat) (c:posi) (M:nat -> bool) := 
+//   (rz_sub x n M) ; qft_acu x c n; ( inv_exp (rz_sub x n M)).
+
+//Definition mod_adder (x:var) (n:nat) (c:posi) (A:nat -> bool) (M:nat -> bool) :=
+//  mod_adder_half x n c A M ; clean_hbit x n c A.

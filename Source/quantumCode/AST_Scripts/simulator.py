@@ -480,6 +480,10 @@ class Simulator(XMLExpVisitor):
                 return x * y
             elif ctx.op().Div() is not None:
                 return x // y
+            elif ctx.op().Exp() is not None:
+                return x ** y
+            elif ctx.op().Mod() is not None:
+                return x % y
             elif ctx.op().GNum() is not None:
                 #print("here1")
                 tmp = (calBinNoLength(x))
