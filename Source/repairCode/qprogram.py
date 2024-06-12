@@ -72,8 +72,8 @@ class QProgram(TreeProgram):
         rcode, stdout, stderr, elapsed = self.exec_cmd(test_command, timeout=tout)
         result = QResult('SUCCESS', None)
         self.compute_fitness(result, rcode, stdout, stderr, elapsed)
-        # print("=== STDOUT ===")
-        # print(stdout)
+        #print("=== STDOUT ===")
+        #print(stdout)
         # print("=== STDERR ===")
         # print(stderr)
         return result

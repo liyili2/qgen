@@ -8,13 +8,14 @@ from Source.quantumCode.AST_Scripts.simulator import CoqNVal, Simulator, bit_arr
 
 # Test function to initialize and run the rz_adder simulation
 def run_rz_adder_test(num_qubits,val,addend):
-    with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
-        string = f.read()
-    i_stream = InputStream(string)
+    with open("rz_adder_good.xml", 'r') as f:
+        str = f.read()
+    i_stream = InputStream(str)
     lexer = XMLExpLexer(i_stream)
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
-    tree = parser.root()
+    tree = parser.program()
+    #print(tree.toStringTree(recog=parser))
 
     # num_qubits = 16  # Number of Qubits
     # val = 100  # init value
