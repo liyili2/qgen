@@ -12,9 +12,10 @@ from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 
 ## Implement new operators here
 class QGateReplacement(StmtReplacement):
-    def __init__(self, target, ingredient, target_tag):
+    def __init__(self, target, ingredient, target_tag): #input env, set a field about env
         super(QGateReplacement, self).__init__(target, ingredient)
         self.target_tag = target_tag
+        # sould input an env for variables, mapping variables to types (Nor,QFT, or nat, or function types,etc)
 
     def apply(self, program, new_contents, modification_points):
         print(" Qgate replacement ,apply")
@@ -35,7 +36,26 @@ class QGateReplacement(StmtReplacement):
 
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
-        # Find all elements with the target gates X, CU, RZ, SKIP
+
+        #For the first try, replacement should first look at tag having name pair
+        #we only allow to modify things inside pairs
+        #elements = target_tree.xpath(".//{}[@name='pair']".format(self.target_tag))
+        #second, we can locate two groups of gates
+        #we should locate pexp tag name, with its id
+        #this is to do replacement on pexp. e.g.
+        #elements = target_tree.xpath(".//{}[@name = 'pexp']".format(self.target_tag))
+        #getids = elements.xpath(... [@id]...)
+        #for each id, we check its type in env
+        #if env is of type Nor(m), then we can replace the gate to
+        #X, CU, SKIP, QFT, Lshift, Rshift, and Rev (the last three are not necessary at this point)
+        #QFT is a more costly gate than the other (setting fitness to make it more costly)
+        #when apply QFT, the variable id's type env is switch from Nor to Phi(m)
+        # when replacing the gate, we need to say make sure that the vexp inside is less than m
+
+        #if env is of type Phi(m), we can replace it with SR or RQFT, or SKIP
+        # when replacing the gate with SR, or RQFT, we need to say make sure that the vexp inside is less than m
+        #when replacing the gate with RQFT, the type is transferred from phi(m) to Nor
+
         elements = target_tree.xpath(".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
 
         if elements:
