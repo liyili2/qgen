@@ -1,7 +1,9 @@
-<let> <id> f </id> <id > x </id> <id > y </id> <id > c </id> <id > n </id>
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+<root>
+<let id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> <vexp op = 'id' > n </vexp> 
+   <match id = 'n' >
+          <pair case = '0' > <pexp gate = 'SKIP' id = 'x' > <vexp> 0 </vexp> </pexp> </pair>
+          <pair case = 'm' > <pexp gate = 'SKIP' id = 'x' > <vexp> 0 </vexp> </pexp> </pair>
    </match>
 </let>
-<app> <id> f </id> <id> xa </id> <id> ya </id> <id> ca </id> <id> na </id> </app>
+<app id = 'f' > <vexp op = 'id' > xa </vexp> <vexp op = 'id' > y a</vexp> <vexp op = 'id' > ca </vexp> <vexp op = 'id' > na </vexp> </app>
+</root>

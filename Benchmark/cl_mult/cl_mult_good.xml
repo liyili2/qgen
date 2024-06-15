@@ -1,53 +1,67 @@
-<let> <id> maj </id> <id > x </id> <id > n </id> 
-                     <id > y </id> <id > m </id> 
-                     <id > z </id> <id > j </id>
-    <pexp gate = 'CU'> <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp></pexp>
-    <pexp gate = 'CU'> <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp></pexp>
-    <pexp gate = 'CU'> <id> x </id>  <id> n </id> <pexp gate = 'CU' > <id> y </id>  <id> m </id> <pexp gate = 'X' > <id> z </id>  <id> j </id> </pexp> </pexp></pexp>
+<root>
+<let id = 'maj' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > n </vexp> 
+                     <vexp op = 'id' > y </vexp> <vexp op = 'id' > m </vexp> 
+                     <vexp op = 'id' > z </vexp> <vexp op = 'id' > j </vexp>
+    <pexp gate = 'CU' id = 'z' > <vexp op = 'id' > j </vexp> <pexp gate = 'X' id = 'y' >  <vexp op = 'id' > m </vexp> </pexp></pexp>
+    <pexp gate = 'CU' id = 'z' > <vexp op = 'id' > j </vexp> <pexp gate = 'X' id = 'x' >  <vexp op = 'id' > n </vexp> </pexp></pexp>
+    <pexp gate = 'CU' id = 'x' > <vexp op = 'id' > n </vexp> <pexp gate = 'CU' id = 'y' >  <vexp op = 'id' > m </vexp> 
+            <pexp gate = 'X' id = 'z' > <vexp op = 'id' > j </vexp> </pexp> </pexp></pexp>
 </let>
 
 <let> <id> uma </id> <id > x </id> <id > n </id> 
                      <id > y </id> <id > m </id> 
                      <id > z </id> <id > j </id>
-    <pexp gate = 'CU'> <id> x </id>  <id> n </id> <pexp gate = 'CU' > <id> y </id>  <id> m </id> <pexp gate = 'X' > <id> z </id>  <id> j </id> </pexp> </pexp></pexp>
-    <pexp gate = 'CU'> <id> z </id>  <id> j </id> <pexp gate = 'X' > <id> x </id>  <id> n </id> </pexp></pexp>
-    <pexp gate = 'CU'> <id> x </id>  <id> n </id> <pexp gate = 'X' > <id> y </id>  <id> m </id> </pexp></pexp>
+    <pexp gate = 'CU' id = 'x' > <vexp op = 'id' > n </vexp> <pexp gate = 'CU' id = 'y' >  <vexp op = 'id' > m </vexp> 
+            <pexp gate = 'X' id = 'z' > <vexp op = 'id' > j </vexp> </pexp> </pexp></pexp>
+    <pexp gate = 'CU' id = 'z' > <vexp op = 'id' > j </vexp> <pexp gate = 'X' id = 'x' >  <vexp op = 'id' > n </vexp> </pexp></pexp>
+    <pexp gate = 'CU' id = 'z' > <vexp op = 'id' > j </vexp> <pexp gate = 'X' id = 'y' >  <vexp op = 'id' > m </vexp> </pexp></pexp>
 </let>
 
-<let> <id> majseq </id> <id > n </id>  <id > x </id> <id > y </id> <id > c </id> <id > i </id>
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <app><id> maj </id> <id> c </id> <vexp> 0 </vexp> <id> y </id> <id> i </id> <id> x </id> <vexp> 0 </vexp> </app> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
-          <app> <id> majseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
-          <app> <id> maj </id> <id> x </id> <id> m </id> <id> y </id> <vexp op = '+' > <id> n </id> <id> i </id> </vexp> <id> x </id> <id> n </id> </app>
+<let id = 'majseq' > <vexp op = 'id' > n </vexp>  <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp>
+   <match id = 'n' >
+          <pair case = '0' > <app id = 'maj' > <vexp op = 'id' > c </vexp> <vexp op = 'num' > 0 </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'num' > 0 </vexp> <vexp op = 'id' > x </vexp> 
+           <vexp op = 'num' > 0 </vexp> </app> </pair>
+          <pair case = 'm' >
+          <app id = 'majseq' > <vexp op = 'id' > m </vexp> <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> </app>
+          <app id = 'maj' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > m </vexp> <vexp op = 'id' > y </vexp>
+              <vexp op = 'id' > n </vexp> <vexp op = 'id' > x </vexp> <vexp op = 'id' > n </vexp> </app>
           </pair>
    </match>
 </let>
 
-<let> <id> umaseq </id> <id > n </id>  <id > x </id> <id > y </id> <id > c </id> <id > i </id>
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <app><id> uma </id> <id> c </id> <vexp> 0 </vexp> <id> y </id> <id> i </id> <id> x </id> <vexp> 0 </vexp> </app> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
-          <app> <id> uma </id> <id> x </id> <id> m </id> <id> y </id> <vexp op = '+' > <id> n </id> <id> i </id> </vexp> <id> x </id> <id> n </id> </app>
-          <app> <id> umaseq </id> <id> m </id> <id> x </id> <id> y </id> <id> c </id> <id > i </id> </app>
+<let id = 'umaseq' > <vexp op = 'id' > n </vexp>  <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp>
+   <match id = 'n' >
+          <pair case = '0' > <app id = 'uma' > <vexp op = 'id' > c </vexp> <vexp op = 'num' > 0 </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'num' > 0 </vexp> <vexp op = 'id' > x </vexp> 
+           <vexp op = 'num' > 0 </vexp> </app> </pair>
+          <pair case = 'm' >
+          <app id = 'uma' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > m </vexp> <vexp op = 'id' > y </vexp>
+              <vexp op = 'id' > n </vexp> <vexp op = 'id' > x </vexp> <vexp op = 'id' > n </vexp> </app>
+          <app id = 'umaseq' > <vexp op = 'id' > m </vexp> <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> </app>
           </pair>
    </match>
 </let>
 
-<let> <id> adder </id> <id > n </id>  <id > x </id> <id > y </id> <id > c </id><id > i </id>
-             <app> <id> majseq </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp>  <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
-             <app> <id> umaseq </id> <vexp op = '-'> <id> n </id> <vexp> 1 </vexp> </vexp>  <id> x </id> <id> y </id> <id> c </id> <id> i </id> </app>
+
+<let id = 'adder' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> <vexp op = 'id' > n </vexp> 
+             <app id = 'majseq' > <vexp op = '-'> <vexp op = 'id' > n </vexp> <vexp op = 'num' > 1 </vexp> </vexp> 
+                             <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> </app>
+             <app id = 'umaseq' > <vexp op = '-'> <vexp op = 'id' > n </vexp> <vexp op = 'num' > 1 </vexp> </vexp> 
+                             <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> </app>
 </let>
 
-<let> <id> f </id> <id > n </id> <id > size </id>  <id > x </id> <id > y </id> <id > re </id> <id > c </id>
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> re </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp>  1 </vexp> </vexp> 
-          <app> <id> f </id> <id> m </id> <id> size </id> <id> x </id> <id> y </id> <id > re </id> <id> c </id> </app>
-    <pexp gate = 'CU' > <id> y </id>  <id> m </id>
-         <app> <id> adder </id> <vexp op = '-'> <id> size </id> <id> m </id> </vexp> <id> x </id> <id> re </id> <id> c </id> <id> m </id> </app> </pexp>
+<let id = 'f' > <vexp op = 'id' > n </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > x </vexp>  <vexp op = 'id' > y </vexp>  <vexp op = 'id' > re </vexp>  <vexp op = 'id' > c </vexp>
+   <match id = 'n' >
+          <pair case = '0' > <pexp gate = 'SKIP' > <id> re </id> <vexp> 0 </vexp> </pexp> </pair>
+          <pair case = 'm' >
+          <app id = 'f' > <vexp id = 'm' > m </vexp> <vexp id = 'size' > size </vexp> <vexp id = 'x' > x </vexp> <vexp id = 'y'> y </vexp>
+              <vexp id = 're' > re </vexp> <vexp id = 'c' > c </vexp> </app>
+          <pexp gate = 'CU' id = 'y' > <vexp op = 'id' > m </vexp>
+           <app id = 'adder' > <vexp op = '-'> <vexp op = 'id' > size </vexp> <vexp op = 'id' > m </vexp> </vexp>
+              <vexp op = 'id' > x </vexp> <vexp op = 're' > re </vexp> <vexp op = 'c' > c </vexp> <vexp op = 'id'> m </vexp> </app> </pexp>
           </pair>
    </match>
 </let>   
 
-<app> <id> f </id> <id> na </id> <id> na </id> <id> xa </id> <id> ya </id> <id> result </id> <id> ca </id> </app>
+<app id = 'f' > <vexp op = 'id' > n </vexp> <vexp op = 'id' > size </vexp> 
+    <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > re </vexp> <vexp op = 'id' > c </vexp> </app>
+</root>
