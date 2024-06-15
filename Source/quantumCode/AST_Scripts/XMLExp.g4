@@ -6,53 +6,55 @@ program: exp (exp)* ;
 
 exp: letexp | appexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
 
-idexp : '<' ID '>' Identifier '</' ID '>' ;
+idexp : '<' VEXP OP '=' '\'' ID '\'' '>' Identifier '</' VEXP '>' ;
 
-exppair : '<' Pair '>' vexp program '</' Pair '>' ;
+exppair : '<' Pair 'case' '=' '\'' element '\'' '>' program '</' Pair '>' ;
 
-matchexp : '<' Match '>' idexp exppair (exppair)* '</' Match '>' ;
+matchexp : '<' Match 'id' '=' '\'' Identifier '\'' '>' exppair (exppair)* '</' Match '>' ;
 
-letexp : '<' Let '>' idexp (idexp)* program '</' Let '>' ;
+letexp : '<' Let 'id' '=' '\'' Identifier '\'' '>' (idexp)* program '</' Let '>' ;
 
-ifexp : '<' Ifa '>' vexp exp exp '</' Ifa '>';
+ifexp : '<' Ifa '>' vexp root root '</' Ifa '>';
 
-appexp : '<' APP '>' idexp (vexp)* '</' APP '>';
+appexp : '<' APP 'id' '=' '\'' Identifier '\'' '>' (vexp)* '</' APP '>';
 
 //ida : '<' ID 'type' '=' '\'' atype '\'' '>' Identifier '</' ID '>' ;
         
-vexp: idexp | '<' VEXP '>' numexp '</' VEXP '>'
-    | '<' VEXP '>' boolexp '</' VEXP '>' | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
+vexp: idexp | '<' VEXP OP '=' '\'' NUM '\'' '>' numexp '</' VEXP '>'
+    | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
+
+element : numexp | Identifier;
 
 numexp: Number | Minus Number;
         
  // Lexical Specification of this Programming Language
  //  - lexical specification rules start with uppercase
 
-skipexp: '<' PEXP 'gate' '=' '\'' 'SKIP' '\'' '>' idexp vexp '</' PEXP '>' ;
+skipexp: '<' PEXP 'gate' '=' '\'' 'SKIP' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp '</' PEXP '>' ;
 
-xexp: '<' PEXP 'gate' '=' '\'' 'X' '\'' '>' idexp vexp '</' PEXP '>' ;
+xexp: '<' PEXP 'gate' '=' '\'' 'X' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp '</' PEXP '>' ;
 
-cuexp: '<' PEXP 'gate' '=' '\'' 'CU' '\'' '>' idexp vexp program '</' PEXP '>' ;
+cuexp: '<' PEXP 'gate' '=' '\'' 'CU' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp program '</' PEXP '>' ;
 
-//rzexp: '<' PEXP 'gate' '=' '\'' 'RZ' '\'' '>' vexp idexp vexp '</' PEXP '>' ;
+//rzexp: '<' PEXP 'gate' '=' '\'' 'RZ' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp vexp '</' PEXP '>' ;
 
-srexp: '<' PEXP 'gate' '=' '\'' 'SR' '\'' '>' vexp idexp '</' PEXP '>' ;
+srexp: '<' PEXP 'gate' '=' '\'' 'SR' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp '</' PEXP '>' ;
 
-lshiftexp: '<' PEXP 'gate' '=' '\'' 'Lshift' '\'' '>' idexp '</' PEXP '>' ;
+lshiftexp: '<' PEXP 'gate' '=' '\'' 'Lshift' '\'' 'id' '=' '\'' Identifier '\'' '>' '</' PEXP '>' ;
 
-rshiftexp: '<' PEXP 'gate' '=' '\'' 'Rshift' '\'' '>' idexp '</' PEXP '>' ;
+rshiftexp: '<' PEXP 'gate' '=' '\'' 'Rshift' '\'' 'id' '=' '\'' Identifier '\'' '>' '</' PEXP '>' ;
 
-revexp: '<' PEXP 'gate' '=' '\'' 'Rev' '\'' '>' idexp '</' PEXP '>' ;
+revexp: '<' PEXP 'gate' '=' '\'' 'Rev' '\'' 'id' '=' '\'' Identifier '\'' '>' '</' PEXP '>' ;
 
-qftexp: '<' PEXP 'gate' '=' '\'' 'QFT' '\'' '>' idexp vexp '</' PEXP '>' ;
+qftexp: '<' PEXP 'gate' '=' '\'' 'QFT' '\'' 'id' '=' '\'' Identifier '\'' '>' vexp '</' PEXP '>' ;
 
-rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' '>' idexp '</' PEXP '>' ;
+rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' 'id' '=' '\'' Identifier '\'' '>' '</' PEXP '>' ;
 
 op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 
 //atype: Qubits | Nat | Bits;
 
-boolexp: TrueLiteral | FalseLiteral;
+//boolexp: TrueLiteral | FalseLiteral;
 
 Root : 'root';
 
@@ -99,6 +101,8 @@ Bits : 'bits';
  VEXP : 'vexp';
 
  ID : 'id';
+
+ NUM: 'num';
 
  Number : DIGIT+ ;
 
