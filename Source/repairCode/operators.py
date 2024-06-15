@@ -16,6 +16,11 @@ class QGateReplacement(StmtReplacement):
         super(QGateReplacement, self).__init__(target, ingredient)
         self.target_tag = target_tag
         # sould input an env for variables, mapping variables to types (Nor,QFT, or nat, or function types,etc)
+        #think through the env input, we might not be able to input env
+        #since in edit list, each program is replaced by a set of edit list
+        #then env in each edit list is different
+        #we might need to create field in the parser to make env to be part of the program input
+        #setting those fields to be unchangable
 
     def apply(self, program, new_contents, modification_points):
         print(" Qgate replacement ,apply")
