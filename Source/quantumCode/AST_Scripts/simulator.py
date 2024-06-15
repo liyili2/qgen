@@ -243,7 +243,7 @@ class Simulator(XMLExpVisitor):
         i = 0
         while ctx.exppair(i) is not None:
             va = ctx.exppair(i).element().accept(self)
-            if isinstance(vx, int):
+            if isinstance(va, int):
                 if value == va:
                     ctx.exppair(i).program().accept(self)
                     return
@@ -252,7 +252,7 @@ class Simulator(XMLExpVisitor):
                 self.st.update({va: int(value) - 1})
                 ctx.exppair(i).program().accept(self)
                 if tmpv is not None:
-                    self.st.update({y:tmpv})
+                    self.st.update({va:tmpv})
             i += 1
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
@@ -292,9 +292,9 @@ class Simulator(XMLExpVisitor):
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
         if v == 1:
-            ctx.exp(0).accept(self)
+            ctx.root(0).accept(self)
         else:
-            ctx.exp(1).accept(self)
+            ctx.root(1).accept(self)
 
     def get_state(self):
         return self.st
@@ -459,7 +459,7 @@ class Simulator(XMLExpVisitor):
         if ctx.idexp() is not None:
             x = ctx.idexp().accept(self)
             return x
-        if ctx.numexp() is not None:
+        if ctx.NUM() is not None:
             return ctx.numexp().accept(self)
         else:
             #print("here")
