@@ -6,8 +6,14 @@ Input of the program:
     a: addend to be added to x (int), 
     m : modulo divisor (int)
     
-all the numbers, x, na, a and m are required to be less than 2^{na - 1}, and na is greater than or equal to 1, and m must be greater than 1
-In addition, a and x are both less than m
+All the numbers, x, na, a and m are required to be less than 2^{na - 1}, and na is greater than or equal to 1, and m must be greater than 1.
+In addition, a and x are both less than m.
+
+x,a, and m <= 2^{na - 1}
+
+na >= 1
+
+m > 1
 
 Output of the program:
     

@@ -1,34 +1,147 @@
-<let> <id> g </id> <id > n </id> <id > b </id> <id > x </id> <id > y </id> <id > j </id> <id > M </id> 
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
-   </match>
+<let>
+    <id> divide_mod </id>
+    <id> num </id>
+    <id> base </id>
+    <id> quotient </id>
+    <id> remainder </id>
+    <id> index </id>
+    <id> modulus </id>
+    <match>
+        <id> num </id>
+        <pair>
+            <vexp> 0 </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+        <pair>
+            <vexp op = '+'>
+                <id> intermediate </id>
+                <vexp> 1 </vexp>
+            </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+    </match>
 </let>
 
-<let> <id> h </id> <id > n </id> <id > b </id> <id > x </id> <id > M </id> 
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
-   </match>
-</let>
-   
-<let> <id> f </id> <id > j </id> <id > n </id> <id > b </id> <id > x </id> <id > y </id> <id > M </id> 
-   <match> <id> j </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>   
-   </match>
+<let>
+    <id> halve_num </id>
+    <id> num </id>
+    <id> base </id>
+    <id> quotient </id>
+    <id> modulus </id>
+    <match>
+        <id> num </id>
+        <pair>
+            <vexp> 0 </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+        <pair>
+            <vexp op = '+'>
+                <id> intermediate </id>
+                <vexp> 1 </vexp>
+            </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+    </match>
 </let>
 
-<let> <id> nlshift </id> <id > n </id> <id > x </id>
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp> 1 </vexp> </vexp> <pexp gate = 'Lshift' > <id> x </id> </pexp> <app> <id> nlshift </id> <id> m </id> <id> x </id> </app> </pair>   
-   </match>
+<let>
+    <id> recursive_div </id>
+    <id> index </id>
+    <id> num </id>
+    <id> base </id>
+    <id> quotient </id>
+    <id> remainder </id>
+    <id> modulus </id>
+    <match>
+        <id> index </id>
+        <pair>
+            <vexp> 0 </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+        <pair>
+            <vexp op = '+'>
+                <id> intermediate </id>
+                <vexp> 1 </vexp>
+            </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+    </match>
 </let>
-                     
-<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <vexp op = '+' > <id> i </id> <vexp> 1 </vexp> <id> x </id> <id> ex </id> <id> na </id> <vexp op = '*' > <vexp op = '^' > <vexp> 2 </vexp> <id> i </id> </vexp> <id> m </id> </vexp> </app> 
-<pexp gate = 'RQFT' > <id> x </id> </pexp>
+
+<let>
+    <id> left_shift </id>
+    <id> num </id>
+    <id> quotient </id>
+    <match>
+        <id> num </id>
+        <pair>
+            <vexp> 0 </vexp>
+            <pexp gate = 'SKIP' >
+                <id> quotient </id>
+                <vexp> 0 </vexp>
+            </pexp>
+        </pair>
+        <pair>
+            <vexp op = '+'>
+                <id> intermediate </id>
+                <vexp> 1 </vexp>
+            </vexp>
+            <pexp gate = 'Lshift' >
+                <id> quotient </id>
+            </pexp>
+            <app>
+                <id> left_shift </id>
+                <id> intermediate </id>
+                <id> quotient </id>
+            </app>
+        </pair>
+    </match>
+</let>
+
+<pexp gate = 'QFT' >
+    <id> quotient </id>
+    <vexp> 0 </vexp>
+</pexp>
+
+<app>
+    <id> recursive_div </id>
+    <vexp op = '+' >
+        <id> index </id>
+        <vexp> 1 </vexp>
+    </vexp>
+    <id> quotient </id>
+    <id> remainder </id>
+    <id> num </id>
+    <vexp op = '*' >
+        <vexp op = '^' >
+            <vexp> 2 </vexp>
+            <id> index </id>
+        </vexp>
+        <id> modulus </id>
+    </vexp>
+</app>
+
+<pexp gate = 'RQFT' >
+    <id> quotient </id>
+</pexp>
 
 //x and y are two qubit arrays, n bit length, and m is a value betweeo 1 and 2^n, in the end, the value is that (x, y ) --> (x % m, y / m), 
 

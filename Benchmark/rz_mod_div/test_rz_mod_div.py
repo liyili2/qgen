@@ -8,6 +8,18 @@ from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.simulator import to_binary_arr, CoqNVal, Simulator, bit_array_to_int
 
 
+def find_num(modulo, num_bits):
+    def find_num_recursive(size, x, y, i):
+        if size == 0:
+            return i
+        elif y <= x:
+            return i
+        else:
+            return find_num_recursive(size - 1, 2 * x, y, i + 1)
+
+    return find_num_recursive(num_bits, modulo, 2 ** (num_bits - 1), 0)
+
+
 def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
     with open("Benchmark/rz_mod_div/rz_mod_div_good.xml", 'r') as f:
         str = f.read()
@@ -16,7 +28,7 @@ def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
     tree = parser.root()
-    print(tree.toStringTree(recog=parser))
+    # print(tree.toStringTree(recog=parser))
 
     val_array_x = to_binary_arr(val_x, num_qubits)
     val_array_ex = to_binary_arr(val_ex, num_qubits)
@@ -35,7 +47,7 @@ def simulate_rz_mod_div(val_x, val_ex, num_qubits, modulo, i):
     # env has the same variables as state, but here, variable is initiliazed to its qubit num
     simulator = Simulator(state, environment)
     simulator.visitRoot(tree)
-    new_state = simulator.get_state()
+    new_state = simulator.state
     return new_state
 
 
@@ -55,7 +67,9 @@ def test_in_range_division():
     ]
 
     for case in test_cases:
-        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"], case["modulo"], case["i"])
+        i = find_num(case["modulo"], case["num_qubits"] - 1)
+        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"] - 1, case["modulo"], i)
+        print("i: ", i)
         assert case["expected_result"] == bit_array_to_int(new_state.get('x')[0].getBits(), case[
             "num_qubits"]), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
         assert case["expected_ex"] == new_state.get(
@@ -77,11 +91,13 @@ def test_zero_division():
     ]
 
     for case in test_cases:
-        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"], case["modulo"], case["i"])
+        i = find_num(case["modulo"], case["num_qubits"] - 1)
+        print("i: ", i)
+        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"] - 1, case["modulo"], i)
         assert case["expected_result"] == bit_array_to_int(new_state.get('x')[0].getBits(), case[
-            "num_qubits"]), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
-        assert case["expected_ex"] == new_state.get(
-            'ex'), f"Test failed for case: {case['description']}. Expected {case['expected_ex']}, got {new_state.get('ex')}"
+            "num_qubits"]), f"Test failed for x. Case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
+        assert case["expected_ex"] == bit_array_to_int(new_state.get('ex')[0].getBits(), case[
+            "num_qubits"]), f"Test failed for ex. Case: {case['description']}. Expected {case['expected_ex']}, got {new_state.get('ex')}"
 
 
 def test_negative_division():
@@ -100,32 +116,32 @@ def test_negative_division():
     ]
 
     for case in test_cases:
-        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"], case["modulo"], case["i"])
+        i = find_num(case["modulo"], case["num_qubits"] - 1)
+        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"]-1, case["modulo"], i)
         assert case["expected_result"] == bit_array_to_int(new_state.get('x')[0].getBits(), case[
-            "num_qubits"]), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
+            "num_qubits"]-1), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
         assert case["expected_ex"] == new_state.get(
             'ex'), f"Test failed for case: {case['description']}. Expected {case['expected_ex']}, got {new_state.get('ex')}"
 
 
 def test_overflow_division():
     test_cases = [
-        {"num_qubits": 16, "val_x": 2 ** 16, "modulo": 7, "i": 4, "expected_result": (2 ** 16) % 7,
-         "expected_ex": (2 ** 16) // 7, "description": "Overflow case 1"},
-        {"num_qubits": 33, "val_x": 2 ** 33, "modulo": 9, "i": 5, "expected_result": (2 ** 33) % 9,
-         "expected_ex": (2 ** 33) // 9, "description": "Overflow case 2"},
-        {"num_qubits": 47, "val_x": 2 ** 47, "modulo": 11, "i": 6, "expected_result": (2 ** 47) % 11,
-         "expected_ex": (2 ** 47) // 11, "description": "Overflow case 3"},
-        {"num_qubits": 25, "val_x": 2 ** 25, "modulo": 13, "i": 7, "expected_result": (2 ** 25) % 13,
-         "expected_ex": (2 ** 25) // 13, "description": "Overflow case 4"},
-        {"num_qubits": 31, "val_x": 2 ** 31, "modulo": 15, "i": 8, "expected_result": (2 ** 31) % 15,
-         "expected_ex": (2 ** 31) // 15, "description": "Overflow case 5"}
+        {"num_qubits": 15, "val_x": 2 ** 15 - 1, "modulo": 7, "i": 4, "expected_result": (2 ** 15 - 1) % 7,
+         "expected_ex": (2 ** 15 - 1) // 7, "description": "Overflow case 1"},
+        {"num_qubits": 31, "val_x": 2 ** 31 - 1, "modulo": 9, "i": 5, "expected_result": (2 ** 31 - 1) % 9,
+         "expected_ex": (2 ** 31 - 1) // 9, "description": "Overflow case 2"},
+        {"num_qubits": 47, "val_x": 2 ** 47 - 1, "modulo": 11, "i": 6, "expected_result": (2 ** 47 - 1) % 11,
+         "expected_ex": (2 ** 47 - 1) // 11, "description": "Overflow case 3"},
+        {"num_qubits": 25, "val_x": 2 ** 25 - 1, "modulo": 13, "i": 7, "expected_result": (2 ** 25 - 1) % 13,
+         "expected_ex": (2 ** 25 - 1) // 13, "description": "Overflow case 4"},
+        {"num_qubits": 39, "val_x": 2 ** 39 - 1, "modulo": 15, "i": 8, "expected_result": (2 ** 39 - 1) % 15,
+         "expected_ex": (2 ** 39 - 1) // 15, "description": "Overflow case 5"}
     ]
 
     for case in test_cases:
-        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"], case["modulo"], case["i"])
+        i = find_num(case["modulo"], case["num_qubits"]-1)
+        new_state = simulate_rz_mod_div(case["val_x"], 0, case["num_qubits"]-1, case["modulo"], i)
         assert case["expected_result"] == bit_array_to_int(new_state.get('x')[0].getBits(), case[
-            "num_qubits"]), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
+            "num_qubits"]-1), f"Test failed for case: {case['description']}. Expected {case['expected_result']}, got {bit_array_to_int(new_state.get('x')[0].getBits(), case['num_qubits'])}"
         assert case["expected_ex"] == new_state.get(
             'ex'), f"Test failed for case: {case['description']}. Expected {case['expected_ex']}, got {new_state.get('ex')}"
-
-

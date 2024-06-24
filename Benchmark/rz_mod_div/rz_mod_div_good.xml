@@ -1,27 +1,27 @@
 <root>
-<let> <id> adder </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id> 
+<let> <id> adder </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
-               < app > <id> adder </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app> 
+           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp>
+               < app > <id> adder </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app>
                < if > <vexp op = '$' > <id> M </id> <id> m </id> </vexp>
                       <pexp gate = 'SR' > <vexp op = '-' > <id> size </id> <id> m </id> </vexp> <id> x </id> </pexp>
                       <pexp gate = 'SKIP' > <id> x </id> <id> m </id> </pexp>
-               </if> 
-           </pair>   
+               </if>
+           </pair>
    </match>
 </let>
 
-<let> <id> sub </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id> 
+<let> <id> sub </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id>
    <match> <id> n </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
-               < app > <id> sub </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app> 
+           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp>
+               < app > <id> sub </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app>
                < if > <vexp op = '$' > <id> M </id> <id> m </id> </vexp>
                       <pexp gate = 'SR' > <vexp op = '-' > <id> m </id> <id> size </id> </vexp> <id> x </id> </pexp>
                       <pexp gate = 'SKIP' > <id> x </id> <id> m </id> </pexp>
-               </if> 
-           </pair>   
+               </if>
+           </pair>
    </match>
 </let>
 
@@ -29,26 +29,26 @@
     <app> <id> sub </id> <id> x </id> <id> n </id> <id> n </id> <id> m </id> </app>
     <pexp gate = 'RQFT' > <id> x </id> </pexp>
     <pexp gate = 'CU' > <id> x </id> <vexp op = '-' > <id> n </id> <vexp> 1 </vexp> </vexp> <pexp gate = 'X' > <id> c </id>  <id> i </id> </pexp></pexp>
-</let>   
+</let>
 
 
-<let> <id> f </id> <id > x </id> <id > i </id> <id > n </id> <id > ex </id> <id > M </id> 
+<let> <id> f </id> <id > x </id> <id > i </id> <id > n </id> <id > ex </id> <id > M </id>
    <match> <id> i </id>
           <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
-               < app > <id> compare </id> <id> x </id> <id> n </id> <id> ex </id> <id> m </id> <id> M </id> </app> 
-               <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
+           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp>
+               < app > <id> compare </id> <id> x </id> <id> n </id> <id> ex </id> <id> m </id> <id> M </id> </app>
+               <pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp>
                  <pexp gate = 'CU' > <id> ex </id>  <id> m </id> <app> <id> adder </id> <id> x </id> <id> n </id> <id> n </id> <id> M </id> </app> </pexp>
                      <pexp gate = 'X' > <id> ex </id>  <id> m </id> </pexp>
-                          < app > <id> f </id> <id> x </id> <id> m </id> <id> n </id> <id> ex </id> <vexp op = '/' > <id> M </id> <vexp> 2 </vexp> </vexp> </app> 
-           </pair>   
+                          < app > <id> f </id> <id> x </id> <id> m </id> <id> n </id> <id> ex </id> <vexp op = '/' > <id> M </id> <vexp> 2 </vexp> </vexp> </app>
+           </pair>
    </match>
 </let>
 
 
-<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <vexp op = '+' > <id> i </id> <vexp> 1 </vexp> </vexp> <id> x </id> <id> ex </id> <id> na </id> 
-   <vexp op = '*' > <vexp op = '^' > <vexp> 2 </vexp> <id> i </id> </vexp> <id> m </id> </vexp> </app> 
+<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp>
+< app > <id> f </id> <vexp op = '+' > <id> i </id> <vexp> 1 </vexp> </vexp> <id> x </id> <id> ex </id> <id> na </id>
+   <vexp op = '*' > <vexp op = '^' > <vexp> 2 </vexp> <id> i </id> </vexp> <id> m </id> </vexp> </app>
 <pexp gate = 'RQFT' > <id> x </id> </pexp>
 </root>
 

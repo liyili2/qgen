@@ -53,7 +53,7 @@ def simulate_cl_adder(x_array_value, y_array_value, c_array_value, num_qubits):
     print("ca",state.get("ca"))
     simulator = Simulator(state, environment)
     simulator.visitRoot(tree)
-    new_state = simulator.get_state()
+    new_state = simulator.state
     return new_state
 
 

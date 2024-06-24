@@ -9,7 +9,7 @@ Input of the program:
     i: Natural number related to m, such that 2^{n−2} ≤ 2^i <2^{n-1} (int)
 
 
-all the numbers must be in the range of 0 to 2^{n-1}, so n bit nat number here can only store n-1 bit because the highest bit need to be used for storing overflow indicator
+All the numbers must be in the range of 0 to 2^{n-1}, so n bit nat number here can only store n-1 bit because the highest bit needs to be used for storing overflow indicator
 i must be a value that is associated with m. i can be find by the findnum function below.
 
 (* Example Circuits that are definable by OQASM. *)
