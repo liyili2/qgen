@@ -1,20 +1,13 @@
-<let> <id> f </id> <id > x </id> <id > n </id> <id > size </id> <id > M </id> 
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-          <pair> <vexp op = '+'> <id> m </id> <vexp 1 </vexp> </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
+<root>
+<let id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > n </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > M </vexp> 
+   <match id = 'n' >
+          <pair case = '0' > <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
+           <pair case = 'm' >
+                <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp>
+           </pair>   
    </match>
 </let>
-<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-< app > <id> f </id> <id> x </id> <id> na </id> <id> na </id> <id> m </id> </app> 
-<pexp gate = 'RQFT' > <id> x </id> </pexp>
-
-
-//  Fixpoint f (x:var) (n:nat) (size:nat) (M: nat -> bool) :=
-//  match n with 
-//  | 0 => SKIP (x,0)
-//  | S m => f x m size M ; if M m then SRR (size - n) x else SKIP (x,m)
-//  end.
-//sub, subtracting natural number n to qubit array x
-// main: QFT x 0; f x n size M; RQFT x
-//SRR i x means SR (-i) x, 
-//spec: x -> (x+m) % (2^na),  the modulo is natural number modulo, meaning that no negative number will be produce. 1 - 10 in a four bit situation will be -9+16 = 7
+<pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> 
+<app id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > na </vexp> <vexp op = 'id' > na </vexp> <vexp op = 'id' > m </vexp> </app> 
+<pexp gate = 'RQFT' id = 'x' > </pexp>
+</root>

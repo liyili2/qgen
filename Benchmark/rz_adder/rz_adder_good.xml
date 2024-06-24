@@ -1,17 +1,17 @@
 <root>
-<let> <id> f </id> <id> x </id> <id> n </id> <id> size </id> <id> M </id> 
-   <match> <id> n </id>
-          <pair> <vexp> 0 </vexp> <pexp gate = 'SKIP' > <id> x </id> <vexp> 0 </vexp> </pexp> </pair>
-           <pair> <vexp op = '+' > <id> m </id> <vexp> 1 </vexp> </vexp> 
-                  <app> <id> f </id> <id> x </id> <id> m </id> <id> size </id> <id> M </id> </app>
-               <if> <vexp op = '$' > <id> M </id> <id> m </id> </vexp>
-                      <pexp gate = 'SR' > <vexp op = '-' > <id> size </id> <id> m </id> </vexp> <id> x </id> </pexp>
-                      <pexp gate = 'SKIP' > <id> x </id> <id> m </id> </pexp>
-               </if>
+<let id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > n </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > M </vexp> 
+   <match id = 'n' >
+          <pair case = '0' > <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
+           <pair case = 'm' >
+                  <app id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > m </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > M </vexp> </app>
+                  <if> <vexp op = '$' > <vexp op = 'id' > M </vexp> <vexp op = 'id' > m </vexp> </vexp>
+                      <root> <pexp gate = 'SR' id = 'x' > <vexp op = '-' > <vexp op = 'id' > size </vexp> <vexp op = 'id' > m </vexp> </vexp> </pexp> </root>
+                      <root> <pexp gate = 'SKIP' id = 'x' > <vexp op = 'id' > m </vexp> </pexp> </root>
+                 </if>
            </pair>   
    </match>
 </let>
-<pexp gate = 'QFT' > <id> x </id> <vexp> 0 </vexp> </pexp> 
-<app> <id> f </id> <id> x </id> <id> na </id> <id> na </id> <id> m </id> </app> 
-<pexp gate = 'RQFT' > <id> x </id> </pexp>
+<pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> 
+<app id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > na </vexp> <vexp op = 'id' > na </vexp> <vexp op = 'id' > m </vexp> </app> 
+<pexp gate = 'RQFT' id = 'x' > </pexp>
 </root>

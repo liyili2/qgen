@@ -8,7 +8,7 @@ from Source.quantumCode.AST_Scripts.simulator import to_binary_arr, CoqNVal, Sim
 
 
 def simulate_rz_sub(val_array_x, subtrahend, num_qubits):
-    with open("Benchmark/rz_sub/rz_sub_good.xml", 'r') as f:
+    with open("rz_sub_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
     lexer = XMLExpLexer(i_stream)

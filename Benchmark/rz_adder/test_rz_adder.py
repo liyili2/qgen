@@ -31,23 +31,88 @@ def run_rz_adder_test(num_qubits,val,addend):
     new_state = y.get_state()
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
 
-def test_basic_addition():
-    assert (run_rz_adder_test(4, 5, 4) == 9)
+'''
+This test verifies the correctness of the rz_adder function when performing
+simple addition operations without carry propagation.
+    ''' 
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, val, addend)
+    for n in range(2, 4)  # Using 2^2, 2^3, i.e., 4, 8
+    for val in range(0, 2**(2**n),2*7)  # Range for val up to 2^num_qubits
+    for addend in range(0, 2**(2**n),2*19)  # interval as product of primes
+])
 
-def test_carry_propagation():
-   assert run_rz_adder_test(4, 14, 3) == 1  # 1110 + 0011 = 10001 % 2^4 = 0001
+def test_basic_addition(num_qubits, val, addend):
+    expected = (val + addend) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
 
-def test_array_size_limit():
-    assert run_rz_adder_test(4, 3, 13) == 0  # 0011 + 1101 = 10000 % 2^4 = 0000
+'''
+  In this test, we check whether the rz_adder correctly handles carry propagation by adding values close to the upper limit 
+  of the bit range and ensuring that the result wraps around correctly.
+'''
 
-def test_large_numbers():
-    assert run_rz_adder_test(64, 2**32, 2**32) == 2**33  # 2^32 + 2^32 % 2^64 = 0
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, val, addend)
+    for n in range(2, 4)  # This gives us 2^2 = 4 and 2^3 = 8
+    for val in range(2**(2**n)//2, 2**(2**n), 2*7)  #interval as product of primes
+    for addend in range(1, 2**(2**n), 2*19) 
+][:40])  # Limiting to first 40 combinations
 
-def test_zero_addend():
-    assert run_rz_adder_test(16, 10, 0) == 10
+def test_carry_propagation(num_qubits, val, addend):
+    expected = (val + addend) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
 
-def test_zero_qubit_array():
-    assert run_rz_adder_test(16, 0, 5) == 5
+'''Testing array sizelimit
+   It ensures that the rz_adder correctly wraps around the result within the allowed
+   bit range (num_qubits).
+'''
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, val, addend)
+    for n in range(2, 4)
+    for val in range(0, 2**(2**n)//2,2*7)  # Testing small values
+    for addend in range(2**(2**n)//2, 2**(2**n),2*19)  # Adding large values
+])
+
+def test_array_size_limit(num_qubits, val, addend):
+    expected = (val + addend) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
+
+#Testing large numbers
+
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, 2**32, 2**32)
+    for n in range(4, 5)  
+])
+
+def test_large_numbers(num_qubits, val, addend):
+    expected = (val + addend) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
+
+#Testing addend as 0
+
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, val, 0)
+    for n in range(4, 5)  # Using 2^4 = 16
+    for val in range(0, 40, 5)
+])
+
+
+def test_zero_addend(num_qubits, val, addend):
+    expected = val
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
+
+#Testing qubit_array as 0
+
+@pytest.mark.parametrize("num_qubits, val, addend", [
+    (2**n, 0, addend)
+    for n in range(4, 5)  # Using 2^4 = 16
+    for addend in range(0, 40, 5)
+])
+
+def test_zero_qubit_array(num_qubits, val, addend):
+    expected = addend
+    assert run_rz_adder_test(num_qubits, val, addend) == expected
+
 
 @pytest.fixture(scope="session", autouse=True)
 def starter(request):
@@ -57,3 +122,4 @@ def starter(request):
         print("runtime: {}".format(str(time.time() - start_time)))
 
     request.addfinalizer(finalizer)
+

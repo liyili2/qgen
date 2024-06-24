@@ -98,6 +98,15 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#element.
+    def enterElement(self, ctx:XMLExpParser.ElementContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#element.
+    def exitElement(self, ctx:XMLExpParser.ElementContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#numexp.
     def enterNumexp(self, ctx:XMLExpParser.NumexpContext):
         pass
@@ -194,15 +203,6 @@ class XMLExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by XMLExpParser#op.
     def exitOp(self, ctx:XMLExpParser.OpContext):
-        pass
-
-
-    # Enter a parse tree produced by XMLExpParser#boolexp.
-    def enterBoolexp(self, ctx:XMLExpParser.BoolexpContext):
-        pass
-
-    # Exit a parse tree produced by XMLExpParser#boolexp.
-    def exitBoolexp(self, ctx:XMLExpParser.BoolexpContext):
         pass
 
 
