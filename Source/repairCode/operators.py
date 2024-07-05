@@ -109,59 +109,6 @@ class QGateReplacement(StmtReplacement):
                    'quantumtag')
 
 
-# class QGateReplacement(StmtReplacement):
-#     def __init__(self, target, ingredient, target_tag):
-#         super(QGateReplacement, self).__init__(target, ingredient)
-#         self.target_tag = target_tag
-
-#     def apply(self, program, new_contents, modification_points):
-#         engine = program.engines[self.target[0]]
-#         return engine.do_replace(program, self, new_contents, modification_points)
-
-#     def do_replace(self, program, new_contents, modification_points):
-#         target_content = new_contents[self.target[0]]
-#         ingredient_content = new_contents[self.ingredient[0]]
-
-#         # Parse the XML content
-#         target_tree = etree.fromstring(target_content)
-
-#         # Find all elements with the target gates X, CU, RZ, SKIP
-#         elements = target_tree.xpath(".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
-
-#         #print(elements)
-        
-#         if elements:
-#             # Choose a random element to replace
-#             element_to_replace = random.choice(elements)
-
-#             # Determine the current gate
-#             current_gate = element_to_replace.get('gate')
-
-#             # Define a list of alternative gates
-#             alternative_gates = ['X', 'CU', 'RZ', 'SKIP']
-#             alternative_gates.remove(current_gate)
-
-#             # Choose a random alternative gate
-#             new_gate = random.choice(alternative_gates)
-
-#             # Parse the XML content of the ingredient
-#             ingredient_tree = etree.fromstring(ingredient_content)
-
-#             # Create a new <pexp> element with the chosen alternative gate but the same type
-#             new_pexp = etree.Element(self.target_tag)
-#             new_pexp.set('gate', new_gate)
-
-#             # Replace the chosen element with the new <pexp> element
-#             parent = element_to_replace.getparent()
-#             parent.replace(element_to_replace, new_pexp)
-
-#             # Serialize the modified XML back to a string
-#             new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-
-#             return new_target_content
-
-#         return target_content
-
 
 class QGateInsertion(StmtInsertion):
     def __init__(self, target, ingredient, direction='before'):
@@ -170,39 +117,64 @@ class QGateInsertion(StmtInsertion):
     def apply(self, program, new_contents, modification_points):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
-        result = engine.do_insert(program, self, new_contents, modification_points)
-        # print("Target:", self.target)
-        # print("Ingredient:", self.ingredient)
-        # print("New Contents:", new_contents[self.target[0]])
-        # Debugging: Output the modified XML content
-        # modified_content = etree.tostring(new_contents[self.target[0]], pretty_print=True).decode('utf-8')
-        # print(f'Modified Content:\n{modified_content}')
+        result = self.do_insert(program, new_contents, modification_points)
         return result
 
+    # def do_insert(self, program, new_contents, modification_points):
+    #     target_content = new_contents[self.target[0]]
+    #     ingredient_content = new_contents[self.ingredient[0]]
+
+    #     # Parse the XML content
+    #     target_tree = etree.fromstring(target_content)
+    #     ingredient_tree = etree.fromstring(ingredient_content)
+
+    #     target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
+    #     ingredient_element = ingredient_tree.xpath(modification_points[self.ingredient[0]][self.ingredient[1]])[0]
+        
+    #     # Get the parent of the target element and the index of the target element within the parent
+    #     parent = target_element.getparent()
+    #     index = parent.index(target_element)
+
+    #     # Insert the ingredient element into the target's parent
+    #     if self.direction == 'before':
+    #         parent.insert(index, copy.deepcopy(ingredient_element))
+    #     else:
+    #         parent.insert(index + 1, copy.deepcopy(ingredient_element))
+        
+    #     # Serialize the modified XML back to a string
+    #     new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
+    #     return new_target_content
+    
     def do_insert(self, program, new_contents, modification_points):
         target_content = new_contents[self.target[0]]
-        ingredient_content = new_contents[self.ingredient[0]]
-
+        
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
-        ingredient_tree = etree.fromstring(ingredient_content)
-
+        
+        # Find the target element based on the modification point
         target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
-        ingredient_element = ingredient_tree.xpath(modification_points[self.ingredient[0]][self.ingredient[1]])[0]
         
         # Get the parent of the target element and the index of the target element within the parent
         parent = target_element.getparent()
         index = parent.index(target_element)
 
-        # Insert the ingredient element into the target's parent
+        # Create new <app> element
+        app_element = etree.Element('app', id='new_f')
+        etree.SubElement(app_element, 'vexp', op='id').text = 'x'
+        etree.SubElement(app_element, 'vexp', op='id').text = 'm'
+        etree.SubElement(app_element, 'vexp', op='id').text = 'size'
+        etree.SubElement(app_element, 'vexp', op='id').text = 'M'
+
+        # Insert the <app> element into the target's parent
         if self.direction == 'before':
-            parent.insert(index, copy.deepcopy(ingredient_element))
+            parent.insert(index, copy.deepcopy(app_element))
         else:
-            parent.insert(index + 1, copy.deepcopy(ingredient_element))
+            parent.insert(index + 1, copy.deepcopy(app_element))
         
         # Serialize the modified XML back to a string
         new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-        return new_target_content
+        new_contents[self.target[0]] = new_target_content  # Update the new contents with modified XML
+        return True
 
     @classmethod
     def create(cls, program, target_file=None, ingr_file=None, direction=None, method='random'):
@@ -217,48 +189,6 @@ class QGateInsertion(StmtInsertion):
                    program.random_target(ingr_file, 'random'),
                    direction)
 
-
-
-# class QGateInsertion(StmtInsertion):
-#     def __init__(self, target, new_gate, target_tag):
-#         super(QGateInsertion, self).__init__(target)
-#         self.new_gate = new_gate
-#         self.target_tag = target_tag
-
-#     def apply(self, program, new_contents, modification_points):
-#         engine = program.engines[self.target[0]]
-#         return engine.do_insert(program, self, new_contents, modification_points)
-
-
-#     def do_insert(self, program, new_contents, modification_points):
-#         target_content = new_contents[self.target[0]]
-
-#         # Parse the XML content
-#         target_tree = etree.fromstring(target_content)
-
-#         # Find all elements with the target tag
-#         elements = target_tree.xpath(".//{}".format(self.target_tag))
-
-#         if elements:
-#             # Choose a random element to insert the new gate after
-#             insertion_point = random.choice(elements)
-
-#             # Parse the XML content of the new gate
-#             new_gate_tree = etree.Element(self.target_tag)
-#             new_gate_tree.set('gate', self.new_gate)
-#             new_gate_tree.set('type', 'Nor')
-
-#             # Insert the new gate after the chosen element
-#             parent = insertion_point.getparent()
-#             index = parent.index(insertion_point)
-#             parent.insert(index + 1, new_gate_tree)
-
-#             # Serialize the modified XML back to a string
-#             new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-
-#             return new_target_content
-
-#         return target_content
 
 class QGateDeletion(StmtDeletion):
     def __init__(self, target):
@@ -292,35 +222,4 @@ class QGateDeletion(StmtDeletion):
             target_file = program.random_file(XmlEngine)
         return cls(program.random_target(target_file, method))
     
-# class QGateDeletion(StmtDeletion):
-#     def __init__(self, target, target_tag):
-#         super(QGateDeletion, self).__init__(target)
-#         self.target_tag = target_tag
 
-#     def apply(self, program, new_contents, modification_points):
-#         engine = program.engines[self.target[0]]
-#         return engine.do_delete(program, self, new_contents, modification_points)
-
-#     def do_delete(self, program, new_contents, modification_points):
-#         target_content = new_contents[self.target[0]]
-
-#         # Parse the XML content
-#         target_tree = etree.fromstring(target_content)
-
-#         # Find all elements with the target tag
-#         elements = target_tree.xpath(".//{}".format(self.target_tag))
-
-#         if elements:
-#             # Choose a random element to delete
-#             element_to_delete = random.choice(elements)
-
-#             # Remove the chosen element
-#             parent = element_to_delete.getparent()
-#             parent.remove(element_to_delete)
-
-#             # Serialize the modified XML back to a string
-#             new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-
-#             return new_target_content
-
-#         return target_content
