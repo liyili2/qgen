@@ -1,3 +1,4 @@
+import random
 from pyggi.tree import TreeProgram
 from .qresult import QResult
 
@@ -67,6 +68,7 @@ class QProgram(TreeProgram):
         if target_file is None:
             target_file = target_file or random.choice(self.target_files)
         assert target_file in self.target_files
+        ## ADD CODE HERE
 
 
     # jMetal required functions
