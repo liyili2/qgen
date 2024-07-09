@@ -58,6 +58,17 @@ class QProgram(TreeProgram):
     def name(self) -> str:
         return "QProgram"
     
+    def app_target(self, target_file=None, method="random"):
+        '''
+        Similar to random target but tuned for app insertation
+
+
+        '''
+        if target_file is None:
+            target_file = target_file or random.choice(self.target_files)
+        assert target_file in self.target_files
+
+
     # jMetal required functions
 
         
