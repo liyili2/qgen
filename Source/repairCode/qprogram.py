@@ -69,7 +69,10 @@ class QProgram(TreeProgram):
             target_file = target_file or random.choice(self.target_files)
         assert target_file in self.target_files
         ## ADD CODE HERE
+        candidates = self.modification_points[target_file]
+        # Choose candiates that are syntax correct
 
+        # Return one of valid candiates at random
 
     # jMetal required functions
 
