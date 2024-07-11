@@ -1,3 +1,4 @@
+import random
 from pyggi.tree import TreeProgram
 from .qresult import QResult
 
@@ -58,6 +59,21 @@ class QProgram(TreeProgram):
     def name(self) -> str:
         return "QProgram"
     
+    def app_target(self, target_file=None, method="random"):
+        '''
+        Similar to random target but tuned for app insertation
+
+
+        '''
+        if target_file is None:
+            target_file = target_file or random.choice(self.target_files)
+        assert target_file in self.target_files
+        ## ADD CODE HERE
+        candidates = self.modification_points[target_file]
+        # Choose candiates that are syntax correct
+
+        # Return one of valid candiates at random
+
     # jMetal required functions
 
         
