@@ -117,64 +117,63 @@ class QGateInsertion(StmtInsertion):
     def apply(self, program, new_contents, modification_points):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
-        result = self.do_insert(program, new_contents, modification_points)
+        result = engine.do_insert(program,self, new_contents, modification_points)
         return result
 
-    # def do_insert(self, program, new_contents, modification_points):
-    #     target_content = new_contents[self.target[0]]
-    #     ingredient_content = new_contents[self.ingredient[0]]
-
-    #     # Parse the XML content
-    #     target_tree = etree.fromstring(target_content)
-    #     ingredient_tree = etree.fromstring(ingredient_content)
-
-    #     target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
-    #     ingredient_element = ingredient_tree.xpath(modification_points[self.ingredient[0]][self.ingredient[1]])[0]
-        
-    #     # Get the parent of the target element and the index of the target element within the parent
-    #     parent = target_element.getparent()
-    #     index = parent.index(target_element)
-
-    #     # Insert the ingredient element into the target's parent
-    #     if self.direction == 'before':
-    #         parent.insert(index, copy.deepcopy(ingredient_element))
-    #     else:
-    #         parent.insert(index + 1, copy.deepcopy(ingredient_element))
-        
-    #     # Serialize the modified XML back to a string
-    #     new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-    #     return new_target_content
     
     def do_insert(self, program, new_contents, modification_points):
+        # target_content = new_contents[self.target[0]]
+        
+        # # Parse the XML content
+        # target_tree = etree.fromstring(target_content)
+        
+        # # Find the target element based on the modification point
+        # target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
+        
+        # # Get the parent of the target element and the index of the target element within the parent
+        # parent = target_element.getparent()
+        # index = parent.index(target_element)
+
+        # # Create new <app> element
+        # app_element = etree.Element('app', id='new_f')
+        # etree.SubElement(app_element, 'vexp', op='id').text = 'x'
+        # etree.SubElement(app_element, 'vexp', op='id').text = 'm'
+        # etree.SubElement(app_element, 'vexp', op='id').text = 'size'
+        # etree.SubElement(app_element, 'vexp', op='id').text = 'M'
+
+        # # Insert the <app> element into the target's parent
+        # if self.direction == 'before':
+        #     parent.insert(index, copy.deepcopy(app_element))
+        # else:
+        #     parent.insert(index + 1, copy.deepcopy(app_element))
+        
+        # # Serialize the modified XML back to a string
+        # new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
+        # new_contents[self.target[0]] = new_target_content  # Update the new contents with modified XML
+        # return True
+
         target_content = new_contents[self.target[0]]
+        ingredient_content = new_contents[self.ingredient[0]]
         
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
-        
-        # Find the target element based on the modification point
+        ingredient_tree = etree.fromstring(ingredient_content)
         target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
+        ingredient_element = ingredient_tree.xpath(modification_points[self.ingredient[0]][self.ingredient[1]])[0]
         
         # Get the parent of the target element and the index of the target element within the parent
         parent = target_element.getparent()
         index = parent.index(target_element)
 
-        # Create new <app> element
-        app_element = etree.Element('app', id='new_f')
-        etree.SubElement(app_element, 'vexp', op='id').text = 'x'
-        etree.SubElement(app_element, 'vexp', op='id').text = 'm'
-        etree.SubElement(app_element, 'vexp', op='id').text = 'size'
-        etree.SubElement(app_element, 'vexp', op='id').text = 'M'
-
-        # Insert the <app> element into the target's parent
+        # Insert the ingredient element into the target's parent
         if self.direction == 'before':
-            parent.insert(index, copy.deepcopy(app_element))
+            parent.insert(index, copy.deepcopy(ingredient_element))
         else:
-            parent.insert(index + 1, copy.deepcopy(app_element))
+            parent.insert(index + 1, copy.deepcopy(ingredient_element))
         
         # Serialize the modified XML back to a string
         new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-        new_contents[self.target[0]] = new_target_content  # Update the new contents with modified XML
-        return True
+        return new_target_content
 
     @classmethod
     def create(cls, program, target_file=None, ingr_file=None, direction=None, method='random'):
@@ -185,8 +184,8 @@ class QGateInsertion(StmtInsertion):
         assert program.engines[target_file] == program.engines[ingr_file]
         if direction is None:
             direction = random.choice(['before', 'after'])
-        return cls(program.random_target(target_file, method),
-                   program.random_target(ingr_file, 'random'),
+        return cls(program.app_target(target_file, method),
+                   program.app_target(ingr_file, 'random'),
                    direction)
 
 
@@ -198,11 +197,6 @@ class QGateDeletion(StmtDeletion):
         print("Qgate deletion apply")
         engine = program.engines[self.target[0]]
         result = engine.do_delete(program, self, new_contents, modification_points)
-        # print("Target:", self.target)
-        # print("New Contents:", new_contents[self.target[0]])
-        # Debugging: Output the modified XML content
-        # modified_content = etree.tostring(new_contents[self.target[0]], pretty_print=True).decode('utf-8')
-        # print(f'Modified Content:\n{modified_content}')
         return result
 
     def do_delete(self, program, new_contents, modification_points):

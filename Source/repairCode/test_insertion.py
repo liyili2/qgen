@@ -53,7 +53,7 @@ def test_qgate_insertion(setup_xml):
     program = Program()
     target_file = 'test.xml'
     new_contents = {target_file: setup_xml}
-    modification_points = {target_file: ['./let/match/pair[2]/pexp']}
+    modification_points = {target_file: ['./let[1]/match[1]/pair[2]']}
     
     # Create the QGateInsertion operation
     qgate_insertion = QGateInsertion(target=(target_file, 0), ingredient=None, direction='before')

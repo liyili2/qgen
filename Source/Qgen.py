@@ -83,7 +83,7 @@ if __name__ == "__main__":
     program = QProgram(args.project_path)
     program.operators = args.operators  # Need to parse args into a list
     #program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
-    program.operators = [QGateDeletion,QGateInsertion,QGateReplacement]
+    program.operators = [QGateInsertion]
     program.tags = args.tags
     # Make a Problem
     problem = QProblem(program, number_of_variables=1)
