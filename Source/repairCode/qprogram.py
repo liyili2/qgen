@@ -68,11 +68,15 @@ class QProgram(TreeProgram):
         if target_file is None:
             target_file = target_file or random.choice(self.target_files)
         assert target_file in self.target_files
-        ## ADD CODE HERE
-        candidates = self.modification_points[target_file]
-        # Choose candiates that are syntax correct
 
-        # Return one of valid candiates at random
+        ## ADD CODE HERE
+        valid_path_regex = re.compile(r'\./let\[1\]/match\[1\]/pair\[\d+\](/pexp|/vexp)?')
+        candidates =[point for point in self.modification_points[target_file] if valid_path_regex.match(point)]
+        
+        assert method in ['random','weighted']
+
+        if method == 'random' or target_file not in self.modification_weights:
+            return (target_file,random.randrange(len(candidates)))
 
     # jMetal required functions
 
