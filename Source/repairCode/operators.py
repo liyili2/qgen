@@ -70,6 +70,22 @@ class QGateReplacement(StmtReplacement):
         if ingr_file is None:
             ingr_file = program.random_file(engine=program.engines[target_file])
         assert program.engines[target_file] == program.engines[ingr_file]
+
+        # modify here
+        # 1. program.app_target(target_file, method)
+        # 2. program.app_target(ingr_file, 'random')
+        # 3. you will be able to see candidates here.
+        # 4. based on the candidates, you will do selection and perform different actions.
+        # 5. figure out what is the pexp type -- what the gate is
+        # 5.5, need to look at type env. variables map to types
+        # 6. if gate is SKIP, SKIP can be replaced to the right types,
+        # for example, if you look at the id, id = 'x' , then find x, then find x in the env ---> Nor/Phi
+        # for Nor, SKIP can be replaced by X, CU, QFT, for Phi, SKIP can be replaced by SR, RQFT
+        # 7. if gate is SR, it means that the id has Phi type, SR can be replaced by SR or SKIP
+        # 8. if gate is X, it means that the id of the gate is Nor type,
+        # X can be replaced by SKIP, or CU, but when replaced it with CU, need more work, CU has next level.
+        # 9. if gate is CU, it means that the id is Nor type, and it can be replaced by X, SKIP, with spectial treament
+
         return cls(program.random_target(target_file, method),
                    program.random_target(ingr_file, 'random'),
                    'pexp')
@@ -150,7 +166,20 @@ class QGateInsertion(StmtInsertion):
         assert program.engines[target_file] == program.engines[ingr_file]
         if direction is None:
             direction = random.choice(['before', 'after'])
-        return cls(program.app_target(target_file, method),
+
+    #modify here
+    #1. program.app_target(target_file, method)
+    #2. program.app_target(ingr_file, 'random')
+    #3. you will be able to see candidates here.
+       # app/if/pexp
+    # if see app, then only allowed if, and pexp
+    #if see if/pexp.
+     # choose a variable, will have the env to tell you what variables are aviable
+    # perform if/pexp on the variable
+    #look at the type of the variable in env, if it is Phi, then use SR/RQFT gate only
+    #if it is Nor, then use X, CU,
+    #if it is nat, can only use if with two branching
+       return cls(program.app_target(target_file, method),
                    program.app_target(ingr_file, 'random'),
                    direction)
 

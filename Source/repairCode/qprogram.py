@@ -70,7 +70,7 @@ class QProgram(TreeProgram):
         assert target_file in self.target_files
 
         ## ADD CODE HERE
-        valid_path_regex = re.compile(r'\./let\[1\]/match\[1\]/pair\[\d+\](/pexp|/vexp)?')
+        valid_path_regex = re.compile(r'\./let\[1\]/match\[1\]/pair\[\d+\](/pexp|/if|/app)')
         candidates =[point for point in self.modification_points[target_file] if valid_path_regex.match(point)]
         
         assert method in ['random','weighted']
