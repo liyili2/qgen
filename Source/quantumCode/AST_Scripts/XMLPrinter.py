@@ -1,53 +1,14 @@
-from collections import ChainMap
-from types import NoneType
+#from collections import ChainMap
+#from types import NoneType
 from XMLExpVisitor import XMLExpVisitor
 from XMLExpParser import XMLExpParser
 
-
-def M_add(k, x, s: ChainMap):
-    if len(s.maps) == 0:
-        return ChainMap({k: x})
-    else:
-        p = s.maps[0]
-        k_prime, y = next(iter(p.items()))
-        if k < k_prime:
-            return ChainMap({k: x}, s)
-        elif k == k_prime:
-            s.__delitem__(k_prime)
-            return ChainMap({k: x}, s)
-        else:
-            s.__delitem__(k_prime)
-            return ChainMap({k_prime: y}, M_add(k, x, s))
-
-
-def M_find(k, M: ChainMap):
-    if len(M.maps) == 0:
-        return None
-    else:
-        p = M.maps[0]
-        k_prime, x = next(iter(p.items()))
-        if k < k_prime:
-            return None
-        elif k == k_prime:
-            return x
-        else:
-            M.__delitem__(k_prime)
-            return M_find(k, M)
-
-
-def findVar(node: ExpParser.VexpContext):
-    return node.Identifier().getText()
-    # if isinstance(node, ExpParser.Number):
-    #    return node.getText()
-    # return "None"
-
-
 class XMLPrinter(XMLExpVisitor):
 
-    def __init__(self, tenv: ChainMap):
-        self.tenv = tenv
+    def __init__(self):
+        #self.tenv = tenv
         self.xml_output = ''
-        self.indentation = 0
+        #self.indentation = 0
 
     def visitRoot(self, ctx: XMLExpParser.RootContext):
         self.xml_output += self.visitChildren(ctx)
