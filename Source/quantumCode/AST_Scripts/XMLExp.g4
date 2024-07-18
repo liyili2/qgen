@@ -10,7 +10,7 @@ exp: letexp | appexp | blockexp | cuexp | ifexp | matchexp | skipexp | xexp | sr
 
 blockexp : '<' BLOCK '>' '</' BLOCK '>';
 
-idexp : '<' VEXP OP '=' '\'' ID '\'' '>' Identifier '</' VEXP '>' ;
+idexp : '<' VEXP OP '=' '\'' ID '\'' ('type' '=' '\'' atype '\'')? '>' Identifier '</' VEXP '>' ;
 
 exppair : '<' Pair 'case' '=' '\'' element '\'' '>' program '</' Pair '>' ;
 
@@ -56,7 +56,7 @@ rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' 'id' '=' '\'' Identifier '\'' '>' 
 
 op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 
-//atype: Qubits | Nat | Bits;
+atype: Nat | 'Q' '(' element ')';
 
 //boolexp: TrueLiteral | FalseLiteral;
 
@@ -78,7 +78,7 @@ Qubits : 'qubits';
 
 Nat : 'nat';
 
-Bits : 'bits';
+//Bits : 'bits';
 
  TrueLiteral : '#t' ;
  FalseLiteral : '#f' ;

@@ -21,11 +21,11 @@ def types(a:[TypeName]):
 
 class Qty(TypeName):
 
-    def __init__(self, n: int, t: str = None, m:int = None):
+    def __init__(self, n: str, t: str = None, m:str = None):
         self.n = n
         self.ty = t
         if m is None:
-            self.m = 0
+            self.m = "0"
         else:
             self.m = m
 
@@ -44,7 +44,7 @@ class Qty(TypeName):
 class Nat(TypeName):
 
     def type(self):
-        return ("Nat", 0)
+        return "Nat"
 
 class Fun(TypeName):
 
@@ -74,7 +74,6 @@ class TypeInfer(XMLExpVisitor):
         return ctx.program().accept(self)
 
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
-
         i = 0
         tmp = True
         while ctx.exp(i) is not None:
@@ -118,9 +117,37 @@ class TypeInfer(XMLExpVisitor):
     def get_type_env(self):
         return self.tenv
 
+    def visitElement(self, ctx:XMLExpParser.ElementContext):
+        if ctx.numexp() is not None:
+            return str(ctx.numexp().accept(self))
+        else:
+            return ctx.Identifier().accept(self)
+
+    def visitAtype(self, ctx:XMLExpParser.AtypeContext):
+        if ctx.Nat() is not None:
+            return Nat()
+        elif ctx.element() is not None:
+            return Qty(ctx.element.accept(self))
+
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
+        i = 0
         f = ctx.Identifier().accept(self)
-        self.st.update({f: ctx})
+        tmv = copy.deepcopy(self.tenv)
+        tml = []
+        while ctx.idexp(i) is not None:
+            x = ctx.idexp(i).Identifier().accept(self)
+            tml.append(x)
+            v = ctx.idexp(i).atype().accept(self)
+            self.tenv.update({x:v})
+            i += 1
+
+        for j in range(len(tml)):
+            self.tenv.pop(tml[j])
+
+        rmv = copy.deepcopy(self.tenv)
+        tmv.update({f:Fun(tmv,rmv)})
+
+        #self.st.update({f: ctx})
         return True
         #print("f", ctx)
         #ctx.exp().accept(self)
@@ -221,19 +248,6 @@ class TypeInfer(XMLExpVisitor):
         #p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         return ctx.vexp().accept(self) and isinstance(self.tenv.get(x), Nor) and ctx.program().accept(self)
 
-    # my previous rz parsing is wrong
-    # it should be RZ q posi
-    def visitRzexp(self, ctx: XMLExpParser.RzexpContext):
-        #q = int(ctx.vexp(0).accept(self))  # I guess then you need to define vexp
-        # we can first define the var and integer case
-        # I guess Identifier and int are all terminal
-        # does it means that we do not need to define anything?
-        x = ctx.idexp().accept(self)
-        #p = ctx.vexp(1).accept(self)  # this will pass the visitor to the child of ctx
-        return ctx.vexp(0).accept(self) and ctx.vexp(1).accept(self) and isinstance(self.tenv.get(x), Nor)
-
-            (p < self.env.get(x) and q < self.env.get(x) and str(self.tenv.get(x)) == "Nor")
-
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
         n = int(ctx.vexp().accept(self))
@@ -283,6 +297,7 @@ class TypeInfer(XMLExpVisitor):
 
     # the only thing that matters will be 48 and 47
     def visitTerminal(self, node):
+        # print("terminal")
         if node.getSymbol().type == XMLExpParser.Identifier:
             return node.getText()
         if node.getSymbol().type == XMLExpParser.Number:

@@ -224,3 +224,12 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#atype.
+    def enterAtype(self, ctx:XMLExpParser.AtypeContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#atype.
+    def exitAtype(self, ctx:XMLExpParser.AtypeContext):
+        pass
+
+

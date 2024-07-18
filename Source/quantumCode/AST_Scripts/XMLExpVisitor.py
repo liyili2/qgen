@@ -129,5 +129,10 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by XMLExpParser#atype.
+    def visitAtype(self, ctx:XMLExpParser.AtypeContext):
+        return self.visitChildren(ctx)
+
+
 
 del XMLExpParser
