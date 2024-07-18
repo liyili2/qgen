@@ -172,6 +172,9 @@ class Simulator(XMLExpVisitor):
     def visitRoot(self, ctx:XMLExpParser.RootContext):
         ctx.program().accept(self)
 
+    def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
+        ctx.program().accept(self)
+
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
 
         i = 0
@@ -296,9 +299,9 @@ class Simulator(XMLExpVisitor):
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         v = ctx.vexp().accept(self)
         if v == 1:
-            ctx.root(0).accept(self)
+            ctx.nextexp(0).accept(self)
         else:
-            ctx.root(1).accept(self)
+            ctx.nextexp(1).accept(self)
 
     def get_state(self):
         return self.state

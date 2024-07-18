@@ -2,6 +2,8 @@ grammar XMLExp;
 
 root: '<' Root '>' program '</' Root '>';
 
+nextexp: '<' Next '>' program '</' Next '>';
+
 program: exp (exp)* ;
 
 exp: letexp | appexp | blockexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
@@ -16,7 +18,7 @@ matchexp : '<' Match 'id' '=' '\'' Identifier '\'' '>' exppair (exppair)* '</' M
 
 letexp : '<' Let 'id' '=' '\'' Identifier '\'' '>' (idexp)* program '</' Let '>' ;
 
-ifexp : '<' Ifa '>' vexp root root '</' Ifa '>';
+ifexp : '<' Ifa '>' vexp nextexp nextexp '</' Ifa '>';
 
 appexp : '<' APP 'id' '=' '\'' Identifier '\'' '>' (vexp)* '</' APP '>';
 
@@ -61,6 +63,8 @@ op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 BLOCK: 'block';
 
 Root : 'root';
+
+Next : 'next';
 
 Let : 'let';
 

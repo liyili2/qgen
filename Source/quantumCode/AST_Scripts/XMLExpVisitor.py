@@ -14,6 +14,11 @@ class XMLExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by XMLExpParser#nextexp.
+    def visitNextexp(self, ctx:XMLExpParser.NextexpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by XMLExpParser#program.
     def visitProgram(self, ctx:XMLExpParser.ProgramContext):
         return self.visitChildren(ctx)

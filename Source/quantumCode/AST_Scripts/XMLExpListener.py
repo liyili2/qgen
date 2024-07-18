@@ -17,6 +17,15 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#nextexp.
+    def enterNextexp(self, ctx:XMLExpParser.NextexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#nextexp.
+    def exitNextexp(self, ctx:XMLExpParser.NextexpContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#program.
     def enterProgram(self, ctx:XMLExpParser.ProgramContext):
         pass

@@ -19,33 +19,27 @@ def types(a:[TypeName]):
         tmp.append(a[i].type())
     return tmp
 
-class Nor(TypeName):
+class Qty(TypeName):
 
-    def __init__(self, n: int):
+    def __init__(self, n: int, t: str = None, m:int = None):
         self.n = n
+        self.ty = t
+        if m is None:
+            self.m = 0
+        else:
+            self.m = m
 
     def get_num(self):
         return self.n
-
-    def type(self):
-        return ("Q", self.n)
-
-
-class Phi(TypeName):
-
-    def __init__(self, n: int, m:nat):
-        self.n = n
-        self.m = m
-        #self.r2 = r2
-
-    def get_num(self):
-        return n
 
     def get_anum(self):
         return self.m
 
     def type(self):
-        return ("Q", self.n)
+        return (self.ty, self.n)
+
+    def fullty(self):
+        return (self.ty, self.n, self.m)
 
 class Nat(TypeName):
 
@@ -54,14 +48,13 @@ class Nat(TypeName):
 
 class Fun(TypeName):
 
-    def __init__(self, n: [Typename], m: TypeName):
+    def __init__(self, n: dict, m: dict):
         self.args = n
         self.out = m
         # self.r2 = r2
 
     def type(self):
-        return ("Fun", (types(self.args),self.out.type()))
-
+        return ("Fun", (self.n,self.m))
 
 
 class TypeInfer(XMLExpVisitor):
@@ -88,6 +81,9 @@ class TypeInfer(XMLExpVisitor):
             tmp = tmp and ctx.exp(i).accept(self)
             i += 1
         return tmp
+
+    def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
+        return ctx.program().accept(self)
 
     def visitExp(self, ctx: XMLExpParser.ExpContext):
         if ctx.letexp() is not None:
@@ -167,7 +163,7 @@ class TypeInfer(XMLExpVisitor):
         sv = ctx.exppair(1).program().accept(self)
         self.tenv.pop(va)
         return fv and sv and renv == self.tenv
-    
+
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         vx = ctx.Identifier().accept(self)
         ctxa = self.st.get(vx)
