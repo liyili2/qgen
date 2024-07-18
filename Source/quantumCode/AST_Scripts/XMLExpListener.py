@@ -35,6 +35,15 @@ class XMLExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by XMLExpParser#blockexp.
+    def enterBlockexp(self, ctx:XMLExpParser.BlockexpContext):
+        pass
+
+    # Exit a parse tree produced by XMLExpParser#blockexp.
+    def exitBlockexp(self, ctx:XMLExpParser.BlockexpContext):
+        pass
+
+
     # Enter a parse tree produced by XMLExpParser#idexp.
     def enterIdexp(self, ctx:XMLExpParser.IdexpContext):
         pass
