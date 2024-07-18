@@ -1,5 +1,5 @@
 #from collections import ChainMap
-#from types import NoneType
+from types import NoneType
 from XMLExpVisitor import XMLExpVisitor
 from XMLExpParser import XMLExpParser
 
