@@ -71,12 +71,11 @@ class QProgram(TreeProgram):
 
         ## ADD CODE HERE
         valid_path_regex = re.compile(r'\./let\[1\]/match\[1\]/pair\[\d+\](/pexp|/if|/app)')
-        candidates =[point for point in self.modification_points[target_file] if valid_path_regex.match(point)]
-        
+        valid_indices = [i for i,point in enumerate(self.modification_points[target_file]) if valid_path_regex.match(point)]
         assert method in ['random','weighted']
 
         if method == 'random' or target_file not in self.modification_weights:
-            return (target_file,random.randrange(len(candidates)))
+            return (target_file, random.choice(valid_indices))
 
     # jMetal required functions
 
