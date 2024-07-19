@@ -74,6 +74,43 @@ class Fun(TypeName):
         return self.out
 
 
+def joinType(a: TypeName, b: TypeName):
+    if isinstance(a, Qty) and isinstance(b, Qty):
+        if a.type() is None or b.type() is None:
+            if a.type() is None:
+                a.set_type(b.type())
+            else:
+                b.set_type(a.type())
+            return a
+        elif a.type() == b.type():
+            return a
+        else:
+            return None
+    elif isinstance(a, Nat) and isinstance(b, Nat):
+        return a
+    elif isinstance(a, Fun) and isinstance(b, Fun):
+        return a
+    else:
+        return None
+
+
+def joinTypes(a: dict, b: dict):
+    for key in a.keys():
+        if b.get(key) is not None:
+            if isinstance(a.get(key), Qty) and isinstance(b.get(key), Qty):
+                if a.get(key).type() is None and b.get(key).type() is not None:
+                    a.get(key).set_type(b.get(key).type())
+    return a
+
+
+def equalTypes(a: dict, b: dict):
+    tmp = True
+    for key in a.keys():
+        if a.get(key) != b.get(key):
+            tmp = False
+    return tmp
+
+
 class TypeSearch(XMLExpVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
@@ -134,12 +171,25 @@ class TypeSearch(XMLExpVisitor):
         #rmv = qty.out()
         for i in range(len(tml)):
             ptv = tmv.get(tml[i])
-            if isinstance(ptv, Qty) and isinstance(self.tenv.get(x),Qty):
+            if isinstance(ptv, Qty) and isinstance(self.tenv.get(x), Qty):
                 if self.tenv.get(tml[i]).type() is None and ptv.type() is not None:
                     self.tenv.get(tml[i]).set_type(ptv.type())
         return
 
-    def visitBlockexp(self, ctx:XMLExpParser.BlockexpContext):
+    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
+        x = ctx.Identifier().accept(self)
+        #value = self.st.get(x)
+        #print("value match", value)
+        fenv = copy.deepcopy(self.tenv)
+        ctx.exppair(0).program().accept(self)
+        fenv1 = copy.deepcopy(self.tenv)
+        va = ctx.exppair(1).element().Identifier().accept(self)
+        self.tenv = fenv.update({va : Nat()})
+        ctx.exppair(1).program().accept(self)
+        if self.tenv is not None:
+            return joinTypes(fenv1, self.tenv)
+
+    def visitBlockexp(self, ctx: XMLExpParser.BlockexpContext):
         return
 
     # should do nothing

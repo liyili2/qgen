@@ -10,6 +10,7 @@ from XMLExpParser import *
 from XMLExpVisitor import *
 from XMLTypeSearch import *
 
+
 class TypeInfer(XMLExpVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
@@ -94,9 +95,11 @@ class TypeInfer(XMLExpVisitor):
             i += 1
 
         tmv = copy.deepcopy(self.tenv)
+        tx = TypeSearch(self.tenv)
+        tx.visitProgram(ctx.program())
+        self.tenv = copy.deepcopy(tx.tenv)
         fv = ctx.program().accept(self)
-
-        tmv.update({f: Fun(tml, tmv, self.tenv)})
+        tmv.update({f: Fun(tml, tx.tenv, self.tenv)})
 
         for j in range(len(tml)):
             tmv.pop(tml[j])
@@ -114,26 +117,40 @@ class TypeInfer(XMLExpVisitor):
         rmv = qty.out()
         tmp = True
         for i in range(len(tml)):
-            ptv = tmv.get(tml[i])
-            self.tenv.update({tml[i]: ptv})
-            tmp = tmp and ctx.vexp(i).accept(self)
-            rtv = self.tenv.get(tml[i])
-            tmp = tmp and (rtv == rmv.get(tml[i]))
+            if ctx.vexp(i).idexp() is not None:
+                na = ctx.vexp(i).idexp().Identifier().accept(self)
+                tmpty = self.tenv.get(na)
+                tx = joinType(tmv.get(tml[i]), tmpty)
+                if tx is None:
+                    return False
+                self.tenv.update({na: rmv.get(tml[i])})
+            else:
+                tmp = tmp and ctx.vexp(i).accept(self)
         return tmp
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
         x = ctx.Identifier().accept(self)
         #value = self.st.get(x)
         #print("value match", value)
-        tmpenv = copy.deepcopy(self.tenv)
-        fv = ctx.exppair(0).program().accept(self)
-        renv = copy.deepcopy(self.tenv)
-        self.tenv = tmpenv
+        fenv = copy.deepcopy(self.tenv)
         va = ctx.exppair(1).element().Identifier().accept(self)
-        self.tenv.update({va: Nat()})
-        sv = ctx.exppair(1).program().accept(self)
-        self.tenv.pop(va)
-        return fv and sv and renv == self.tenv
+        senv = copy.deepcopy(self.tenv)
+        senv.update({va: Nat()})
+        s1 = TypeSearch(fenv)
+        s1.visitProgram(ctx.exppair(0).program())
+        s2 = TypeSearch(senv)
+        s2.visitProgram(ctx.exppair(1).program())
+        fenv1 = s1.tenv
+        senv1 = s2.tenv.pop(va)
+        senv2 = joinTypes(fenv1, senv1)
+        fenv3 = copy.deepcopy(senv2)
+        self.tenv = fenv3
+        ctx.exppair(0).program().accept(self)
+        fenv4 = self.tenv
+        self.tenv = senv2.update({va: Nat()})
+        ctx.exppair(1).program().accept(self)
+        senv3 = self.tenv
+        return equalTypes(fenv4,senv3.pop(va))
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
