@@ -8,69 +8,7 @@ from antlr4 import ParserRuleContext
 
 from XMLExpParser import *
 from XMLExpVisitor import *
-
-
-class TypeName:
-    pass  # TODO
-
-
-def types(a: [TypeName]):
-    tmp = []
-    for i in range(len(a)):
-        tmp.append(a[i].type())
-    return tmp
-
-
-class Qty(TypeName):
-
-    def __init__(self, n: str, t: str = None, m: str = None):
-        self.n = n
-        self.ty = t
-        if m is None:
-            self.m = "0"
-        else:
-            self.m = m
-
-    def get_num(self):
-        return self.n
-
-    def get_anum(self):
-        return self.m
-
-    def type(self):
-        return self.ty
-
-    def fullty(self):
-        return (self.ty, self.n, self.m)
-
-
-class Nat(TypeName):
-
-    def type(self):
-        return "Nat"
-
-
-class Fun(TypeName):
-
-    def __init__(self, la: [str], n: dict, m: dict):
-
-        self.args = la
-        self.pre = n
-        self.out = m
-        # self.r2 = r2
-
-    def type(self):
-        return ("Fun", (self.args, self.pre, self.out))
-
-    def args(self):
-        return self.args
-
-    def pre(self):
-        return self.pre
-
-    def out(self):
-        return self.out
-
+from XMLTypeSearch import *
 
 class TypeInfer(XMLExpVisitor):
 
@@ -321,7 +259,7 @@ class TypeInfer(XMLExpVisitor):
             #print("op",ctx.op())
             return ctx.vexp(0).accept(self) and ctx.vexp(1).accept(self)
     # the only thing that matters will be 48 and 47
-    
+
     def visitTerminal(self, node):
         # print("terminal")
         if node.getSymbol().type == XMLExpParser.Identifier:
