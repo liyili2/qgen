@@ -56,7 +56,7 @@ rqftexp: '<' PEXP 'gate' '=' '\'' 'RQFT' '\'' 'id' '=' '\'' Identifier '\'' '>' 
 
 op: Plus | Minus | Times | Div | Mod | Exp | GNum;
 
-atype: Nat | 'Q' '(' element ')';
+atype: Nat | Qt '(' element ')' | Nor '(' element ')' | Phi '(' element ',' element ')';
 
 //boolexp: TrueLiteral | FalseLiteral;
 
@@ -77,6 +77,12 @@ Pair : 'pair';
 Qubits : 'qubits';
 
 Nat : 'nat';
+
+Qt : 'Q';
+
+Nor : 'Nor';
+
+Phi : 'Phi';
 
 //Bits : 'bits';
 

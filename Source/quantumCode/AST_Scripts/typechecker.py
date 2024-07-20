@@ -80,8 +80,12 @@ class TypeInfer(XMLExpVisitor):
     def visitAtype(self, ctx: XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:
             return Nat()
-        elif ctx.element() is not None:
-            return Qty(ctx.element.accept(self))
+        elif ctx.Qt() is not None:
+            return Qty(ctx.element(0).accept(self))
+        elif ctx.Nor() is not None:
+            return Qty(ctx.element(0).accept(self), "Nor")
+        elif ctx.Phi() is not None:
+            return Qty(ctx.element(0).accept(self), "Phi", ctx.element(1).accept(self))
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         i = 0
