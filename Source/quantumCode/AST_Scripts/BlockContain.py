@@ -58,6 +58,27 @@ class BlockContain(XMLExpVisitor):
         elif ctx.blockexp() is not None:
             return ctx.blockexp().accept(self)
 
+    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
+        vx = ctx.Identifier().accept(self)
+        qty = self.tenv.get(vx)
+        tml = qty.args()
+        tmv = qty.pre()
+        rmv = qty.out()
+        tmp = True
+        for i in range(len(tml)):
+            if ctx.vexp(i).idexp() is not None:
+                na = ctx.vexp(i).idexp().Identifier().accept(self)
+                tmpty = self.tenv.get(na)
+                tx = joinType(tmv.get(tml[i]), tmpty)
+                if tx is None:
+                    return False
+                self.tenv.update({na: rmv.get(tml[i])})
+            else:
+                tmp = tmp and ctx.vexp(i).accept(self)
+        return tmp
+
+    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
+        return ctx.exppair(0).program().accept(self) and ctx.exppair(1).program().accept(self)
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         return ctx.nextexp(0).accept(self) and ctx.nextexp(1).accept(self)
