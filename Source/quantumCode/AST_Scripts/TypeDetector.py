@@ -9,9 +9,9 @@ from antlr4 import ParserRuleContext
 from XMLExpParser import *
 from XMLExpVisitor import *
 from XMLTypeSearch import *
+from BlockContain import *
 
-
-class TypeInfer(XMLExpVisitor):
+class TypeDetector(XMLExpVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -24,58 +24,58 @@ class TypeInfer(XMLExpVisitor):
         self.tenv = tenv
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitRoot(self, ctx: XMLExpParser.RootContext):
-        return ctx.program().accept(self)
-
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
         i = 0
-        tmp = True
         while ctx.exp(i) is not None:
-            tmp = tmp and ctx.exp(i).accept(self)
+            if ctx.exp(i).blockexp() is not None:
+                return
+            else:
+                ctx.exp(i).accept(self)
             i += 1
-        return tmp
 
     def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
-        return ctx.program().accept(self)
+        ctx.program().accept(self)
 
     def visitExp(self, ctx: XMLExpParser.ExpContext):
         if ctx.letexp() is not None:
-            return ctx.letexp().accept(self)
+            ctx.letexp().accept(self)
         elif ctx.appexp() is not None:
-            return ctx.appexp().accept(self)
+            ctx.appexp().accept(self)
         elif ctx.ifexp() is not None:
-            return ctx.ifexp().accept(self)
+            ctx.ifexp().accept(self)
         elif ctx.matchexp() is not None:
-            return ctx.matchexp().accept(self)
+            ctx.matchexp().accept(self)
         elif ctx.cuexp() is not None:
-            return self.visitCUexp(ctx.cuexp())
+            self.visitCUexp(ctx.cuexp())
         elif ctx.skipexp() is not None:
-            return ctx.skipexp().accept(self)
+            ctx.skipexp().accept(self)
         elif ctx.xexp() is not None:
-            return ctx.xexp().accept(self)
+            ctx.xexp().accept(self)
         elif ctx.srexp() is not None:
-            return ctx.srexp().accept(self)
+            ctx.srexp().accept(self)
         elif ctx.qftexp() is not None:
-            return ctx.qftexp().accept(self)
+            ctx.qftexp().accept(self)
         elif ctx.lshiftexp() is not None:
-            return ctx.lshiftexp().accept(self)
+            ctx.lshiftexp().accept(self)
         elif ctx.rshiftexp() is not None:
-            return ctx.rshiftexp().accept(self)
+            ctx.rshiftexp().accept(self)
         elif ctx.revexp() is not None:
-            return ctx.revexp().accept(self)
+            ctx.revexp().accept(self)
         elif ctx.rqftexp() is not None:
-            return ctx.rqftexp().accept(self)
+            ctx.rqftexp().accept(self)
         elif ctx.blockexp() is not None:
-            return ctx.blockexp().accept(self)
+            ctx.blockexp().accept(self)
 
     def get_type_env(self):
         return self.tenv
 
     def visitElement(self, ctx: XMLExpParser.ElementContext):
         if ctx.numexp() is not None:
-            return ctx.numexp().accept(self)
+            return str(ctx.numexp().accept(self))
         else:
-            return ctx.Identifier().accept(self)
+            tv = ctx.Identifier().accept(self)
+            if isinstance(self.tenv.get(tv), Nat()):
+                return tv
 
     def visitAtype(self, ctx: XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:
@@ -113,16 +113,6 @@ class TypeInfer(XMLExpVisitor):
         #print("f", ctx)
         #ctx.exp().accept(self)
 
-    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
-        if ctx.vexp().accept(self):
-            tmv = copy.deepcopy(self.tenv)
-            tmp1 = ctx.nextexp(0).accept(self)
-            rmv = copy.deepcopy(self.tenv)
-            self.tenv = tmv
-            tmp2 = ctx.nextexp(1).accept(self)
-            return tmp1 and tmp2 and equalTypes(rmv, self.tenv)
-        return False
-
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         vx = ctx.Identifier().accept(self)
         qty = self.tenv.get(vx)
@@ -143,28 +133,14 @@ class TypeInfer(XMLExpVisitor):
         return tmp
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        x = ctx.Identifier().accept(self)
-        #value = self.st.get(x)
-        #print("value match", value)
-        fenv = copy.deepcopy(self.tenv)
-        va = ctx.exppair(1).element().Identifier().accept(self)
-        senv = copy.deepcopy(self.tenv)
-        senv.update({va: Nat()})
-        s1 = TypeSearch(fenv)
-        s1.visitProgram(ctx.exppair(0).program())
-        s2 = TypeSearch(senv)
-        s2.visitProgram(ctx.exppair(1).program())
-        fenv1 = s1.tenv
-        senv1 = s2.tenv.pop(va)
-        senv2 = joinTypes(fenv1, senv1)
-        fenv3 = copy.deepcopy(senv2)
-        self.tenv = fenv3
-        ctx.exppair(0).program().accept(self)
-        fenv4 = self.tenv
-        self.tenv = senv2.update({va: Nat()})
-        ctx.exppair(1).program().accept(self)
-        senv3 = self.tenv
-        return equalTypes(fenv4,senv3.pop(va))
+        bl = BlockContain()
+        if bl.visitProgram(ctx.exppair(0).program()):
+            ctx.exppair(0).program().accept(self)
+        elif bl.visitProgram(ctx.exppair(1).program()):
+            va = ctx.exppair(1).element().Identifier().accept(self)
+            self.tenv = senv2.update({va: Nat()})
+            ctx.exppair(1).program().accept(self)
+            self.tenv.pop(va)
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):

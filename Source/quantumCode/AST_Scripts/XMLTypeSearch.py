@@ -23,7 +23,7 @@ def types(a: [TypeName]):
 
 class Qty(TypeName):
 
-    def __init__(self, n: str, t: str = None, m: str = None):
+    def __init__(self, n, t: str = None, m = None):
         self.n = n
         self.ty = t
         if m is None:
