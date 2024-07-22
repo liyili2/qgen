@@ -3,7 +3,7 @@ from types import NoneType
 from XMLExpVisitor import XMLExpVisitor
 from XMLExpParser import XMLExpParser
 
-class XMLPrinter(XMLExpVisitor):
+class XMLExpPrinter(XMLExpVisitor):
 
     def __init__(self):
         #self.tenv = tenv
@@ -11,11 +11,11 @@ class XMLPrinter(XMLExpVisitor):
         #self.indentation = 0
 
     def visitRoot(self, ctx: XMLExpParser.RootContext):
-        self.xml_output += self.visitChildren(ctx)
+        self.xml_output += "<root>"+self.visitChildren(ctx)+"</root>"
 
     # Visit a parse tree produced by XMLExpParser#nextexp.
     def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
-        self.xml_output += self.visitChildren(ctx)
+        self.xml_output += "<next>"+self.visitChildren(ctx)+"</next>"
 
     # Visit a parse tree produced by XMLExpParser#program.
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
@@ -55,136 +55,149 @@ class XMLPrinter(XMLExpVisitor):
             ctx.rqftexp().accept(self)
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
-        self.xml_output += "let " + ctx.Identifier().accept(self) + " = "
+        self.xml_output += "<let id = '" + ctx.Identifier().accept(self) + "' >"
         i = 0
         while ctx.idexp(i) is not None:
-            self.xml_output += "("
+            #self.xml_output += "("
             ctx.idexp(i).accept(self)
-            self.xml_output += ")"
+            #self.xml_output += ")"
             i += 1
-        self.xml_output += " in\n  "
+        #self.xml_output += " in\n  "
         ctx.program().accept(self)
+        self.xml_output+= "</let>"
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        self.xml_output += "match "
+        self.xml_output += "<match id = '"
         ctx.Identifier().accept(self)
-        self.xml_output += " with "
+        self.xml_output += "'>"
         i = 0
         while ctx.exppair(i) is not None:
             ctx.exppair(i).accept(self)
             i += 1
-        self.xml_output += "\n end \n"
+        #self.xml_output += "\n end \n"
 
     def visitExppair(self, ctx: XMLExpParser.ExppairContext):
+        self.xml_output += "<pair case ='"
         ctx.element().accept(self)
-        self.xml_output += " => "
+        self.xml_output += "'> "
         ctx.program().accept(self)
+        self.xml_output += "</pair>"
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        self.xml_output += " "
+        self.xml_output += "<app id = '"
         ctx.Identifier().accept(self)
-        self.xml_output += "("
+        self.xml_output += "' >"
         i = 0
         while ctx.vexp(i) is not None:
             ctx.vexp(i).accept(self)
             self.xml_output += ", "
             #print("var",ctxa.idexp(i+1).Identifier())
             i += 1
-        self.xml_output += ")"
+        self.xml_output += "</app>"
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
-        self.xml_output += "if "
+        self.xml_output += "<if>"
         ctx.vexp().accept(self)
-        self.xml_output += " then {"
+        self.xml_output += "\n"
         ctx.nextexp(0).accept(self)
-        self.xml_output += "} else {"
+        self.xml_output += "\n"
         ctx.nextexp(1).accept(self)
-        self.xml_output += "}"
+        self.xml_output += "</if>"
 
     def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
-        self.xml_output += "  SKIP ("
+        self.xml_output += "<pexp gate = 'SKIP' id ='"
         ctx.Identifier().accpet(self)
-        self.xml_output += ", "
+        self.xml_output += "' >"
         ctx.vexp().accept(self)
-        self.xml_output += ")"
+        self.xml_output += "</pexp>"
 
     # X posi, changed the following for an example
     def visitXexp(self, ctx: ExpParser.XexpContext):
-        self.xml_output += "  X ("
+        self.xml_output += "<pexp gate = 'X' id ='"
         ctx.Identifier().accpet(self)
-        self.xml_output += ", "
+        self.xml_output += "' >"
         ctx.vexp().accept(self)
-        self.xml_output += ")"
+        self.xml_output += "</pexp>"
 
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
     def visitCUexp(self, ctx: ExpParser.CuexpContext):
-        self.xml_output += "  CU ("
+        self.xml_output += "<pexp gate = 'CU' id ='"
         ctx.Identifier().accpet(self)
-        self.xml_output += ", "
+        self.xml_output += "' >"
         ctx.vexp().accept(self)
-        self.xml_output += ")"
+        self.xml_output += "\n"
         ctx.program().accept(self)
+        self.xml_output += "</pexp>"
+
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: ExpParser.SrexpContext):
-        self.xml_output += "  SR ("
+        self.xml_output += "<pexp gate = 'SR' id ='"
         ctx.Identifier().accpet(self)
-        self.xml_output += ", "
+        self.xml_output += "' >"
         ctx.vexp().accept(self)
-        self.xml_output += ")"
+        self.xml_output += "</pexp>"
 
     def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
-        self.xml_output += "  Lshift "
+        self.xml_output += "<pexp gate = 'Lshift' id ='"
         ctx.Identifier().accpet(self)
+        self.xml_output += "' >"
+        self.xml_output += "</pexp>"
 
     def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
-        self.xml_output += "  Rshift "
+        self.xml_output += "<pexp gate = 'Rshift' id ='"
         ctx.Identifier().accpet(self)
+        self.xml_output += "' >"
+        self.xml_output += "</pexp>"
 
     def visitRevexp(self, ctx: ExpParser.RevexpContext):
-        self.xml_output += "  Rev "
+        self.xml_output += "<pexp gate = 'Rev' id ='"
         ctx.Identifier().accpet(self)
+        self.xml_output += "' >"
+        self.xml_output += "</pexp>"
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
     def visitQftexp(self, ctx: ExpParser.QftexpContext):
-        self.xml_output += "  QFT ("
+        self.xml_output += "<pexp gate = 'QFT' id ='"
         ctx.Identifier().accpet(self)
-        self.xml_output += ", "
+        self.xml_output += "' >"
         ctx.vexp().accept(self)
-        self.xml_output += ")"
+        self.xml_output += "</pexp>"
 
     def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
-        self.xml_output += "  RQFT "
+        self.xml_output += "<pexp gate = 'RQFT' id ='"
         ctx.Identifier().accpet(self)
+        self.xml_output += "' >"
+        self.xml_output += "</pexp>"
 
     def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        ctx.Identifier().accpet(self)
+        self.xml_output += "<vexp op = 'id' "
         if ctx.atype() is not None:
-            self.xml_output += " : "
-            ctx.atype().accept(self)
-
+            ctx.atype.accept(self)
+        self.xml_output += ">"
+        ctx.Identifier().accpet(self)
+        self.xml_output += "</vexp>"
     def visitAtype(self, ctx:XMLExpParser.AtypeContext):
+        self.xml_output += "type = "
         if ctx.Nat() is not None:
-            self.xml_output += "nat"
+            self.xml_output += "'nat' "
         elif ctx.Qt() is not None:
            self.xml_output += "Q("
            ctx.element(0).accept(self)
-           self.xml_output += ")"
+           self.xml_output += ") "
         elif ctx.Nor() is not None:
            self.xml_output += "Nor("
            ctx.element(0).accept(self)
-           self.xml_output += ")"
+           self.xml_output += ") "
         elif ctx.Phi() is not None:
            self.xml_output += "Phi("
            ctx.element(0).accept(self)
            self.xml_output += ", "
            ctx.element(1).accept(self)
-           self.xml_output += ")"
-
-
+           self.xml_output += ") "
 
     def visitElement(self, ctx:XMLExpParser.ElementContext):
         if ctx.numexp() is not None:
@@ -196,26 +209,31 @@ class XMLPrinter(XMLExpVisitor):
         if ctx.idexp() is not None:
             ctx.idexp().accept(self)
         if ctx.NUM() is not None:
+            self.xml_output += "<vexp op = 'num' >"
             ctx.numexp().accept(self)
+            self.xml_output += "</vexp>"
         else:
             #print("here")
             #print("op",ctx.op())
-            ctx.vexp(0).accept(self)
+            self.xml_output += "<vexp op = '"
             if ctx.op().Plus() is not None:
-                self.xml_output += " + "
+                self.xml_output += "+"
             elif ctx.op().Minus() is not None:
-                self.xml_output += " - "
+                self.xml_output += "-"
             elif ctx.op().Times() is not None:
-                self.xml_output += " * "
+                self.xml_output += "*"
             elif ctx.op().Div() is not None:
-                self.xml_output += " / "
+                self.xml_output += "/"
             elif ctx.op().Exp() is not None:
-                self.xml_output += " ^ "
+                self.xml_output += "^"
             elif ctx.op().Mod() is not None:
-                self.xml_output += " % "
+                self.xml_output += "%"
             elif ctx.op().GNum() is not None:
-                self.xml_output += " @ "
+                self.xml_output += "$"
+            self.xml_output += "' >"
+            ctx.vexp(0).accept(self)
             ctx.vexp(1).accept(self)
+            self.xml_output += "</vexp>"
 
     def visitTerminal(self, node):
         # For leaf nodes
