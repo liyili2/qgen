@@ -9,6 +9,7 @@ import copy
 #from pyggi.tree import AbstractTreeEngine
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
+import xml.etree.ElementTree as ET
 
 ## Implement new operators here
 class QGateReplacement(StmtReplacement):
@@ -95,7 +96,7 @@ class QGateReplacement(StmtReplacement):
 class QGateInsertion(StmtInsertion):
     def __init__(self, target, ingredient, direction='before'):
         super(QGateInsertion, self).__init__(target, ingredient, direction)
-
+    
     def apply(self, program, new_contents, modification_points):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
@@ -104,36 +105,7 @@ class QGateInsertion(StmtInsertion):
 
     
     def do_insert(self, program, new_contents, modification_points):
-        # target_content = new_contents[self.target[0]]
-        
-        # # Parse the XML content
-        # target_tree = etree.fromstring(target_content)
-        
-        # # Find the target element based on the modification point
-        # target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
-        
-        # # Get the parent of the target element and the index of the target element within the parent
-        # parent = target_element.getparent()
-        # index = parent.index(target_element)
-
-        # # Create new <app> element
-        # app_element = etree.Element('app', id='new_f')
-        # etree.SubElement(app_element, 'vexp', op='id').text = 'x'
-        # etree.SubElement(app_element, 'vexp', op='id').text = 'm'
-        # etree.SubElement(app_element, 'vexp', op='id').text = 'size'
-        # etree.SubElement(app_element, 'vexp', op='id').text = 'M'
-
-        # # Insert the <app> element into the target's parent
-        # if self.direction == 'before':
-        #     parent.insert(index, copy.deepcopy(app_element))
-        # else:
-        #     parent.insert(index + 1, copy.deepcopy(app_element))
-        
-        # # Serialize the modified XML back to a string
-        # new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-        # new_contents[self.target[0]] = new_target_content  # Update the new contents with modified XML
-        # return True
-
+      
         target_content = new_contents[self.target[0]]
         ingredient_content = new_contents[self.ingredient[0]]
         
@@ -166,7 +138,7 @@ class QGateInsertion(StmtInsertion):
         assert program.engines[target_file] == program.engines[ingr_file]
         if direction is None:
             direction = random.choice(['before', 'after'])
-
+        return cls(program.app_target(target_file, method),program.app_target(ingr_file, 'random'),direction)
     #modify here
     #1. program.app_target(target_file, method)
     #2. program.app_target(ingr_file, 'random')
@@ -179,9 +151,7 @@ class QGateInsertion(StmtInsertion):
     #look at the type of the variable in env, if it is Phi, then use SR/RQFT gate only
     #if it is Nor, then use X, CU,
     #if it is nat, can only use if with two branching
-       return cls(program.app_target(target_file, method),
-                   program.app_target(ingr_file, 'random'),
-                   direction)
+        
 
 
 class QGateDeletion(StmtDeletion):

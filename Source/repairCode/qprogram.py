@@ -1,14 +1,16 @@
 import random
 from pyggi.tree import TreeProgram
 from .qresult import QResult
-
+import xml.etree.ElementTree as ET
 import re
-
+import os
 
 class QProgram(TreeProgram):
     """
     A Program 
     """
+
+
     def __init__(self, project_path):
         """
         :param number_of_variables: Number of decision variables of the problem.
@@ -18,13 +20,41 @@ class QProgram(TreeProgram):
         self.path      = project_path
         self.operators = []
 
+     # Determine if project_path is a directory
+        if os.path.isdir(project_path):
+            # Find an XML file in the directory
+            xml_files = [f for f in os.listdir(project_path) if f.endswith('.xml')]
+            if not xml_files:
+                raise FileNotFoundError("No XML file found in the provided directory.")
+            # Use the first XML file found
+            xml_file_path = os.path.join(project_path, xml_files[0])
+        else:
+            # Use the provided file path directly
+            xml_file_path = project_path
+
+        # Read and parse the XML content
+        with open(xml_file_path, 'r') as file:
+            self.xml_content = file.read()
+        self.tree = ET.ElementTree(ET.fromstring(self.xml_content))
+
+
+    def get_xml_string(self):
+        """
+        Returns the entire XML content as a string.
+        """
+        return ET.tostring(self.tree.getroot(), encoding='unicode', method='xml')
+
+    def __str__(self):
+        return self.get_xml_string()
+
     def compute_fitness(self, result, return_code=0, stdout=0, stderr=0, elapsed_time=0):
         """
         Given a program, compute the fitness by parsing the pyTest output
         """
         #print('start computing fitness')
-        m = re.findall("runtime: ([0-9.]+)", stdout)
         #print("stdout",stdout)
+        m = re.findall("runtime: ([0-9.]+)", stdout)
+        
         #m = re.findall("runtime: (\d+\.\d+)s", stdout)
         print(f'Runtime: {m}')
         if len(m) > 0:
@@ -62,7 +92,6 @@ class QProgram(TreeProgram):
     def app_target(self, target_file=None, method="random"):
         '''
         Similar to random target but tuned for app insertation
-
 
         '''
         if target_file is None:

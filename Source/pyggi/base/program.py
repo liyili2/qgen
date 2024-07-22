@@ -19,6 +19,7 @@ import signal
 from abc import ABC, abstractmethod
 from .. import PYGGI_DIR
 from ..utils import Logger, weighted_choice
+import xml.etree.ElementTree as ET
 
 class RunResult:
     def __init__(self, status, fitness=None):
@@ -234,6 +235,16 @@ class AbstractProgram(ABC):
         :rtype: str
         """
         return self.engines[file_name].dump(contents[file_name])
+    
+    def Xmlret(self, contents, file_name):
+        """
+        Convert contents of file to the source code
+        :param contents_of_file: The contents of the file which is the parsed form of source code
+        :type contents_of_file: ?
+        :return: The source code
+        :rtype: str
+        """
+        return self.engines[file_name].Xmlret(contents[file_name])
 
     def get_modified_contents(self, patch):
         target_files = self.contents.keys()
@@ -323,7 +334,11 @@ class AbstractProgram(ABC):
         diffs = ''
         new_contents = self.get_modified_contents(patch)
         for file_name in self.target_files:
+
+            original_xml = self.Xmlret(self.contents,file_name)
             orig = self.dump(self.contents, file_name)
+
+            modified_xml = self.Xmlret(new_contents,file_name)
             modi = self.dump(new_contents, file_name)
             orig_list = list(map(lambda s: s+'\n', orig.splitlines()))
             modi_list = list(map(lambda s: s+'\n', modi.splitlines()))
@@ -331,4 +346,7 @@ class AbstractProgram(ABC):
                                              fromfile="before: " + file_name,
                                              tofile="after: " + file_name):
                 diffs += diff
+            print("\n:::::::::::::::::::Original Xml:::::::::::::::::::::::",original_xml)
+            print("\n:::::::::::::::::::Modified Xml:::::::::::::::::::::::",modified_xml)
         return diffs
+
