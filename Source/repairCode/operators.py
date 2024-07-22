@@ -3,6 +3,8 @@ Possible Edit Operators
 """
 import random
 from abc import ABC
+import tempfile
+from xml.dom import minidom
 #from pyggi.base import BaseOperator
 from lxml import etree
 import copy
@@ -100,34 +102,71 @@ class QGateInsertion(StmtInsertion):
     def apply(self, program, new_contents, modification_points):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
-        result = engine.do_insert(program,self, new_contents, modification_points)
+       
+        root = ET.Element("root")
+
+        # Create a child element
+        child = ET.Element("child")
+        child.text = "This is a child element"
+
+        # Add the child element to the root element
+        root.append(child)
+
+        ingredient = root
+        result = self.do_insert( program,self, new_contents, modification_points, engine, ingredient)
         return result
 
     
-    def do_insert(self, program, new_contents, modification_points):
-      
-        target_content = new_contents[self.target[0]]
-        ingredient_content = new_contents[self.ingredient[0]]
-        
-        # Parse the XML content
-        target_tree = etree.fromstring(target_content)
-        ingredient_tree = etree.fromstring(ingredient_content)
-        target_element = target_tree.xpath(modification_points[self.target[0]][self.target[1]])[0]
-        ingredient_element = ingredient_tree.xpath(modification_points[self.ingredient[0]][self.ingredient[1]])[0]
-        
-        # Get the parent of the target element and the index of the target element within the parent
-        parent = target_element.getparent()
-        index = parent.index(target_element)
+    def do_insert(cls, program, op, new_contents, modification_points, engine, ingredient):
+        # get elements
+        target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
+        parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
 
-        # Insert the ingredient element into the target's parent
-        if self.direction == 'before':
-            parent.insert(index, copy.deepcopy(ingredient_element))
+        def pretty_print_element(element):
+            raw_str = ET.tostring(element, 'utf-8')
+            parsed = minidom.parseString(raw_str)
+            return parsed.toprettyxml(indent="  ")
+        print("ingredient:")
+        print(pretty_print_element(ingredient))
+        print("target:")
+        print(type(target))
+        print(pretty_print_element(target))
+        if target is None or ingredient is None:
+            return False
+
+        # mutate
+        for i, child in enumerate(parent):
+            if child == target:
+                tmp = copy.deepcopy(ingredient)
+                if op.direction == 'after':
+                    tmp.tail = child.tail
+                    child.tail = None
+                    i += 1
+                else:
+                    tmp.tail = None
+                parent.insert(i, tmp)
+                break
         else:
-            parent.insert(index + 1, copy.deepcopy(ingredient_element))
-        
-        # Serialize the modified XML back to a string
-        new_target_content = etree.tostring(target_tree, pretty_print=True).decode('utf-8')
-        return new_target_content
+            assert False
+
+        # update modification points
+        head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
+        for i, xpath in enumerate(modification_points[op.target[0]]):
+            if i < op.target[1]:
+                continue
+            h, t, p, s = engine.split_xpath(xpath, head)
+            if h != head and xpath != 'deleted':
+                break
+            if t == tag and p == pos and op.direction == 'after':
+                continue
+            if t in [ingredient.tag, tag]:
+                if s:
+                    new_pos = '{}/{}[{}]/{}'.format(h, t, p+1, s)
+                else:
+                    new_pos = '{}/{}[{}]'.format(h, t, p+1)
+                modification_points[op.target[0]][i] = new_pos
+        return True
+
 
     @classmethod
     def create(cls, program, target_file=None, ingr_file=None, direction=None, method='random'):
