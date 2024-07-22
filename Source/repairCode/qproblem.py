@@ -53,7 +53,7 @@ class QProblem(Problem):
         Creates a new solution object with a random edit operator
         '''
         solution = QPatch(self.program, number_of_variables=1, number_of_objectives=1)
-        print(self.program)
+        #print(self.program)
         edit_operator: AbstractEdit = random.choice(self.program.operators)
         opr = edit_operator.create(self.program)
         solution.add(opr)
