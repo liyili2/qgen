@@ -9,6 +9,7 @@ from xml.dom import minidom
 from lxml import etree
 import copy
 #from pyggi.tree import AbstractTreeEngine
+from Source.quantumCode.AST_Scripts import XMLExpPrinter
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 import xml.etree.ElementTree as ET
@@ -123,13 +124,19 @@ class QGateInsertion(StmtInsertion):
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
 
         def pretty_print_element(element):
+            if element is None:
+                return ""
             raw_str = ET.tostring(element, 'utf-8')
             parsed = minidom.parseString(raw_str)
             return parsed.toprettyxml(indent="  ")
+        
+        # xml_printer = XMLExpPrinter()
+        # xml_printer.visitProgrm(ingredient)
+        # print('xml printer', xml_printer.xml_output)
+
         print("ingredient:")
         print(pretty_print_element(ingredient))
         print("target:")
-        print(type(target))
         print(pretty_print_element(target))
         if target is None or ingredient is None:
             return False
