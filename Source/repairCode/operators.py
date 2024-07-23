@@ -104,21 +104,32 @@ class QGateInsertion(StmtInsertion):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
        
-        root = ET.Element("root")
-
-        # Create a child element
-        child = ET.Element("child")
-        child.text = "This is a child element"
-
-        # Add the child element to the root element
-        root.append(child)
-
-        ingredient = root
-        result = self.do_insert( program,self, new_contents, modification_points, engine, ingredient)
+        result = self.do_insert(self, program,self, new_contents, modification_points, engine)
         return result
 
     
-    def do_insert(cls, program, op, new_contents, modification_points, engine, ingredient):
+    def insert_into_parent(self, parent, target, ingredient):
+        # mutate
+        for i, child in enumerate(parent):
+            if child == target:
+                tmp = copy.deepcopy(ingredient)
+                if self.direction == 'after':
+                    tmp.tail = child.tail
+                    child.tail = None
+                    i += 1
+                else:
+                    tmp.tail = None
+                parent.insert(i, tmp)
+                break
+        else:
+            assert False
+
+    def delete_block(self, parent):
+        for child in parent.findall("BLOCK"):
+            parent.remove(child)
+
+
+    def do_insert(self, cls, program, op, new_contents, modification_points, engine):
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
@@ -134,6 +145,8 @@ class QGateInsertion(StmtInsertion):
         # xml_printer.visitProgrm(ingredient)
         # print('xml printer', xml_printer.xml_output)
 
+        ingredient = ET.Element("BLOCK")
+
         print("ingredient:")
         print(pretty_print_element(ingredient))
         print("target:")
@@ -141,27 +154,19 @@ class QGateInsertion(StmtInsertion):
         if target is None or ingredient is None:
             return False
 
-        # mutate
-        for i, child in enumerate(parent):
-            if child == target:
-                tmp = copy.deepcopy(ingredient)
-                if op.direction == 'after':
-                    tmp.tail = child.tail
-                    child.tail = None
-                    i += 1
-                else:
-                    tmp.tail = None
-                parent.insert(i, tmp)
-                break
-        else:
-            assert False
+        self.insert_into_parent(parent, target, ingredient)
+        print("parent after insert block",pretty_print_element(parent))
+        self.delete_block(parent)
+        print("parent after deletion",pretty_print_element(parent))
+        self.insert_into_parent(parent, target, ET.Element("QFT"))
+        print("parent after insert matched",pretty_print_element(parent))
 
         # update modification points
         head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
         for i, xpath in enumerate(modification_points[op.target[0]]):
             if i < op.target[1]:
                 continue
-            h, t, p, s = engine.split_xpath(xpath, head)
+            h, t, p, s = engine.split_xpath (xpath, head)
             if h != head and xpath != 'deleted':
                 break
             if t == tag and p == pos and op.direction == 'after':
