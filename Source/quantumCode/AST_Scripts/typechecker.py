@@ -6,9 +6,9 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from XMLExpParser import *
-from XMLExpVisitor import *
-from XMLTypeSearch import *
+from quantumCode.AST_Scripts.XMLExpLexer import *
+from quantumCode.AST_Scripts.XMLExpVisitor import *
+from quantumCode.AST_Scripts.XMLTypeSearch import *
 
 
 class TypeInfer(XMLExpVisitor):

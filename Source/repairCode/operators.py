@@ -7,6 +7,7 @@ from xml.dom import minidom
 from lxml import etree
 import copy
 
+from quantumCode.AST_Scripts.typechecker import TypeInfer
 from repairCode.configs.type_env import type_envs
 #from pyggi.tree import AbstractTreeEngine
 # from Source.quantumCode.AST_Scripts import XMLExpPrinter
@@ -130,6 +131,13 @@ class QGateInsertion(StmtInsertion):
 
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
+        def pretty_print_element(element):
+            if element is None:
+                return ""
+            raw_str = ET.tostring(element, 'utf-8')
+            parsed = minidom.parseString(raw_str)
+            return parsed.toprettyxml(indent="  ")
+        
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
@@ -138,20 +146,15 @@ class QGateInsertion(StmtInsertion):
         if target is None or ingredient is None:
             return False
 
-        initial_teype_nv = type_envs[self.ingredient[0]]
-        print("Initial tenv",initial_teype_nv)
+        initial_type_env = type_envs[self.ingredient[0]]
+        print("Initial tenv",initial_type_env)
+        type_infer = TypeInfer(initial_type_env)
+        root = new_contents[op.target[0]].find('.')
+        # TODO
+        # figure this out
+        # type_infer.visitRoot(root)
 
-        def pretty_print_element(element):
-            if element is None:
-                return ""
-            raw_str = ET.tostring(element, 'utf-8')
-            parsed = minidom.parseString(raw_str)
-            return parsed.toprettyxml(indent="  ")
         
-        # xml_printer = XMLExpPrinter()
-        # xml_printer.visitProgrm(ingredient)
-        # print('xml printer', xml_printer.xml_output)
-
         block_el = ET.Element("BLOCK")
 
         print("block:")
