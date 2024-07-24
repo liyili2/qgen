@@ -95,7 +95,10 @@ class TypeInfer(XMLExpVisitor):
         while ctx.idexp(i) is not None:
             x = ctx.idexp(i).Identifier().accept(self)
             tml.append(x)
-            v = ctx.idexp(i).atype().accept(self)
+            if ctx.idexp(i).atype() is not None:
+                v = ctx.idexp(i).atype().accept(self)
+            else:
+                v = Nat()
             self.tenv.update({x: v})
             i += 1
 
