@@ -5,5 +5,5 @@
           <pair case = 'm' > <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
    </match>
 </let>
-<app id = 'f' > <vexp op = 'id' > xa </vexp> <vexp op = 'id' > y a</vexp> <vexp op = 'id' > ca </vexp> <vexp op = 'id' > na </vexp> </app>
+<app id = 'f' > <vexp op = 'id' > xa </vexp> <vexp op = 'id' > ya</vexp> <vexp op = 'id' > ca </vexp> <vexp op = 'id' > na </vexp> </app>
 </root>

@@ -2,14 +2,14 @@
 Possible Edit Operators
 """
 import random
-from abc import ABC
-import tempfile
 from xml.dom import minidom
 #from pyggi.base import BaseOperator
 from lxml import etree
 import copy
+
+from repairCode.configs.type_env import type_envs
 #from pyggi.tree import AbstractTreeEngine
-from Source.quantumCode.AST_Scripts import XMLExpPrinter
+# from Source.quantumCode.AST_Scripts import XMLExpPrinter
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 import xml.etree.ElementTree as ET
@@ -133,6 +133,13 @@ class QGateInsertion(StmtInsertion):
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
+        ingredient = program.contents[op.ingredient[0]].find(program.modification_points[op.ingredient[0]][op.ingredient[1]])
+
+        if target is None or ingredient is None:
+            return False
+
+        initial_teype_nv = type_envs[self.ingredient[0]]
+        print("Initial tenv",initial_teype_nv)
 
         def pretty_print_element(element):
             if element is None:
@@ -145,20 +152,20 @@ class QGateInsertion(StmtInsertion):
         # xml_printer.visitProgrm(ingredient)
         # print('xml printer', xml_printer.xml_output)
 
-        ingredient = ET.Element("BLOCK")
+        block_el = ET.Element("BLOCK")
 
+        print("block:")
+        print(pretty_print_element(block_el))
         print("ingredient:")
         print(pretty_print_element(ingredient))
         print("target:")
         print(pretty_print_element(target))
-        if target is None or ingredient is None:
-            return False
 
-        self.insert_into_parent(parent, target, ingredient)
+        self.insert_into_parent(parent, target, block_el)
         print("parent after insert block",pretty_print_element(parent))
         self.delete_block(parent)
         print("parent after deletion",pretty_print_element(parent))
-        self.insert_into_parent(parent, target, ET.Element("QFT"))
+        self.insert_into_parent(parent, target, ingredient)
         print("parent after insert matched",pretty_print_element(parent))
 
         # update modification points

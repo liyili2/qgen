@@ -6,8 +6,9 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from XMLExpParser import *
-from XMLExpVisitor import *
+from quantumCode.AST_Scripts.XMLExpParser import *
+from quantumCode.AST_Scripts.XMLExpVisitor import *
+
 
 
 class TypeName:
@@ -23,7 +24,7 @@ def types(a: [TypeName]):
 
 class Qty(TypeName):
 
-    def __init__(self, n, t: str = None, m = None):
+    def __init__(self, n, t: str = None, m=None):
         self.n = n
         self.ty = t
         if m is None:
@@ -184,7 +185,7 @@ class TypeSearch(XMLExpVisitor):
         ctx.exppair(0).program().accept(self)
         fenv1 = copy.deepcopy(self.tenv)
         va = ctx.exppair(1).element().Identifier().accept(self)
-        self.tenv = fenv.update({va : Nat()})
+        self.tenv = fenv.update({va: Nat()})
         ctx.exppair(1).program().accept(self)
         if self.tenv is not None:
             return joinTypes(fenv1, self.tenv)
