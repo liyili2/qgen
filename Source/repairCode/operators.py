@@ -7,6 +7,7 @@ from xml.dom import minidom
 from lxml import etree
 import copy
 
+from antlr4 import InputStream, CommonTokenStream
 from quantumCode.AST_Scripts.typechecker import TypeInfer
 from repairCode.configs.type_env import type_envs
 #from pyggi.tree import AbstractTreeEngine
@@ -14,6 +15,9 @@ from repairCode.configs.type_env import type_envs
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 import xml.etree.ElementTree as ET
+
+from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
+from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 
 ## Implement new operators here
@@ -23,6 +27,28 @@ def pretty_print_element(element):
     raw_str = ET.tostring(element, 'utf-8')
     parsed = minidom.parseString(raw_str)
     return parsed.toprettyxml(indent="  ")
+
+
+def element_to_string(element):
+    return ET.tostring(element, encoding='unicode')
+
+
+def parse_string_to_ast(xml_string):
+    input_stream = InputStream(xml_string)
+    lexer = XMLExpLexer(input_stream)
+    token_stream = CommonTokenStream(lexer)
+    parser = XMLExpParser(token_stream)
+    print('parser after here')
+    print('parser', parser)
+    return parser.root()
+
+
+def convert_xml_element_to_ast(element):
+    xml_string = element_to_string(element)
+    print('xml str', xml_string)
+    ast_root = parse_string_to_ast(xml_string)
+    return ast_root
+
 
 class QGateReplacement(StmtReplacement):
     def __init__(self, target, ingredient, target_tag):
@@ -136,9 +162,7 @@ class QGateInsertion(StmtInsertion):
         else:
             assert False
 
-
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
-
 
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
@@ -153,12 +177,25 @@ class QGateInsertion(StmtInsertion):
         print("Initial type_environment", initial_type_env)
         type_infer = TypeInfer(initial_type_env)
         root = new_contents[op.target[0]].find('.')
-        # TODO
-        # figure this out
-        type_infer.visitRoot(root)
+        print("root", (pretty_print_element(root)))
+
+        root_xml_element = new_contents[op.target[0]]  # Assuming this is an Element object
+        root_ast_element = convert_xml_element_to_ast(root_xml_element)
+
+        # def pretty_print_ast_element(ctx, level=0):
+        #     indent = '  ' * level
+        #     if hasattr(ctx, 'children') and ctx.children:
+        #         for child in ctx.children:
+        #             if hasattr(child, 'getText'):
+        #                 print(f"{indent}<{type(child).__name__}>: {child.getText()}")
+        #             pretty_print_ast_element(child, level + 1)
+        #     else:
+        #         print(f"{indent}<{type(ctx).__name__}>: {ctx.getText() if hasattr(ctx, 'getText') else 'N/A'}")
+        #
+        # print('ast_root', pretty_print_ast_element(root_ast_element))
+        type_infer.visitRoot(root_ast_element)
         print("Initial type_environment after", initial_type_env)
         print("Accessed type_environment", type_envs[self.ingredient[0]])
-
 
         block_el = ET.Element("BLOCK")
 
@@ -192,6 +229,7 @@ class QGateInsertion(StmtInsertion):
                     else:
                         new_pos = '{}/{}[{}]'.format(h, t, p + 1)
                     modification_points[op.target[0]][i] = new_pos
+
         update_modification_points()
         return True
 
