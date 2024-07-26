@@ -10,9 +10,15 @@ from quantumCode.AST_Scripts.XMLExpParser import *
 from quantumCode.AST_Scripts.XMLExpVisitor import *
 
 
-
 class TypeName:
-    pass  # TODO
+    def __str__(self):
+        return self.type()
+
+    def __repr__(self):
+        return self.__str__()
+
+    def type(self):
+        pass
 
 
 def types(a: [TypeName]):
@@ -25,27 +31,30 @@ def types(a: [TypeName]):
 class Qty(TypeName):
 
     def __init__(self, n, t: str = None, m=None):
-        self.n = n
-        self.ty = t
+        self.qubit_array_size = n
+        self.type = t
         if m is None:
             self.m = "0"
         else:
             self.m = m
 
     def get_num(self):
-        return self.n
+        return self.qubit_array_size
 
     def get_anum(self):
         return self.m
 
     def set_type(self, ty: str):
-        self.ty = ty
+        self.type = ty
 
     def type(self):
-        return self.ty
+        return self.type
 
     def fullty(self):
-        return (self.ty, self.n, self.m)
+        return (self.type, self.qubit_array_size, self.m)
+
+    def __str__(self):
+        return f"Qty(type={self.type}, qubit_array_size={self.qubit_array_size}, m={self.m})"
 
 
 class Nat(TypeName):
@@ -73,6 +82,9 @@ class Fun(TypeName):
 
     def out(self):
         return self.out
+
+    def __str__(self):
+        return f"Fun(args={self.args}, pre={self.pre}, out={self.out})"
 
 
 def joinType(a: TypeName, b: TypeName):
@@ -121,8 +133,8 @@ class TypeSearch(XMLExpVisitor):
     # x --> v1 --> cal(v1) --> integer
     # Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
     # x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
-    def __init__(self, tenv: dict):
-        self.tenv = tenv
+    def __init__(self, type_environment: dict):
+        self.type_environment = type_environment
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
@@ -166,29 +178,29 @@ class TypeSearch(XMLExpVisitor):
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         vx = ctx.Identifier().accept(self)
-        qty = self.tenv.get(vx)
+        qty = self.type_environment.get(vx)
         tml = qty.args()
         tmv = qty.pre()
         #rmv = qty.out()
         for i in range(len(tml)):
             ptv = tmv.get(tml[i])
-            if isinstance(ptv, Qty) and isinstance(self.tenv.get(x), Qty):
-                if self.tenv.get(tml[i]).type() is None and ptv.type() is not None:
-                    self.tenv.get(tml[i]).set_type(ptv.type())
+            if isinstance(ptv, Qty) and isinstance(self.type_environment.get(x), Qty):
+                if self.type_environment.get(tml[i]).type() is None and ptv.type() is not None:
+                    self.type_environment.get(tml[i]).set_type(ptv.type())
         return
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
         x = ctx.Identifier().accept(self)
         #value = self.st.get(x)
         #print("value match", value)
-        fenv = copy.deepcopy(self.tenv)
+        fenv = copy.deepcopy(self.type_environment)
         ctx.exppair(0).program().accept(self)
-        fenv1 = copy.deepcopy(self.tenv)
+        fenv1 = copy.deepcopy(self.type_environment)
         va = ctx.exppair(1).element().Identifier().accept(self)
-        self.tenv = fenv.update({va: Nat()})
+        self.type_environment = fenv.update({va: Nat()})
         ctx.exppair(1).program().accept(self)
-        if self.tenv is not None:
-            return joinTypes(fenv1, self.tenv)
+        if self.type_environment is not None:
+            return joinTypes(fenv1, self.type_environment)
 
     def visitBlockexp(self, ctx: XMLExpParser.BlockexpContext):
         return
@@ -197,17 +209,17 @@ class TypeSearch(XMLExpVisitor):
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
         #x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        return  #isinstance(self.tenv.get(x), Qty)
+        return  #isinstance(self.type_environment.get(x), Qty)
 
     # X posi, changed the following for an example
     def visitXexp(self, ctx: XMLExpParser.XexpContext):
         x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
         return
-        #return p < self.env.get(x) and str(self.tenv.get(x)) == "Nor"
+        #return p < self.env.get(x) and str(self.type_environment.get(x)) == "Nor"
         # print(M_find(x, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,
@@ -215,9 +227,9 @@ class TypeSearch(XMLExpVisitor):
     def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
         x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
             ctx.program().accept(self)
         return
 
@@ -225,30 +237,30 @@ class TypeSearch(XMLExpVisitor):
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
         x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Phi")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Phi")
         return
 
     def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
         x = ctx.Identifier().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
         return
 
     def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
         x = ctx.Identifier().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
         return
 
     def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
         x = ctx.Identifier().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
         return
 
     # actually, we need to change the QFT function
@@ -256,15 +268,15 @@ class TypeSearch(XMLExpVisitor):
     def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
         x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Nor")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Nor")
         return
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
-        if isinstance(self.tenv.get(x), Qty):
-            if self.tenv.get(x).type() is None:
-                self.tenv.get(x).set_type("Phi")
+        if isinstance(self.type_environment.get(x), Qty):
+            if self.type_environment.get(x).type() is None:
+                self.type_environment.get(x).set_type("Phi")
         return

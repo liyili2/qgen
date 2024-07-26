@@ -6,9 +6,9 @@ from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 class XMLExpPrinter(XMLExpVisitor):
 
-    def __init__(self, tenv:dict):
-        self.tenv = tenv
-        #self.tenv = tenv
+    def __init__(self, type_environment:dict):
+        self.type_environment = type_environment
+        #self.type_environment = type_environment
         self.xml_output = ''
         #self.indentation = 0
 

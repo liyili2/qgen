@@ -60,7 +60,7 @@ class BlockContain(XMLExpVisitor):
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         vx = ctx.Identifier().accept(self)
-        qty = self.tenv.get(vx)
+        qty = self.type_environment.get(vx)
         tml = qty.args()
         tmv = qty.pre()
         rmv = qty.out()
@@ -68,11 +68,11 @@ class BlockContain(XMLExpVisitor):
         for i in range(len(tml)):
             if ctx.vexp(i).idexp() is not None:
                 na = ctx.vexp(i).idexp().Identifier().accept(self)
-                tmpty = self.tenv.get(na)
+                tmpty = self.type_environment.get(na)
                 tx = joinType(tmv.get(tml[i]), tmpty)
                 if tx is None:
                     return False
-                self.tenv.update({na: rmv.get(tml[i])})
+                self.type_environment.update({na: rmv.get(tml[i])})
             else:
                 tmp = tmp and ctx.vexp(i).accept(self)
         return tmp
@@ -97,7 +97,7 @@ class BlockContain(XMLExpVisitor):
     def visitXexp(self, ctx: XMLExpParser.XexpContext):
         return False
 
-        #return p < self.env.get(x) and str(self.tenv.get(x)) == "Nor"
+        #return p < self.env.get(x) and str(self.type_environment.get(x)) == "Nor"
         # print(M_find(x, self.st))
 
     # we will first get the position in st and check if the state is 0 or 1,

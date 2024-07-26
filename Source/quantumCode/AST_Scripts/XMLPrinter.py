@@ -6,7 +6,7 @@ from XMLExpParser import XMLExpParser
 class XMLPrinter(XMLExpVisitor):
 
     def __init__(self):
-        #self.tenv = tenv
+        #self.type_environment = type_environment
         self.xml_output = ''
         #self.indentation = 0
 

@@ -43,8 +43,8 @@ def findVar(node: ExpParser.VexpContext):
 
 class XMLVisitor(ExpVisitor):
 
-    def __init__(self, tenv: ChainMap):
-        self.tenv = tenv
+    def __init__(self, type_environment: ChainMap):
+        self.type_environment = type_environment
         self.xml_output = ''
         self.indentation = 0
 
@@ -86,7 +86,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<X>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</X>\n"
@@ -95,7 +95,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<CU>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</CU>\n"
@@ -104,7 +104,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.posiexp().vexp(0))
         self.xml_output += "  " * self.indentation + "<RZ>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</RZ>\n"
@@ -113,7 +113,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp(1))
         self.xml_output += "  " * self.indentation + "<SR>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</SR>\n"
@@ -122,7 +122,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Lshift>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Lshift>\n"
@@ -131,7 +131,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Rshift>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Rshift>\n"
@@ -140,7 +140,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp())
         self.xml_output += "  " * self.indentation + "<Rev>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</Rev>\n"
@@ -149,7 +149,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp(0))
         self.xml_output += "  " * self.indentation + "<QFT>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</QFT>\n"
@@ -158,7 +158,7 @@ class XMLVisitor(ExpVisitor):
         x = findVar(ctx.vexp(0))
         self.xml_output += "  " * self.indentation + "<RQFT>\n"
         self.indentation += 1
-        self.xml_output += "<type>" + str(M_find(x, self.tenv)) + "</type>"
+        self.xml_output += "<type>" + str(M_find(x, self.type_environment)) + "</type>"
         self.visitChildren(ctx)
         self.indentation -= 1
         self.xml_output += "  " * self.indentation + "</RQFT>\n"

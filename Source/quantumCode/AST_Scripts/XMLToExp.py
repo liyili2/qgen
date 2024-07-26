@@ -42,7 +42,7 @@ def M_find(k, M: ChainMap):
 class XMLToExp(XMLExpVisitor):
 
     def __init__(self):
-        self.tenv = ChainMap()
+        self.type_environment = ChainMap()
 
     # Visit a parse tree produced by XMLExpParser#xexp.
     def visitXexp(self, ctx:XMLExpParser.XexpContext):

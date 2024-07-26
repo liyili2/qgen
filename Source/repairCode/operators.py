@@ -15,7 +15,15 @@ from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 import xml.etree.ElementTree as ET
 
+
 ## Implement new operators here
+def pretty_print_element(element):
+    if element is None:
+        return ""
+    raw_str = ET.tostring(element, 'utf-8')
+    parsed = minidom.parseString(raw_str)
+    return parsed.toprettyxml(indent="  ")
+
 class QGateReplacement(StmtReplacement):
     def __init__(self, target, ingredient, target_tag):
         super(QGateReplacement, self).__init__(target, ingredient)
@@ -34,7 +42,8 @@ class QGateReplacement(StmtReplacement):
 
         # Parse the XML content
         target_tree = etree.fromstring(target_content)
-        elements = target_tree.xpath(".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
+        elements = target_tree.xpath(
+            ".//{}[@gate='X' or @gate='CU' or @gate='RZ' or @gate='SKIP']".format(self.target_tag))
 
         if elements:
             print("enter into qgate replacement, elements")
@@ -96,21 +105,23 @@ class QGateReplacement(StmtReplacement):
                    'pexp')
 
 
+def delete_block(parent):
+    for child in parent.findall("BLOCK"):
+        parent.remove(child)
+
 
 class QGateInsertion(StmtInsertion):
     def __init__(self, target, ingredient, direction='before'):
         super(QGateInsertion, self).__init__(target, ingredient, direction)
-    
+
     def apply(self, program, new_contents, modification_points):
         print("Qgate insertion apply")
         engine = program.engines[self.target[0]]
-       
-        result = self.do_insert(self, program,self, new_contents, modification_points, engine)
+
+        result = self.do_insert(self, program, self, new_contents, modification_points, engine)
         return result
 
-    
     def insert_into_parent(self, parent, target, ingredient):
-        # mutate
         for i, child in enumerate(parent):
             if child == target:
                 tmp = copy.deepcopy(ingredient)
@@ -125,36 +136,30 @@ class QGateInsertion(StmtInsertion):
         else:
             assert False
 
-    def delete_block(self, parent):
-        for child in parent.findall("BLOCK"):
-            parent.remove(child)
-
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
-        def pretty_print_element(element):
-            if element is None:
-                return ""
-            raw_str = ET.tostring(element, 'utf-8')
-            parsed = minidom.parseString(raw_str)
-            return parsed.toprettyxml(indent="  ")
-        
+
+
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
-        parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]]+'..')
-        ingredient = program.contents[op.ingredient[0]].find(program.modification_points[op.ingredient[0]][op.ingredient[1]])
+        parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]] + '..')
+        ingredient = program.contents[op.ingredient[0]].find(
+            program.modification_points[op.ingredient[0]][op.ingredient[1]])
 
         if target is None or ingredient is None:
             return False
 
         initial_type_env = type_envs[self.ingredient[0]]
-        print("Initial tenv",initial_type_env)
+        print("Initial type_environment", initial_type_env)
         type_infer = TypeInfer(initial_type_env)
         root = new_contents[op.target[0]].find('.')
         # TODO
         # figure this out
-        # type_infer.visitRoot(root)
+        type_infer.visitRoot(root)
+        print("Initial type_environment after", initial_type_env)
+        print("Accessed type_environment", type_envs[self.ingredient[0]])
 
-        
+
         block_el = ET.Element("BLOCK")
 
         print("block:")
@@ -165,30 +170,30 @@ class QGateInsertion(StmtInsertion):
         print(pretty_print_element(target))
 
         self.insert_into_parent(parent, target, block_el)
-        print("parent after insert block",pretty_print_element(parent))
-        self.delete_block(parent)
-        print("parent after deletion",pretty_print_element(parent))
+        print("parent after insert block", pretty_print_element(parent))
+        delete_block(parent)
+        print("parent after deletion", pretty_print_element(parent))
         self.insert_into_parent(parent, target, ingredient)
-        print("parent after insert matched",pretty_print_element(parent))
+        print("parent after insert matched", pretty_print_element(parent))
 
-        # update modification points
-        head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
-        for i, xpath in enumerate(modification_points[op.target[0]]):
-            if i < op.target[1]:
-                continue
-            h, t, p, s = engine.split_xpath (xpath, head)
-            if h != head and xpath != 'deleted':
-                break
-            if t == tag and p == pos and op.direction == 'after':
-                continue
-            if t in [ingredient.tag, tag]:
-                if s:
-                    new_pos = '{}/{}[{}]/{}'.format(h, t, p+1, s)
-                else:
-                    new_pos = '{}/{}[{}]'.format(h, t, p+1)
-                modification_points[op.target[0]][i] = new_pos
+        def update_modification_points():
+            head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
+            for i, xpath in enumerate(modification_points[op.target[0]]):
+                if i < op.target[1]:
+                    continue
+                h, t, p, s = engine.split_xpath(xpath, head)
+                if h != head and xpath != 'deleted':
+                    break
+                if t == tag and p == pos and op.direction == 'after':
+                    continue
+                if t in [ingredient.tag, tag]:
+                    if s:
+                        new_pos = '{}/{}[{}]/{}'.format(h, t, p + 1, s)
+                    else:
+                        new_pos = '{}/{}[{}]'.format(h, t, p + 1)
+                    modification_points[op.target[0]][i] = new_pos
+        update_modification_points()
         return True
-
 
     @classmethod
     def create(cls, program, target_file=None, ingr_file=None, direction=None, method='random'):
@@ -199,25 +204,24 @@ class QGateInsertion(StmtInsertion):
         assert program.engines[target_file] == program.engines[ingr_file]
         if direction is None:
             direction = random.choice(['before', 'after'])
-        return cls(program.app_target(target_file, method),program.app_target(ingr_file, 'random'),direction)
+        return cls(program.app_target(target_file, method), program.app_target(ingr_file, 'random'), direction)
     #modify here
     #1. program.app_target(target_file, method)
     #2. program.app_target(ingr_file, 'random')
     #3. you will be able to see candidates here.
-       # app/if/pexp
+    # app/if/pexp
     # if see app, then only allowed if, and pexp
     #if see if/pexp.
-     # choose a variable, will have the env to tell you what variables are aviable
+    # choose a variable, will have the env to tell you what variables are aviable
     # perform if/pexp on the variable
     #look at the type of the variable in env, if it is Phi, then use SR/RQFT gate only
     #if it is Nor, then use X, CU,
     #if it is nat, can only use if with two branching
-        
 
 
 class QGateDeletion(StmtDeletion):
     def __init__(self, target):
-       super(QGateDeletion, self).__init__(target)
+        super(QGateDeletion, self).__init__(target)
 
     def apply(self, program, new_contents, modification_points):
         print("Qgate deletion apply")
@@ -241,5 +245,3 @@ class QGateDeletion(StmtDeletion):
         if target_file is None:
             target_file = program.random_file(XmlEngine)
         return cls(program.random_target(target_file, method))
-    
-
