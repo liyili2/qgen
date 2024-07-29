@@ -229,7 +229,6 @@ class QGateInsertion(StmtInsertion):
                     else:
                         new_pos = '{}/{}[{}]'.format(h, t, p + 1)
                     modification_points[op.target[0]][i] = new_pos
-
         update_modification_points()
         return True
 

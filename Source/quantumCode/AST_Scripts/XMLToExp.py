@@ -4,9 +4,9 @@ from XMLExpVisitor import XMLExpVisitor
 from XMLExpParser import XMLExpParser
 import sys
 sys.path.append('../')
-from typechecker import TypeName
-from typechecker import Nor
-from typechecker import QFT
+from TypeChecker import TypeName
+from TypeChecker import Nor
+from TypeChecker import QFT
 
 
 def M_add(k, x, s: ChainMap):

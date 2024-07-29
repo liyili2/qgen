@@ -8,9 +8,9 @@ from ExpParser import ExpParser
 from XMLVisitor import XMLVisitor
 import sys
 sys.path.append('../')
-from typechecker import TypeName
-from typechecker import Nor
-from typechecker import QFT
+from TypeChecker import TypeName
+from TypeChecker import Nor
+from TypeChecker import QFT
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
