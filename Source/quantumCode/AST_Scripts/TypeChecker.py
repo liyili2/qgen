@@ -147,9 +147,7 @@ class TypeInfer(XMLExpVisitor):
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
         x = ctx.Identifier().accept(self)
-        #value = self.st.get(x)
-        #print("value match", value)
-        fenv = copy.deepcopy(self.type_environment)
+        fenv = copy.deepcopy(self.type_environment) 
         va = ctx.exppair(1).element().Identifier().accept(self)
         senv = copy.deepcopy(self.type_environment)
         senv.update({va: Nat()})

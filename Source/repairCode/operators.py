@@ -3,34 +3,38 @@ Possible Edit Operators
 """
 import random
 from xml.dom import minidom
-#from pyggi.base import BaseOperator
 from lxml import etree
 import copy
 
 from antlr4 import InputStream, CommonTokenStream
-from quantumCode.AST_Scripts.typechecker import TypeInfer
+from quantumCode.AST_Scripts.TypeChecker import TypeInfer
 from repairCode.configs.type_env import type_envs
-#from pyggi.tree import AbstractTreeEngine
-# from Source.quantumCode.AST_Scripts import XMLExpPrinter
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
 import xml.etree.ElementTree as ET
+from antlr4.tree.Trees import Trees
 
 from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 
-## Implement new operators here
 def pretty_print_element(element):
+
     if element is None:
         return ""
-    raw_str = ET.tostring(element, 'utf-8')
-    parsed = minidom.parseString(raw_str)
-    return parsed.toprettyxml(indent="  ")
+    if isinstance(element, XMLExpParser.RootContext):
+        pretty_string = Trees.toStringTree(element)
+    else:
+        raw_str = ET.tostring(element, 'utf-8')
+        parsed = minidom.parseString(raw_str)
+        pretty_string = parsed.toprettyxml(indent="  ")
+    return pretty_string
+
 
 
 def element_to_string(element):
     return ET.tostring(element, encoding='unicode')
+
 
 
 def parse_string_to_ast(xml_string):
@@ -38,16 +42,19 @@ def parse_string_to_ast(xml_string):
     lexer = XMLExpLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(token_stream)
-    print('parser after here')
-    print('parser', parser)
     return parser.root()
-
 
 def convert_xml_element_to_ast(element):
     xml_string = element_to_string(element)
+    xml_string = xml_string.replace('"', "'")
     print('xml str', xml_string)
     ast_root = parse_string_to_ast(xml_string)
     return ast_root
+
+
+def delete_block(parent):
+    for child in parent.findall("BLOCK"):
+        parent.remove(child)
 
 
 class QGateReplacement(StmtReplacement):
@@ -131,11 +138,6 @@ class QGateReplacement(StmtReplacement):
                    'pexp')
 
 
-def delete_block(parent):
-    for child in parent.findall("BLOCK"):
-        parent.remove(child)
-
-
 class QGateInsertion(StmtInsertion):
     def __init__(self, target, ingredient, direction='before'):
         super(QGateInsertion, self).__init__(target, ingredient, direction)
@@ -174,44 +176,20 @@ class QGateInsertion(StmtInsertion):
             return False
 
         initial_type_env = type_envs[self.ingredient[0]]
-        print("Initial type_environment", initial_type_env)
         type_infer = TypeInfer(initial_type_env)
         root = new_contents[op.target[0]].find('.')
-        print("root", (pretty_print_element(root)))
 
-        root_xml_element = new_contents[op.target[0]]  # Assuming this is an Element object
+        root_xml_element = new_contents[op.target[0]]  
         root_ast_element = convert_xml_element_to_ast(root_xml_element)
 
-        # def pretty_print_ast_element(ctx, level=0):
-        #     indent = '  ' * level
-        #     if hasattr(ctx, 'children') and ctx.children:
-        #         for child in ctx.children:
-        #             if hasattr(child, 'getText'):
-        #                 print(f"{indent}<{type(child).__name__}>: {child.getText()}")
-        #             pretty_print_ast_element(child, level + 1)
-        #     else:
-        #         print(f"{indent}<{type(ctx).__name__}>: {ctx.getText() if hasattr(ctx, 'getText') else 'N/A'}")
-        #
-        # print('ast_root', pretty_print_ast_element(root_ast_element))
         type_infer.visitRoot(root_ast_element)
-        print("Initial type_environment after", initial_type_env)
-        print("Accessed type_environment", type_envs[self.ingredient[0]])
 
         block_el = ET.Element("BLOCK")
 
-        print("block:")
-        print(pretty_print_element(block_el))
-        print("ingredient:")
-        print(pretty_print_element(ingredient))
-        print("target:")
-        print(pretty_print_element(target))
 
         self.insert_into_parent(parent, target, block_el)
-        print("parent after insert block", pretty_print_element(parent))
         delete_block(parent)
-        print("parent after deletion", pretty_print_element(parent))
         self.insert_into_parent(parent, target, ingredient)
-        print("parent after insert matched", pretty_print_element(parent))
 
         def update_modification_points():
             head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
