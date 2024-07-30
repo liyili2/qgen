@@ -280,3 +280,17 @@ class TypeSearch(XMLExpVisitor):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.get(x).set_type("Phi")
         return
+
+    def visit(self, ctx: ParserRuleContext):
+        if ctx.getChildCount() > 0:
+            return self.visitChildren(ctx)
+        else:
+            return self.visitTerminal(ctx)
+
+    def visitTerminal(self, node):
+        # print("terminal")
+        if node.getSymbol().type == XMLExpParser.Identifier:
+            return node.getText()
+        if node.getSymbol().type == XMLExpParser.Number:
+            return int(node.getText())
+        return "None"
