@@ -1,9 +1,20 @@
 <root>
-<let id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > y </vexp> <vexp op = 'id' > c </vexp> <vexp op = 'id' > n </vexp> 
+<let id = 'f' > 
+<vexp op = 'id' type = 'Nat' > n </vexp>
+<vexp op = 'id' type = 'Nat' > size </vexp>
+<vexp op = 'id' type = 'Nor(size)' > x </vexp> 
+<vexp op = 'id' type = 'Nor(size)' > y </vexp> 
+<vexp op = 'id' type = 'Nor(1)' > c </vexp> 
    <match id = 'n' >
           <pair case = '0' > <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
           <pair case = 'm' > <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
    </match>
 </let>
-<app id = 'f' > <vexp op = 'id' > xa </vexp> <vexp op = 'id' > ya</vexp> <vexp op = 'id' > ca </vexp> <vexp op = 'id' > na </vexp> </app>
+<app id = 'f' > 
+ <vexp op = 'id' type = 'Nat' > na </vexp> 
+ <vexp op = 'id' type = 'Nat' > size </vexp> 
+ <vexp op = 'id' type = 'Nor(size)' > xa </vexp>
+ <vexp op = 'id' type = 'Nor(size)' > ya </vexp> 
+ <vexp op = 'id' type = 'Nor(1)' > ca </vexp> 
+</app>
 </root>
