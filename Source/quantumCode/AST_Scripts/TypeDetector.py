@@ -198,7 +198,7 @@ class TypeDetector(XMLExpVisitor):
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         x = ctx.Identifier().accept(self)
-        ctx.vexp().accept(self)
+        #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
