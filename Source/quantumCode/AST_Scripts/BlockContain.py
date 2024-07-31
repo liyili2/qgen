@@ -6,8 +6,10 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from XMLExpParser import *
-from XMLExpVisitor import *
+from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from Source.quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
+from Source.quantumCode.AST_Scripts.XMLTypeSearch import joinType
+
 
 class BlockContain(XMLExpVisitor):
 
@@ -19,6 +21,7 @@ class BlockContain(XMLExpVisitor):
     # Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
     # x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
     def __init__(self):
+        pass
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):

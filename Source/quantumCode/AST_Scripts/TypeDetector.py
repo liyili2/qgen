@@ -6,10 +6,11 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
-from XMLExpParser import *
-from XMLExpVisitor import *
-from XMLTypeSearch import *
-from BlockContain import *
+from Source.quantumCode.AST_Scripts.BlockContain import BlockContain
+from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from Source.quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
+from Source.quantumCode.AST_Scripts.XMLTypeSearch import Qty, joinType, Nat
+
 
 class TypeDetector(XMLExpVisitor):
 
@@ -104,11 +105,11 @@ class TypeDetector(XMLExpVisitor):
             #tmv.update({f: Fun(tml, tx.type_environment, self.type_environment)})
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        vx = ctx.Identifier().accept(self)
-        qty = self.type_environment.get(vx)
-        tml = qty.args()
-        tmv = qty.pre()
-        rmv = qty.out()
+        identifier_text = ctx.Identifier().accept(self)
+        qty = self.type_environment.get(identifier_text)
+        tml = qty.args
+        tmv = qty.pre
+        rmv = qty.out
         for i in range(len(tml)):
             if ctx.vexp(i).idexp() is not None:
                 na = ctx.vexp(i).idexp().Identifier().accept(self)
@@ -187,7 +188,9 @@ class TypeDetector(XMLExpVisitor):
         x = ctx.Identifier().accept(self)
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
-            if self.type_environment.get(x).type() is None:
+            temp = (self.type_environment.get(x))
+            print(temp)
+            if temp.type is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Phi")})
             elif self.type_environment.get(x).type() == "Nor":
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Phi")})

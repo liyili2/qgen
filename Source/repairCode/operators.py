@@ -17,9 +17,11 @@ from antlr4.tree.Trees import Trees
 from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
+from Source.quantumCode.AST_Scripts.TypeDetector import TypeDetector
+from Source.quantumCode.AST_Scripts.XMLTypeSearch import Nat, Qty, Fun
+
 
 def pretty_print_element(element):
-
     if element is None:
         return ""
     if isinstance(element, XMLExpParser.RootContext):
@@ -31,10 +33,8 @@ def pretty_print_element(element):
     return pretty_string
 
 
-
 def element_to_string(element):
     return ET.tostring(element, encoding='unicode')
-
 
 
 def parse_string_to_ast(xml_string):
@@ -43,6 +43,7 @@ def parse_string_to_ast(xml_string):
     token_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(token_stream)
     return parser.root()
+
 
 def convert_xml_element_to_ast(element):
     xml_string = element_to_string(element)
@@ -176,18 +177,22 @@ class QGateInsertion(StmtInsertion):
             return False
 
         initial_type_env = type_envs[self.ingredient[0]]
-        type_infer = TypeInfer(initial_type_env)
+        initial_type_env = {'m': Nat, 'na': Nat, 'size': Nat,
+                                          'x': Qty(16), 'f': Fun("d", {}, {})}
+        # type_infer = TypeInfer(initial_type_env)
         root = new_contents[op.target[0]].find('.')
 
-        root_xml_element = new_contents[op.target[0]]  
+        root_xml_element = new_contents[op.target[0]]
         root_ast_element = convert_xml_element_to_ast(root_xml_element)
 
-        type_infer.visitRoot(root_ast_element)
+        # type_infer.visitRoot(root_ast_element)
 
         block_el = ET.Element("BLOCK")
 
-
         self.insert_into_parent(parent, target, block_el)
+
+        type_detector = TypeDetector(initial_type_env)
+        type_detector.visit(root_ast_element)
         delete_block(parent)
         self.insert_into_parent(parent, target, ingredient)
 
@@ -207,6 +212,7 @@ class QGateInsertion(StmtInsertion):
                     else:
                         new_pos = '{}/{}[{}]'.format(h, t, p + 1)
                     modification_points[op.target[0]][i] = new_pos
+
         update_modification_points()
         return True
 

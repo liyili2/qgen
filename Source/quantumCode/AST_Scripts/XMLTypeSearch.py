@@ -30,9 +30,9 @@ def types(a: [TypeName]):
 
 class Qty(TypeName):
 
-    def __init__(self, n, t: str = None, m=None):
-        self.qubit_array_size = n
-        self.type = t
+    def __init__(self, qubit_array_size, type: str = None, m=None):
+        self.qubit_array_size = qubit_array_size
+        self.type = type
         if m is None:
             self.m = "0"
         else:
@@ -65,10 +65,10 @@ class Nat(TypeName):
 
 class Fun(TypeName):
 
-    def __init__(self, la: [str], n: dict, m: dict):
-        self.args = la
-        self.pre = n
-        self.out = m
+    def __init__(self, args: [str], pre: dict, out: dict):
+        self.args = args
+        self.pre = pre
+        self.out = out
         # self.r2 = r2
 
     def type(self):
