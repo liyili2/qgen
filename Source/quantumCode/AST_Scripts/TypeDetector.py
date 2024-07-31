@@ -124,7 +124,7 @@ class TypeDetector(XMLExpVisitor):
             ctx.exppair(0).program().accept(self)
         elif bl.visitProgram(ctx.exppair(1).program()):
             va = ctx.exppair(1).element().Identifier().accept(self)
-            self.type_environment = senv2.update({va: Nat()})
+            self.type_environment.update({va: Nat()})
             ctx.exppair(1).program().accept(self)
             self.type_environment.pop(va)
 
