@@ -8,7 +8,7 @@ program: exp (exp)* ;
 
 exp: letexp | appexp | blockexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
 
-blockexp : '<' BLOCK '>' '</' BLOCK '>';
+blockexp : '<' BLOCK '>' '</' BLOCK '>' | '<' BLOCK '/>';
 
 idexp : '<' VEXP OP '=' '\'' ID '\'' ('type' '=' '\'' atype '\'')? '>' Identifier '</' VEXP '>' ;
 
@@ -76,7 +76,7 @@ Pair : 'pair';
 
 Qubits : 'qubits';
 
-Nat : 'nat';
+Nat : 'Nat';
 
 Qt : 'Q';
 

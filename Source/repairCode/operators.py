@@ -3,6 +3,8 @@ Possible Edit Operators
 """
 import random
 from xml.dom import minidom
+
+from antlr4 import ParserRuleContext
 from lxml import etree
 import copy
 
@@ -25,7 +27,7 @@ def pretty_print_element(element):
     if element is None:
         return ""
     if isinstance(element, XMLExpParser.RootContext):
-        pretty_string = Trees.toStringTree(element)
+        pretty_string = Trees.toStringTree(element, None, XMLExpParser)
     else:
         raw_str = ET.tostring(element, 'utf-8')
         parsed = minidom.parseString(raw_str)
@@ -150,7 +152,18 @@ class QGateInsertion(StmtInsertion):
         result = self.do_insert(self, program, self, new_contents, modification_points, engine)
         return result
 
-    def insert_into_parent(self, parent, target, ingredient):
+    def insert_adjacent_parser_rule_context(self, parent, target, ingredient):
+        children = parent.children
+        for i, child in enumerate(children):
+            if child == target:
+                tmp = copy.deepcopy(ingredient)
+                if self.direction == 'after':
+                    children.insert(i + 1, tmp)
+                else:
+                    children.insert(i, tmp)
+                return
+
+    def insert_adjacent_element_tree_element(self, parent, target, ingredient):
         for i, child in enumerate(parent):
             if child == target:
                 tmp = copy.deepcopy(ingredient)
@@ -162,8 +175,14 @@ class QGateInsertion(StmtInsertion):
                     tmp.tail = None
                 parent.insert(i, tmp)
                 break
+
+    def insert_adjacent_to_target(self, parent, target, ingredient):
+        if isinstance(parent, ParserRuleContext):
+            self.insert_adjacent_parser_rule_context(parent, target, ingredient)
+        elif isinstance(parent, ET.Element):
+            self.insert_adjacent_element_tree_element(parent, target, ingredient)
         else:
-            assert False
+            raise Exception("Unexpected type")
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
 
@@ -178,23 +197,28 @@ class QGateInsertion(StmtInsertion):
 
         initial_type_env = type_envs[self.ingredient[0]]
         initial_type_env = {'m': Nat, 'na': Nat, 'size': Nat,
-                                          'x': Qty(16), 'f': Fun("d", {}, {})}
-        # type_infer = TypeInfer(initial_type_env)
+                            'x': Qty(16), 'f': Fun("d", {}, {})}
+        print(initial_type_env)
         root = new_contents[op.target[0]].find('.')
 
-        root_xml_element = new_contents[op.target[0]]
-        root_ast_element = convert_xml_element_to_ast(root_xml_element)
 
-        # type_infer.visitRoot(root_ast_element)
 
-        block_el = ET.Element("BLOCK")
+        block_el = ET.Element("block")
 
-        self.insert_into_parent(parent, target, block_el)
+        self.insert_adjacent_to_target(parent, target, block_el)
+
+        root_xml_element: ET.Element = new_contents[op.target[0]]
+        root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_xml_element)
+
+        print(pretty_print_element(parent))
+        print(pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
         type_detector.visit(root_ast_element)
+        type_detector_env = type_detector.type_environment
+        print(type_detector_env)
         delete_block(parent)
-        self.insert_into_parent(parent, target, ingredient)
+        self.insert_adjacent_to_target(parent, target, ingredient)
 
         def update_modification_points():
             head, tag, pos, _ = engine.split_xpath(modification_points[op.target[0]][op.target[1]])
