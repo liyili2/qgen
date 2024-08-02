@@ -1,27 +1,49 @@
 from types import NoneType
-
+from Source.quantumCode.AST_Scripts.ProgramVisitor import *
 
 class QXTop:
-    pass
+
+    def accept(self, visitor):
+        pass
 
 
 class QXRoot(QXTop):
     def __init__(self, program: QXProgram):
         self.program = program
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitRoot(self)
+
+    def program(self):
+        return self.program
+
 
 class QXNext(QXTop):
     def __init__(self, program: QXProgram):
         self.program = program
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitNext(self)
+
+    def program(self):
+        return self.program
 
 
 class QXProgram(QXTop):
     def __init__(self, exps: [QXExp]):
         self.exps = exps
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitProgram(self)
+
+    def exp(self, i:int=None):
+        return self.exps[i]
+
 
 class QXExp(QXTop):
-    pass
+
+    def accept(self, visitor : ProgramVisitor):
+        pass
 
 
 class QXLet(QXExp):
@@ -30,15 +52,38 @@ class QXLet(QXExp):
         self.ids = ids
         self.prog = p
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitLet(self)
+
+    def ID(self):
+        return self.id
+
+    def idexp(self, i:int = None):
+        return self.ids[i]
+
+    def program(self):
+        return self.prog
 
 class QXApp(QXExp):
     def __init__(self, id: string, vs: [QXVexp]):
         self.id = id
         self.vs = vs
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitApp(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self, i : int = None):
+        return self.vs[i]
+
 
 class QXBlock(QXExp):
-    pass
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitBlock(self)
+
 
 
 class QXCU(QXExp):
@@ -47,12 +92,36 @@ class QXCU(QXExp):
         self.v = v
         self.prog = p
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitCU(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self):
+        return self.v
+
+    def program(self):
+        return self.prog
+
 
 class QXIf(QXExp):
     def __init__(self, v: QXVexp, left: QXNext, right: QXNext):
         self.v = v
         self.left = left
         self.right = right
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitIf(self)
+
+    def vexp(self):
+        return self.v
+
+    def left(self):
+        return self.left
+
+    def right(self):
+        return self.right
 
 
 class QXMatch(QXExp):
@@ -61,19 +130,44 @@ class QXMatch(QXExp):
         self.zero = zero
         self.multi = multi
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitMatch(self)
+
+    def ID(self):
+        return self.v
+
+    def zero(self):
+        return self.zero
+
+    def multi(self):
+        return self.multi
+
 
 class QXPair(QXTop):
     def __init__(self, v: QXElem, p: QXProgram):
         self.v = v
         self.prog = p
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitPair(self)
+
+    def elem(self):
+        return self.v
+
+    def program(self):
+        return self.prog
+
 
 class QXElem(QXTop):
-    pass
+
+    def accept(self, visitor : ProgramVisitor):
+        pass
 
 
 class QXVexp(QXTop):
-    pass
+
+    def accept(self, visitor : ProgramVisitor):
+        pass
 
 
 class QXBin(QxVexp):
@@ -82,10 +176,36 @@ class QXBin(QxVexp):
         self.v1 = v1
         self.v2 = v2
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitBin(self)
+
+
+    def OP(self):
+        return self.op
+
+    def left(self):
+        return self.v1
+
+    def right(self):
+        return self.v2
+
 
 class QXNum(QXElem, QXVexp):
     def __init__(self, v: int):
         self.v = v
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitNum(self)
+
+    def num(self):
+        return self.v
+
+class QXID(QXElem):
+    def __init__(self, v: string):
+        self.v = v
+
+    def ID(self):
+        return self.v
 
 
 class QXIDExp(QXElem, QXVexp):
@@ -93,14 +213,25 @@ class QXIDExp(QXElem, QXVexp):
         self.v = v
         self.type = type
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitIDExp(self)
+
+    def ID(self):
+        return self.v
+
+    def type(self):
+        return self.type
+
 
 class QXType(QXTop):
-    pass
+
+    def accept(self, visitor : ProgramVisitor):
+        pass
 
 
 class Qty(QXType):
 
-    def __init__(self, qubit_array_size, type: str = None, m=None):
+    def __init__(self, qubit_array_size: QXElem, type: str = None, m=None):
         self.qubit_array_size = qubit_array_size
         self.type = type
         if m is None:
@@ -126,12 +257,16 @@ class Qty(QXType):
     def __str__(self):
         return f"Qty(type={self.type}, qubit_array_size={self.qubit_array_size}, m={self.m})"
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitQty(self)
 
 class Nat(QXType):
 
     def type(self):
         return "Nat"
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitNat(self)
 
 class Fun(QXType):
 
@@ -156,11 +291,23 @@ class Fun(QXType):
     def __str__(self):
         return f"Fun(args={self.args}, pre={self.pre}, out={self.out})"
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitFun(self)
+
 
 class QXSKIP(QXExp):
     def __init__(self, id: string, v: QXVexp):
         self.id = id
         self.v = v
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitSKIP(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self):
+        return self.v
 
 
 class QXX(QXExp):
@@ -168,11 +315,29 @@ class QXX(QXExp):
         self.id = id
         self.v = v
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitX(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self):
+        return self.v
+
 
 class QXSR(QXExp):
     def __init__(self, id: string, v: QXVexp):
         self.id = id
         self.v = v
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitSR(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self):
+        return self.v
 
 
 class QXQFT(QXExp):
@@ -180,22 +345,54 @@ class QXQFT(QXExp):
         self.id = id
         self.v = v
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitQFT(self)
+
+    def ID(self):
+        return self.id
+
+    def vexp(self):
+        return self.v
+
 
 class QXRQFT(QXExp):
     def __init__(self, id: string):
         self.id = id
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitRQFT(self)
+
+    def ID(self):
+        return self.id
 
 
 class QXLshift(QXExp):
     def __init__(self, id: string):
         self.id = id
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitLshift(self)
+
+    def ID(self):
+        return self.id
 
 class QXRshift(QXExp):
     def __init__(self, id: string):
         self.id = id
 
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitRshift(self)
+
+    def ID(self):
+        return self.id
+
 
 class QXRev(QXExp):
     def __init__(self, id: string):
         self.id = id
+
+    def accept(self, visitor : ProgramVisitor):
+        visitor.visitRev(self)
+
+    def ID(self):
+        return self.id
