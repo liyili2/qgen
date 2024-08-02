@@ -16,6 +16,7 @@ class ProgramVisitor:
         i = 0
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
+            i = i + 1
 
     # Visit a parse tree produced by XMLExpParser#exp.
 
