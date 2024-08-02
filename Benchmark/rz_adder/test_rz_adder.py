@@ -15,6 +15,8 @@ def run_rz_adder_test(num_qubits, loop, val,addend):
     t_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(t_stream)
     tree = parser.root()
+    transform = ProgramTransformer()
+    newTree = transform.visitRoot(tree)
     # print(tree.toStringTree(recog=parser))
 
     # num_qubits = 16  # Number of Qubits

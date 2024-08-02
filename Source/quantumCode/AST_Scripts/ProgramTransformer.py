@@ -9,7 +9,7 @@ from antlr4 import ParserRuleContext
 from quantumCode.AST_Scripts.XMLExpLexer import *
 from quantumCode.AST_Scripts.XMLExpVisitor import *
 from quantumCode.AST_Scripts.XMLTypeSearch import *
-from Source.quantumCode.AST_Scripts.XMLProgrammer import *
+from quantumCode.AST_Scripts.XMLProgrammer import *
 
 class ProgramTransformer(XMLExpVisitor):
 
@@ -65,7 +65,7 @@ class ProgramTransformer(XMLExpVisitor):
         if ctx.numexp() is not None:
             return QXNum(ctx.numexp().accept(self))
         else:
-            return QXID(ctx.Identifier().accept(self))
+            return QXIDExp(ctx.Identifier().accept(self), None)
 
     def visitAtype(self, ctx: XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:

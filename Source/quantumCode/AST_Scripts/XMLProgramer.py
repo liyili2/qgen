@@ -200,13 +200,6 @@ class QXNum(QXElem, QXVexp):
     def num(self):
         return self.v
 
-class QXID(QXElem):
-    def __init__(self, v: string):
-        self.v = v
-
-    def ID(self):
-        return self.v
-
 
 class QXIDExp(QXElem, QXVexp):
     def __init__(self, v: string, type: QXType = None):
@@ -222,6 +215,41 @@ class QXIDExp(QXElem, QXVexp):
     def type(self):
         return self.type
 
+def joinType(a: TypeName, b: TypeName):
+    if isinstance(a, Qty) and isinstance(b, Qty):
+        if a.type() is None or b.type() is None:
+            if a.type() is None:
+                a.set_type(b.type())
+            else:
+                b.set_type(a.type())
+            return a
+        elif a.type() == b.type():
+            return a
+        else:
+            return None
+    elif isinstance(a, Nat) and isinstance(b, Nat):
+        return a
+    elif isinstance(a, Fun) and isinstance(b, Fun):
+        return a
+    else:
+        return None
+
+
+def joinTypes(a: dict, b: dict):
+    for key in a.keys():
+        if b.get(key) is not None:
+            if isinstance(a.get(key), Qty) and isinstance(b.get(key), Qty):
+                if a.get(key).type() is None and b.get(key).type() is not None:
+                    a.get(key).set_type(b.get(key).type())
+    return a
+
+
+def equalTypes(a: dict, b: dict):
+    tmp = True
+    for key in a.keys():
+        if a.get(key) != b.get(key):
+            tmp = False
+    return tmp
 
 class QXType(QXTop):
 

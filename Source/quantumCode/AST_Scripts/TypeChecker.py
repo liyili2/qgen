@@ -9,9 +9,9 @@ from antlr4 import ParserRuleContext
 from quantumCode.AST_Scripts.XMLExpLexer import *
 from quantumCode.AST_Scripts.XMLExpVisitor import *
 from quantumCode.AST_Scripts.XMLTypeSearch import *
+from quantumCode.AST_Scripts.XMLProgrammer import *
 
-
-class TypeInfer(XMLExpVisitor):
+class TypeInfer(ProgramVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -26,6 +26,10 @@ class TypeInfer(XMLExpVisitor):
     def visitRoot(self, ctx: XMLExpParser.RootContext):
         return ctx.program().accept(self)
 
+    # Visit a parse tree produced by XMLExpParser#nextexp.
+    def visitNext(self, ctx:XMLProgramer.QXNext):
+        return ctx.program().accept(self)
+
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
         i = 0
         tmp = True
@@ -34,68 +38,28 @@ class TypeInfer(XMLExpVisitor):
             i += 1
         return tmp
 
-    def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
-        return ctx.program().accept(self)
-
-    def visitExp(self, ctx: XMLExpParser.ExpContext):
-        if ctx.letexp() is not None:
-            return ctx.letexp().accept(self)
-        elif ctx.appexp() is not None:
-            return ctx.appexp().accept(self)
-        elif ctx.ifexp() is not None:
-            return ctx.ifexp().accept(self)
-        elif ctx.matchexp() is not None:
-            return ctx.matchexp().accept(self)
-        elif ctx.cuexp() is not None:
-            return self.visitCUexp(ctx.cuexp())
-        elif ctx.skipexp() is not None:
-            return ctx.skipexp().accept(self)
-        elif ctx.xexp() is not None:
-            return ctx.xexp().accept(self)
-        elif ctx.srexp() is not None:
-            return ctx.srexp().accept(self)
-        elif ctx.qftexp() is not None:
-            return ctx.qftexp().accept(self)
-        elif ctx.lshiftexp() is not None:
-            return ctx.lshiftexp().accept(self)
-        elif ctx.rshiftexp() is not None:
-            return ctx.rshiftexp().accept(self)
-        elif ctx.revexp() is not None:
-            return ctx.revexp().accept(self)
-        elif ctx.rqftexp() is not None:
-            return ctx.rqftexp().accept(self)
-        elif ctx.blockexp() is not None:
-            return ctx.blockexp().accept(self)
+    # Visit a parse tree produced by XMLExpParser#blockexp.
+    def visitBlock(self, ctx:XMLProgramer.QXBlock):
+        return True
 
     def get_type_env(self):
         return self.type_environment
 
-    def visitElement(self, ctx: XMLExpParser.ElementContext):
-        if ctx.numexp() is not None:
-            return ctx.numexp().accept(self)
-        else:
-            return ctx.Identifier().accept(self)
+    def visitQTy(self, ctx: XMLProgramer.Qty):
+        return ctx
 
-    def visitAtype(self, ctx: XMLExpParser.AtypeContext):
-        if ctx.Nat() is not None:
-            return Nat()
-        elif ctx.Qt() is not None:
-            return Qty(ctx.element(0).accept(self))
-        elif ctx.Nor() is not None:
-            return Qty(ctx.element(0).accept(self), "Nor")
-        elif ctx.Phi() is not None:
-            return Qty(ctx.element(0).accept(self), "Phi", ctx.element(1).accept(self))
-        return Nat()
+    def visitNat(self, ctx: XMLProgramer.Nat):
+        return ctx
 
-    def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
+    def visitLet(self, ctx:XMLProgramer.QXLet):
         i = 0
-        f = ctx.Identifier().accept(self)
+        f = ctx.ID()
         tml = []
         while ctx.idexp(i) is not None:
-            x = ctx.idexp(i).Identifier().accept(self)
+            x = ctx.idexp(i).ID()
             tml.append(x)
-            if ctx.idexp(i).atype() is not None:
-                v = ctx.idexp(i).atype().accept(self)
+            if ctx.idexp(i).type() is not None:
+                v = ctx.idexp(i).type().accept(self)
             else:
                 v = Nat()
             self.type_environment.update({x: v})
@@ -116,26 +80,26 @@ class TypeInfer(XMLExpVisitor):
         #print("f", ctx)
         #ctx.exp().accept(self)
 
-    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
+    def visitIf(self, ctx:XMLProgramer.QXIf):
         if ctx.vexp().accept(self):
             tmv = copy.deepcopy(self.type_environment)
-            tmp1 = ctx.nextexp(0).accept(self)
+            tmp1 = ctx.left().accept(self)
             rmv = copy.deepcopy(self.type_environment)
             self.type_environment = tmv
-            tmp2 = ctx.nextexp(1).accept(self)
+            tmp2 = ctx.right().accept(self)
             return tmp1 and tmp2 and equalTypes(rmv, self.type_environment)
         return False
 
-    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        vx = ctx.Identifier().accept(self)
+    def visitApp(self, ctx:XMLProgramer.QXApp):
+        vx = ctx.ID()
         qty = self.type_environment.get(vx)
         tml = qty.args()
         tmv = qty.pre()
         rmv = qty.out()
         tmp = True
         for i in range(len(tml)):
-            if ctx.vexp(i).idexp() is not None:
-                na = ctx.vexp(i).idexp().Identifier().accept(self)
+            if isinstance(ctx.vexp(i), QXIDExp):
+                na = ctx.vexp(i).ID()
                 tmpty = self.type_environment.get(na)
                 tx = joinType(tmv.get(tml[i]), tmpty)
                 if tx is None:
@@ -145,37 +109,37 @@ class TypeInfer(XMLExpVisitor):
                 tmp = tmp and ctx.vexp(i).accept(self)
         return tmp
 
-    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+        x = ctx.ID()
         fenv = copy.deepcopy(self.type_environment) 
-        va = ctx.exppair(1).element().Identifier().accept(self)
+        va = ctx.zero().elem().ID()
         senv = copy.deepcopy(self.type_environment)
         senv.update({va: Nat()})
         s1 = TypeSearch(fenv)
-        s1.visitProgram(ctx.exppair(0).program())
+        s1.visitProgram(ctx.zero().program())
         s2 = TypeSearch(senv)
-        s2.visitProgram(ctx.exppair(1).program())
+        s2.visitProgram(ctx.multi().program())
         fenv1 = s1.type_environment
         senv1 = s2.type_environment.pop(va)
         senv2 = joinTypes(fenv1, senv1)
         fenv3 = copy.deepcopy(senv2)
         self.type_environment = fenv3
-        ctx.exppair(0).program().accept(self)
+        ctx.zero().program().accept(self)
         fenv4 = self.type_environment
         self.type_environment = senv2.update({va: Nat()})
-        ctx.exppair(1).program().accept(self)
+        ctx.multi().program().accept(self)
         senv3 = self.type_environment
         return equalTypes(fenv4,senv3.pop(va))
 
     # should do nothing
-    def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitSKIP(self, ctx:XMLProgramer.QXSKIP):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         return isinstance(self.type_environment.get(x), Qty)
 
     # X posi, changed the following for an example
-    def visitXexp(self, ctx: XMLExpParser.XexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitX(self, ctx:XMLProgramer.QXX):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -189,8 +153,8 @@ class TypeInfer(XMLExpVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitCU(self, ctx:XMLProgramer.QXCU):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -203,8 +167,8 @@ class TypeInfer(XMLExpVisitor):
         return False
 
     # SR n x, now variables are all string, are this OK?
-    def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitSR(self, ctx:XMLProgramer.QXSR):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -214,8 +178,8 @@ class TypeInfer(XMLExpVisitor):
                 return self.type_environment.get(x).type() == "Phi"
         return False
 
-    def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitLshift(self, ctx:XMLProgramer.QXLshift):
+        x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
@@ -224,8 +188,8 @@ class TypeInfer(XMLExpVisitor):
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitRshift(self, ctx:XMLProgramer.QXRshift):
+        x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
@@ -234,8 +198,8 @@ class TypeInfer(XMLExpVisitor):
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitRev(self, ctx:XMLProgramer.QXRev):
+        x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
@@ -246,8 +210,8 @@ class TypeInfer(XMLExpVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitQFT(self, ctx:XMLProgramer.QXQFT):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -259,8 +223,8 @@ class TypeInfer(XMLExpVisitor):
         return False
 
 
-    def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
-        x = ctx.Identifier().accept(self)
+    def visitRQFT(self, ctx:XMLProgramer.QXRQFT):
+        x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -271,26 +235,17 @@ class TypeInfer(XMLExpVisitor):
                 return True
         return False
 
-    def visit(self, ctx: ParserRuleContext):
-        if ctx.getChildCount() > 0:
-            return self.visitChildren(ctx)
-        else:
-            return self.visitTerminal(ctx)
-
-    def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        return isinstance(self.type_environment.get(ctx.Identifier().accept(self)), Nat)
+    def visitIDExp(self, ctx:XMLProgramer.QXIDExp):
+        return isinstance(self.type_environment.get(ctx.ID()), Nat)
 
     # Visit a parse tree produced by XMLExpParser#vexp.
-    def visitVexp(self, ctx: XMLExpParser.VexpContext):
-        if ctx.idexp() is not None:
-            return ctx.idexp().accept(self)
-        if ctx.NUM() is not None:
-            return True
-        else:
-            #print("here")
-            #print("op",ctx.op())
-            return ctx.vexp(0).accept(self) and ctx.vexp(1).accept(self)
+    def visitBin(self, ctx:XMLProgramer.QXBin):
+        return ctx.left().accept(self) and ctx.left().accept(self)
     # the only thing that matters will be 48 and 47
+
+    def visitNum(self, ctx:XMLProgramer.QXNum):
+        return True
+
 
     def visitTerminal(self, node):
         # print("terminal")
