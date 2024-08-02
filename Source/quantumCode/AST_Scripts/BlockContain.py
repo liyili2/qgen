@@ -8,10 +8,9 @@ from antlr4 import ParserRuleContext
 
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
-from Source.quantumCode.AST_Scripts.XMLTypeSearch import joinType
+from quantumCode.AST_Scripts.XMLProgrammer import *
 
-
-class BlockContain(XMLExpVisitor):
+class BlockContain(ProgramVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -24,7 +23,7 @@ class BlockContain(XMLExpVisitor):
         pass
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitProgram(self, ctx: XMLExpParser.ProgramContext):
+    def visitProgram(self, ctx: XMLProgramer.QXProgram):
         i = 0
         tmp = False
         while ctx.exp(i) is not None:
@@ -32,72 +31,27 @@ class BlockContain(XMLExpVisitor):
             i += 1
         return tmp
 
-    def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
+    def visitLet(self, ctx: XMLProgramer.QXLet):
         return ctx.program().accept(self)
 
-    def visitExp(self, ctx: XMLExpParser.ExpContext):
-        if ctx.appexp() is not None:
-            return ctx.appexp().accept(self)
-        elif ctx.ifexp() is not None:
-            return ctx.ifexp().accept(self)
-        elif ctx.cuexp() is not None:
-            return self.visitCUexp(ctx.cuexp())
-        elif ctx.skipexp() is not None:
-            return ctx.skipexp().accept(self)
-        elif ctx.xexp() is not None:
-            return ctx.xexp().accept(self)
-        elif ctx.srexp() is not None:
-            return ctx.srexp().accept(self)
-        elif ctx.qftexp() is not None:
-            return ctx.qftexp().accept(self)
-        elif ctx.lshiftexp() is not None:
-            return ctx.lshiftexp().accept(self)
-        elif ctx.rshiftexp() is not None:
-            return ctx.rshiftexp().accept(self)
-        elif ctx.revexp() is not None:
-            return ctx.revexp().accept(self)
-        elif ctx.rqftexp() is not None:
-            return ctx.rqftexp().accept(self)
-        elif ctx.blockexp() is not None:
-            return ctx.blockexp().accept(self)
+    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+        return ctx.zero().program().accept(self) and ctx.multi().program().accept(self)
 
-    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        vx = ctx.Identifier().accept(self)
-        qty = self.type_environment.get(vx)
-        tml = qty.args()
-        tmv = qty.pre()
-        rmv = qty.out()
-        tmp = True
-        for i in range(len(tml)):
-            if ctx.vexp(i).idexp() is not None:
-                na = ctx.vexp(i).idexp().Identifier().accept(self)
-                tmpty = self.type_environment.get(na)
-                tx = joinType(tmv.get(tml[i]), tmpty)
-                if tx is None:
-                    return False
-                self.type_environment.update({na: rmv.get(tml[i])})
-            else:
-                tmp = tmp and ctx.vexp(i).accept(self)
-        return tmp
+    def visitIf(self, ctx:XMLProgramer.QXIf):
+        return ctx.left().accept(self) and ctx.right().accept(self)
 
-    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        return ctx.exppair(0).program().accept(self) and ctx.exppair(1).program().accept(self)
-
-    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
-        return ctx.nextexp(0).accept(self) and ctx.nextexp(1).accept(self)
-
-    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
+    def visitApp(self, ctx:XMLProgramer.QXApp):
         return False
 
-    def visitBlockexp(self, ctx: XMLExpParser.BlockexpContext):
+    def visitBlock(self, ctx:XMLProgramer.QXBlock):
         return True
 
     # should do nothing
-    def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
+    def visitSKIP(self, ctx:XMLProgramer.QXSKIP):
         return False
 
     # X posi, changed the following for an example
-    def visitXexp(self, ctx: XMLExpParser.XexpContext):
+    def visitX(self, ctx:XMLProgramer.QXX):
         return False
 
         #return p < self.env.get(x) and str(self.type_environment.get(x)) == "Nor"
@@ -105,26 +59,26 @@ class BlockContain(XMLExpVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
+    def visitCU(self, ctx:XMLProgramer.QXCU):
         return ctx.program().accept(self)
 
     # SR n x, now variables are all string, are this OK?
-    def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
+    def visitSR(self, ctx:XMLProgramer.QXSR):
         return False
 
-    def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
+    def visitLshift(self, ctx:XMLProgramer.QXLshift):
         return False
 
-    def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
+    def visitRshift(self, ctx:XMLProgramer.QXRshift):
         return False
 
-    def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
+    def visitRev(self, ctx:XMLProgramer.QXRev):
         return False
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
+    def visitQFT(self, ctx:XMLProgramer.QXQFT):
         return False
 
-    def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
+    def visitRQFT(self, ctx:XMLProgramer.QXRQFT):
         return False

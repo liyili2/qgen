@@ -23,14 +23,7 @@ class TypeInfer(ProgramVisitor):
     def __init__(self, type_environment: dict):
         self.type_environment = type_environment
 
-    def visitRoot(self, ctx: XMLExpParser.RootContext):
-        return ctx.program().accept(self)
-
-    # Visit a parse tree produced by XMLExpParser#nextexp.
-    def visitNext(self, ctx:XMLProgramer.QXNext):
-        return ctx.program().accept(self)
-
-    def visitProgram(self, ctx: XMLExpParser.ProgramContext):
+    def visitProgram(self, ctx: XMLProgramer.QXProgram):
         i = 0
         tmp = True
         while ctx.exp(i) is not None:
