@@ -23,7 +23,7 @@ class TypeInfer(ProgramVisitor):
     def __init__(self, type_environment: dict):
         self.type_environment = type_environment
 
-    def visitProgram(self, ctx: XMLProgramer.QXProgram):
+    def visitProgram(self, ctx: XMLProgrammer.QXProgram):
         i = 0
         tmp = True
         while ctx.exp(i) is not None:
@@ -32,19 +32,19 @@ class TypeInfer(ProgramVisitor):
         return tmp
 
     # Visit a parse tree produced by XMLExpParser#blockexp.
-    def visitBlock(self, ctx:XMLProgramer.QXBlock):
+    def visitBlock(self, ctx:XMLProgrammer.QXBlock):
         return True
 
     def get_type_env(self):
         return self.type_environment
 
-    def visitQTy(self, ctx: XMLProgramer.Qty):
+    def visitQTy(self, ctx: XMLProgrammer.Qty):
         return ctx
 
-    def visitNat(self, ctx: XMLProgramer.Nat):
+    def visitNat(self, ctx: XMLProgrammer.Nat):
         return ctx
 
-    def visitLet(self, ctx:XMLProgramer.QXLet):
+    def visitLet(self, ctx:XMLProgrammer.QXLet):
         i = 0
         f = ctx.ID()
         tml = []
@@ -73,7 +73,7 @@ class TypeInfer(ProgramVisitor):
         #print("f", ctx)
         #ctx.exp().accept(self)
 
-    def visitIf(self, ctx:XMLProgramer.QXIf):
+    def visitIf(self, ctx:XMLProgrammer.QXIf):
         if ctx.vexp().accept(self):
             tmv = copy.deepcopy(self.type_environment)
             tmp1 = ctx.left().accept(self)
@@ -83,7 +83,7 @@ class TypeInfer(ProgramVisitor):
             return tmp1 and tmp2 and equalTypes(rmv, self.type_environment)
         return False
 
-    def visitApp(self, ctx:XMLProgramer.QXApp):
+    def visitApp(self, ctx:XMLProgrammer.QXApp):
         vx = ctx.ID()
         qty = self.type_environment.get(vx)
         tml = qty.args()
@@ -102,7 +102,7 @@ class TypeInfer(ProgramVisitor):
                 tmp = tmp and ctx.vexp(i).accept(self)
         return tmp
 
-    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+    def visitMatch(self, ctx:XMLProgrammer.QXMatch):
         x = ctx.ID()
         fenv = copy.deepcopy(self.type_environment) 
         va = ctx.zero().elem().ID()
@@ -125,13 +125,13 @@ class TypeInfer(ProgramVisitor):
         return equalTypes(fenv4,senv3.pop(va))
 
     # should do nothing
-    def visitSKIP(self, ctx:XMLProgramer.QXSKIP):
+    def visitSKIP(self, ctx:XMLProgrammer.QXSKIP):
         x = ctx.ID()
         ctx.vexp().accept(self)
         return isinstance(self.type_environment.get(x), Qty)
 
     # X posi, changed the following for an example
-    def visitX(self, ctx:XMLProgramer.QXX):
+    def visitX(self, ctx:XMLProgrammer.QXX):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -146,7 +146,7 @@ class TypeInfer(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCU(self, ctx:XMLProgramer.QXCU):
+    def visitCU(self, ctx:XMLProgrammer.QXCU):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -160,7 +160,7 @@ class TypeInfer(ProgramVisitor):
         return False
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx:XMLProgramer.QXSR):
+    def visitSR(self, ctx:XMLProgrammer.QXSR):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -171,7 +171,7 @@ class TypeInfer(ProgramVisitor):
                 return self.type_environment.get(x).type() == "Phi"
         return False
 
-    def visitLshift(self, ctx:XMLProgramer.QXLshift):
+    def visitLshift(self, ctx:XMLProgrammer.QXLshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -181,7 +181,7 @@ class TypeInfer(ProgramVisitor):
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRshift(self, ctx:XMLProgramer.QXRshift):
+    def visitRshift(self, ctx:XMLProgrammer.QXRshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -191,7 +191,7 @@ class TypeInfer(ProgramVisitor):
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRev(self, ctx:XMLProgramer.QXRev):
+    def visitRev(self, ctx:XMLProgrammer.QXRev):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -203,7 +203,7 @@ class TypeInfer(ProgramVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQFT(self, ctx:XMLProgramer.QXQFT):
+    def visitQFT(self, ctx:XMLProgrammer.QXQFT):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -216,7 +216,7 @@ class TypeInfer(ProgramVisitor):
         return False
 
 
-    def visitRQFT(self, ctx:XMLProgramer.QXRQFT):
+    def visitRQFT(self, ctx:XMLProgrammer.QXRQFT):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -228,15 +228,15 @@ class TypeInfer(ProgramVisitor):
                 return True
         return False
 
-    def visitIDExp(self, ctx:XMLProgramer.QXIDExp):
+    def visitIDExp(self, ctx:XMLProgrammer.QXIDExp):
         return isinstance(self.type_environment.get(ctx.ID()), Nat)
 
     # Visit a parse tree produced by XMLExpParser#vexp.
-    def visitBin(self, ctx:XMLProgramer.QXBin):
+    def visitBin(self, ctx:XMLProgrammer.QXBin):
         return ctx.left().accept(self) and ctx.left().accept(self)
     # the only thing that matters will be 48 and 47
 
-    def visitNum(self, ctx:XMLProgramer.QXNum):
+    def visitNum(self, ctx:XMLProgrammer.QXNum):
         return True
 
 

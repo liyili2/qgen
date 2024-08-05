@@ -6,9 +6,10 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
+from Source.quantumCode.AST_Scripts import XMLProgrammer
+from Source.quantumCode.AST_Scripts.ProgramVisitor import ProgramVisitor
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
-from quantumCode.AST_Scripts.XMLProgrammer import *
 
 class BlockContain(ProgramVisitor):
 
@@ -23,7 +24,7 @@ class BlockContain(ProgramVisitor):
         pass
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitProgram(self, ctx: XMLProgramer.QXProgram):
+    def visitProgram(self, ctx: XMLProgrammer.QXProgram):
         i = 0
         tmp = False
         while ctx.exp(i) is not None:
@@ -31,27 +32,27 @@ class BlockContain(ProgramVisitor):
             i += 1
         return tmp
 
-    def visitLet(self, ctx: XMLProgramer.QXLet):
+    def visitLet(self, ctx: XMLProgrammer.QXLet):
         return ctx.program().accept(self)
 
-    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+    def visitMatch(self, ctx:XMLProgrammer.QXMatch):
         return ctx.zero().program().accept(self) and ctx.multi().program().accept(self)
 
-    def visitIf(self, ctx:XMLProgramer.QXIf):
+    def visitIf(self, ctx:XMLProgrammer.QXIf):
         return ctx.left().accept(self) and ctx.right().accept(self)
 
-    def visitApp(self, ctx:XMLProgramer.QXApp):
+    def visitApp(self, ctx:XMLProgrammer.QXApp):
         return False
 
-    def visitBlock(self, ctx:XMLProgramer.QXBlock):
+    def visitBlock(self, ctx:XMLProgrammer.QXBlock):
         return True
 
     # should do nothing
-    def visitSKIP(self, ctx:XMLProgramer.QXSKIP):
+    def visitSKIP(self, ctx:XMLProgrammer.QXSKIP):
         return False
 
     # X posi, changed the following for an example
-    def visitX(self, ctx:XMLProgramer.QXX):
+    def visitX(self, ctx:XMLProgrammer.QXX):
         return False
 
         #return p < self.env.get(x) and str(self.type_environment.get(x)) == "Nor"
@@ -59,26 +60,26 @@ class BlockContain(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCU(self, ctx:XMLProgramer.QXCU):
+    def visitCU(self, ctx:XMLProgrammer.QXCU):
         return ctx.program().accept(self)
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx:XMLProgramer.QXSR):
+    def visitSR(self, ctx:XMLProgrammer.QXSR):
         return False
 
-    def visitLshift(self, ctx:XMLProgramer.QXLshift):
+    def visitLshift(self, ctx:XMLProgrammer.QXLshift):
         return False
 
-    def visitRshift(self, ctx:XMLProgramer.QXRshift):
+    def visitRshift(self, ctx:XMLProgrammer.QXRshift):
         return False
 
-    def visitRev(self, ctx:XMLProgramer.QXRev):
+    def visitRev(self, ctx:XMLProgrammer.QXRev):
         return False
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQFT(self, ctx:XMLProgramer.QXQFT):
+    def visitQFT(self, ctx:XMLProgrammer.QXQFT):
         return False
 
-    def visitRQFT(self, ctx:XMLProgramer.QXRQFT):
+    def visitRQFT(self, ctx:XMLProgrammer.QXRQFT):
         return False

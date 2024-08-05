@@ -1,4 +1,4 @@
-from quantumCode.AST_Scripts.XMLTypeSearch import Qty, Nat
+from Source.quantumCode.AST_Scripts.XMLProgrammer import Qty, Nat
 
 type_envs = {
     'rz_adder.xml': {

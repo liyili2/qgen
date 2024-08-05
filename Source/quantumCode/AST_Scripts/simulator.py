@@ -166,7 +166,7 @@ class Simulator(ProgramVisitor):
         self.env = env
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitLet(self, ctx: XMLProgramer.QXLet):
+    def visitLet(self, ctx: XMLProgrammer.QXLet):
         f = ctx.ID()
         self.st.update({f: ctx})
         #print("f", ctx)
@@ -197,7 +197,7 @@ class Simulator(ProgramVisitor):
     #            # ctx.exppair(i).exp().accept(self)
     #         i += 1
 
-    def visitMatch(self, ctx: XMLProgramer.QXMatch):
+    def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         value = self.st.get(x)
         ctx.zero().program().accept(self)
@@ -209,7 +209,7 @@ class Simulator(ProgramVisitor):
         self.st.update({va:tmpv})
 
 
-    def visitApp(self, ctx: XMLProgramer.QXApp):
+    def visitApp(self, ctx: XMLProgrammer.QXApp):
         vx = ctx.ID()
         ctxa = self.st.get(vx)
         #print("here",ctx.idexp().Identifier())
@@ -243,7 +243,7 @@ class Simulator(ProgramVisitor):
             #print ("var",xv)
             #print("val",re)
 
-    def visitIf(self, ctx: XMLProgramer.QXIf):
+    def visitIf(self, ctx: XMLProgrammer.QXIf):
         v = ctx.vexp().accept(self)
         if v == 1:
             ctx.left().accept(self)
@@ -266,11 +266,11 @@ class Simulator(ProgramVisitor):
                                                      pow(2, val.getNum()) - pow(2, val.getNum() - n)) % pow(2, val.getNum())), val.getRest(), val.getNum())
 
     # should do nothing
-    def visitSKIP(self, ctx: XMLProgramer.QXSKIP):
+    def visitSKIP(self, ctx: XMLProgrammer.QXSKIP):
         return
 
     # X posi, changed the following for an example
-    def visitX(self, ctx: XMLProgramer.QXX):
+    def visitX(self, ctx: XMLProgrammer.QXX):
         vx = ctx.ID()
         x = self.st.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
@@ -278,7 +278,7 @@ class Simulator(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recursively call ctx.exp
-    def visitCU(self, ctx: XMLProgramer.QXCU):
+    def visitCU(self, ctx: XMLProgrammer.QXCU):
         vx = ctx.ID()
         x = self.st.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
@@ -302,7 +302,7 @@ class Simulator(ProgramVisitor):
     #     self.st.update({x: times_r_rotate(self.st.get(x), abs(q), self.env.get(x))})
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx: XMLProgramer.QXSR):
+    def visitSR(self, ctx: XMLProgrammer.QXSR):
         n = int(ctx.vexp().accept(self))
         x = ctx.ID()
         if n >= 0:
@@ -321,7 +321,7 @@ class Simulator(ProgramVisitor):
         tmp[n - 1] = tmpv
         self.state.get(x)[0] = CoqNVal(tmp, self.state.get(x)[0].getPhase())
 
-    def visitLshift(self, ctx: XMLProgramer.QXLshift):
+    def visitLshift(self, ctx: XMLProgrammer.QXLshift):
         x = ctx.ID()
         self.lshift(x, self.env.get(x))
 
@@ -337,7 +337,7 @@ class Simulator(ProgramVisitor):
         tmp[0] = tmpv
         self.state.get(x)[0] = CoqNVal(tmp, self.state.get(x)[0].getPhase())
 
-    def visitRshift(self, ctx: XMLProgramer.QXRshift):
+    def visitRshift(self, ctx: XMLProgrammer.QXRshift):
         x = ctx.ID()
         self.rshift(x, self.env.get(x))
 
@@ -352,7 +352,7 @@ class Simulator(ProgramVisitor):
             tmpa.append(tmp[size - i])
         self.state.get(x)[0] = CoqNVal(tmp, self.state.get(x)[0].getPhase())
 
-    def visitRev(self, ctx: XMLProgramer.QXRev):
+    def visitRev(self, ctx: XMLProgrammer.QXRev):
         x = ctx.ID()
         self.reverse(x, self.env.get(x))
 
@@ -370,7 +370,7 @@ class Simulator(ProgramVisitor):
         # actually, we need to change the QFT function
         # the following QFT is only for full QFT, we did not have the case for AQFT
 
-    def visitQFT(self, ctx: XMLProgramer.QXQFT):
+    def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
         b = int(ctx.vexp().accept(self))
         self.turn_qft(x, self.env.get(x) - b)
@@ -391,19 +391,19 @@ class Simulator(ProgramVisitor):
             result = tov + val.getRest()
             self.state.get(x)[0] = CoqNVal(result, val.getPhase())
 
-    def visitRQFT(self, ctx: XMLProgramer.QXRQFT):
+    def visitRQFT(self, ctx: XMLProgrammer.QXRQFT):
         x = ctx.ID()
         self.turn_rqft(x)
         #print("rqftexp end")
 
-    def visitIDExp(self, ctx: XMLProgramer.QXIDExp):
+    def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
         # print("idexp var",ctx.Identifier().accept(self))
         # print("idexp val",self.get_state().get(ctx.Identifier().accept(self)))
         return self.get_state().get(ctx.ID())
 
         # Visit a parse tree produced by XMLExpParser#vexp.
 
-    def visitBin(self, ctx: XMLProgramer.QXBin):
+    def visitBin(self, ctx: XMLProgrammer.QXBin):
         x = ctx.left().accept(self)
         y = ctx.right().accept(self)
             #print("val",y)
@@ -429,10 +429,10 @@ class Simulator(ProgramVisitor):
                     #print("val",tmp[y])
                 return int(tmp[y])
         return 0
-    def visitIDExp(self, ctx: XMLProgramer.QXIDExp):
+    def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
         ctx.type().accept(self)
 
-    def visitNum(self, ctx: XMLProgramer.QXNum):
+    def visitNum(self, ctx: XMLProgrammer.QXNum):
         return ctx.num()
 
     #def visitIda(self, ctx: XMLExpParser.IdaContext):

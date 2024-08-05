@@ -20,7 +20,7 @@ from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 from Source.quantumCode.AST_Scripts.TypeDetector import TypeDetector
-from Source.quantumCode.AST_Scripts.XMLTypeSearch import Nat, Qty, Fun
+from Source.quantumCode.AST_Scripts.XMLProgrammer import Nat, Fun, Qty
 
 
 def pretty_print_element(element):
@@ -214,7 +214,7 @@ class QGateInsertion(StmtInsertion):
         print(pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
-        type_detector.visit(root_ast_element)
+        type_detector.visitRoot(root_ast_element)
         type_detector_env = type_detector.type_environment
         print(type_detector_env)
         delete_block(parent)

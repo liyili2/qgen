@@ -6,7 +6,9 @@ from types import NoneType
 
 from antlr4 import ParserRuleContext
 
+from Source.quantumCode.AST_Scripts import XMLProgrammer
 from Source.quantumCode.AST_Scripts.BlockContain import BlockContain
+from Source.quantumCode.AST_Scripts.ProgramVisitor import ProgramVisitor
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
 from quantumCode.AST_Scripts.XMLProgrammer import *
@@ -25,7 +27,7 @@ class TypeDetector(ProgramVisitor):
         self.type_environment = type_environment
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitProgram(self, ctx: XMLProgramer.QXProgram):
+    def visitProgram(self, ctx: XMLProgrammer.QXProgram):
         i = 0
         bl = BlockContain()
         while ctx.exp(i) is not None:
@@ -37,24 +39,24 @@ class TypeDetector(ProgramVisitor):
     def get_type_env(self):
         return self.type_environment
 
-    def visitIDExp(self, ctx:XMLProgramer.QXIDExp):
+    def visitIDExp(self, ctx:XMLProgrammer.QXIDExp):
         tv = ctx.ID()
         return isinstance(self.type_environment.get(tv), Nat())
 
-    def visitNum(self, ctx:XMLProgramer.QXNum):
+    def visitNum(self, ctx:XMLProgrammer.QXNum):
         return True
 
-    def visitBin(self, ctx:XMLProgramer.QXBin):
+    def visitBin(self, ctx:XMLProgrammer.QXBin):
         return ctx.left().accept(self) and ctx.right().accept(self)
     # the only thing that matters will be 48 and 47
 
-    def visitQTy(self, ctx: XMLProgramer.Qty):
+    def visitQTy(self, ctx: XMLProgrammer.Qty):
         return ctx
 
-    def visitNat(self, ctx: XMLProgramer.Nat):
+    def visitNat(self, ctx: XMLProgrammer.Nat):
         return ctx
 
-    def visitLet(self, ctx:XMLProgramer.QXLet):
+    def visitLet(self, ctx:XMLProgrammer.QXLet):
         bl = BlockContain()
         if bl.visitProgram(ctx.program()):
             i = 0
@@ -70,7 +72,7 @@ class TypeDetector(ProgramVisitor):
             ctx.program().accept(self)
             #tmv.update({f: Fun(tml, tx.type_environment, self.type_environment)})
 
-    def visitApp(self, ctx:XMLProgramer.QXApp):
+    def visitApp(self, ctx: XMLProgrammer.QXApp):
         identifier_text = ctx.ID()
         qty = self.type_environment.get(identifier_text)
         tml = qty.args
@@ -85,7 +87,7 @@ class TypeDetector(ProgramVisitor):
                     return
                 self.type_environment.update({na: rmv.get(tml[i])})
 
-    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+    def visitMatch(self, ctx:XMLProgrammer.QXMatch):
         bl = BlockContain()
         if bl.visitProgram(ctx.zero().program()):
             ctx.zero().program().accept(self)
@@ -96,11 +98,11 @@ class TypeDetector(ProgramVisitor):
             self.type_environment.pop(va)
 
     # should do nothing
-    def visitSKIP(self, ctx: XMLProgramer.QXSKIP):
+    def visitSKIP(self, ctx: XMLProgrammer.QXSKIP):
         return
 
     # X posi, changed the following for an example
-    def visitX(self, ctx: XMLProgramer.QXX):
+    def visitX(self, ctx: XMLProgrammer.QXX):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -112,7 +114,7 @@ class TypeDetector(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCU(self, ctx: XMLProgramer.QXCU):
+    def visitCU(self, ctx: XMLProgrammer.QXCU):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -123,26 +125,26 @@ class TypeDetector(ProgramVisitor):
                 ctx.program().accept(self)
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx:XMLProgramer.QXSR):
+    def visitSR(self, ctx:XMLProgrammer.QXSR):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Phi")})
 
-    def visitLshift(self, ctx: XMLProgramer.QXLshift):
+    def visitLshift(self, ctx: XMLProgrammer.QXLshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
 
-    def visitRshift(self, ctx: XMLProgramer.QXRshift):
+    def visitRshift(self, ctx: XMLProgrammer.QXRshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
 
-    def visitRev(self, ctx: XMLProgramer.QXRev):
+    def visitRev(self, ctx: XMLProgrammer.QXRev):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -150,7 +152,7 @@ class TypeDetector(ProgramVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQFT(self, ctx: XMLProgramer.QXQFT):
+    def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -162,7 +164,7 @@ class TypeDetector(ProgramVisitor):
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Phi")})
 
 
-    def visitRQFT(self, ctx: XMLProgramer.QXRQFT):
+    def visitRQFT(self, ctx: XMLProgrammer.QXRQFT):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -170,3 +172,5 @@ class TypeDetector(ProgramVisitor):
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
             elif self.type_environment.get(x).type() == "Phi":
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
+
+

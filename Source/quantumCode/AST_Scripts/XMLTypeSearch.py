@@ -8,7 +8,10 @@ from antlr4 import ParserRuleContext
 
 from quantumCode.AST_Scripts.XMLExpParser import *
 from quantumCode.AST_Scripts.XMLExpVisitor import *
-from quantumCode.AST_Scripts.XMLProgrammer import *
+from quantumCode.AST_Scripts.ProgramVisitor import ProgramVisitor
+
+from Source.quantumCode.AST_Scripts import XMLProgrammer
+
 
 class TypeSearch(ProgramVisitor):
 
@@ -23,7 +26,7 @@ class TypeSearch(ProgramVisitor):
         self.type_environment = type_environment
         # self.rmax = rmax rmax is M_find(x,env), a map from var to int
 
-    def visitApp(self, ctx:XMLProgramer.QXApp):
+    def visitApp(self, ctx:XMLProgrammer.QXApp):
         vx = ctx.ID()
         qty = self.type_environment.get(vx)
         tml = qty.args()
@@ -36,7 +39,7 @@ class TypeSearch(ProgramVisitor):
                     self.type_environment.get(tml[i]).set_type(ptv.type())
         return
 
-    def visitMatch(self, ctx:XMLProgramer.QXMatch):
+    def visitMatch(self, ctx:XMLProgrammer.QXMatch):
         x = ctx.ID()
         #value = self.st.get(x)
         #print("value match", value)
@@ -50,13 +53,13 @@ class TypeSearch(ProgramVisitor):
             return joinTypes(fenv1, self.type_environment)
 
     # should do nothing
-    def visitSKIP(self, ctx:XMLProgramer.QXSKIP):
+    def visitSKIP(self, ctx:XMLProgrammer.QXSKIP):
         #x = ctx.Identifier().accept(self)
         #ctx.vexp().accept(self)
         return  #isinstance(self.type_environment.get(x), Qty)
 
     # X posi, changed the following for an example
-    def visitX(self, ctx:XMLProgramer.QXX):
+    def visitX(self, ctx:XMLProgrammer.QXX):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -68,7 +71,7 @@ class TypeSearch(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCU(self, ctx:XMLProgramer.QXCU):
+    def visitCU(self, ctx:XMLProgrammer.QXCU):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -78,7 +81,7 @@ class TypeSearch(ProgramVisitor):
         return
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx:XMLProgramer.QXSR):
+    def visitSR(self, ctx:XMLProgrammer.QXSR):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -86,21 +89,21 @@ class TypeSearch(ProgramVisitor):
                 self.type_environment.get(x).set_type("Phi")
         return
 
-    def visitLshift(self, ctx:XMLProgramer.QXLshift):
+    def visitLshift(self, ctx:XMLProgrammer.QXLshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.get(x).set_type("Nor")
         return
 
-    def visitRshift(self, ctx:XMLProgramer.QXRshift):
+    def visitRshift(self, ctx:XMLProgrammer.QXRshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
                 self.type_environment.get(x).set_type("Nor")
         return
 
-    def visitRev(self, ctx:XMLProgramer.QXRev):
+    def visitRev(self, ctx:XMLProgrammer.QXRev):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
@@ -109,7 +112,7 @@ class TypeSearch(ProgramVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQFT(self, ctx:XMLProgramer.QXQFT):
+    def visitQFT(self, ctx:XMLProgrammer.QXQFT):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
@@ -117,7 +120,7 @@ class TypeSearch(ProgramVisitor):
                 self.type_environment.get(x).set_type("Nor")
         return
 
-    def visitRQFT(self, ctx:XMLProgramer.QXRQFT):
+    def visitRQFT(self, ctx:XMLProgrammer.QXRQFT):
         x = ctx.ID()
         #ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
