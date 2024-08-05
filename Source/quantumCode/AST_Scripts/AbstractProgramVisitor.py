@@ -6,37 +6,6 @@ from antlr4 import ParseTreeVisitor
 
 class AbstractProgramVisitor(ABC):
 
-    @abstractmethod
-    def visit(self, tree):
-        pass
-
-    @abstractmethod
-    def visitChildren(self, node):
-        pass
-
-    @abstractmethod
-    def visitTerminal(self, node):
-        pass
-
-    @abstractmethod
-    def visitErrorNode(self, node):
-        pass
-
-    @abstractmethod
-    def defaultResult(self):
-        return None
-
-    @abstractmethod
-    def aggregateResult(self, aggregate, nextResult):
-        return nextResult
-
-    @abstractmethod
-    def shouldVisitNextChild(self, node, currentResult):
-        return True
-
-    @abstractmethod
-    def visitRoot(self, ctx):
-        pass
 
     @abstractmethod
     def visitNext(self, ctx):

@@ -19,6 +19,7 @@ from antlr4.tree.Trees import Trees
 from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
+from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 from Source.quantumCode.AST_Scripts.TypeDetector import TypeDetector
 from Source.quantumCode.AST_Scripts.XMLProgrammer import Nat, Fun, Qty
 
@@ -44,7 +45,10 @@ def parse_string_to_ast(xml_string):
     lexer = XMLExpLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(token_stream)
-    return parser.root()
+    root = parser.root()
+    transform = ProgramTransformer()
+    new_tree = transform.visitRoot(root)
+    return new_tree
 
 
 def convert_xml_element_to_ast(element):
@@ -209,9 +213,8 @@ class QGateInsertion(StmtInsertion):
 
         root_xml_element: ET.Element = new_contents[op.target[0]]
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_xml_element)
-
         print(pretty_print_element(parent))
-        print(pretty_print_element(root_ast_element))
+#        print(pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
         type_detector.visitRoot(root_ast_element)
