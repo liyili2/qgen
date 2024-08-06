@@ -92,6 +92,7 @@ class ProgramTransformer(XMLExpVisitor):
         while ctx.idexp(i) is not None:
             x = self.visitIdexp(ctx.idexp(i))
             tml.append(x)
+            i += 1
         fv = self.visitProgram(ctx.program())
         return QXLet(f, tml, fv)
 

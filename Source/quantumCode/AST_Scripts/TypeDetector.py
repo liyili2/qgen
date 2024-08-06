@@ -32,7 +32,7 @@ class TypeDetector(ProgramVisitor):
         bl = BlockContain()
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
-            if bl.visitProgram(ctx.program()):
+            if bl.visitProgram(ctx.program):
                 return
             i += 1
 

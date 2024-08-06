@@ -7,7 +7,7 @@ class ProgramVisitor(AbstractProgramVisitor):
 
     # Visit a parse tree produced by XMLExpParser#root.
     def visitRoot(self, ctx: XMLProgrammer.QXRoot):
-        return ctx.program().accept(self)
+        return ctx.program.accept(self)
 
     # Visit a parse tree produced by XMLExpParser#nextexp.
     def visitNext(self, ctx: XMLProgrammer.QXNext):

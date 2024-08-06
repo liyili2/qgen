@@ -21,7 +21,7 @@ class QXProgram(QXTop):
         visitor.visitProgram(self)
 
     def exp(self, i:int=None):
-        return self.exps[i]
+        return self.exps[i] if len(self.exps) > i else None
 
 
 class QXType(QXTop):
@@ -62,18 +62,16 @@ class QXElem(QXTop):
         pass
 
 class QXIDExp(QXElem, QXVexp):
-    def __init__(self, v: str, type: QXType = None):
-        self.v = v
+    def __init__(self, id: str, type: QXType = None):
+        self.id = id
         self.type = type
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitIDExp(self)
 
     def ID(self):
-        return self.v
+        return self.id if self.id is str else self.id.getText()
 
-    def type(self):
-        return self.type
 
 
 class QXLet(QXExp):
@@ -86,10 +84,10 @@ class QXLet(QXExp):
         visitor.visitLet(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def idexp(self, i:int = None):
-        return self.ids[i]
+        return self.ids[i] if i < len(self.ids) else None
 
     def program(self):
         return self.prog
@@ -103,11 +101,11 @@ class QXApp(QXExp):
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitApp(self)
 
-    def ID(self):
-        return self.id
+    def ID(self) -> str:
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self, i : int = None):
-        return self.vs[i]
+        return self.vs[i] if len(self.vs) > i else None
 
 
 class QXBlock(QXExp):
@@ -127,7 +125,7 @@ class QXCU(QXExp):
         visitor.visitCU(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self):
         return self.v
@@ -169,8 +167,8 @@ class QXPair(QXTop):
         return self.prog
 
 class QXMatch(QXExp):
-    def __init__(self, v: str, zero: QXPair, multi: QXPair):
-        self.id = v
+    def __init__(self, id: str, zero: QXPair, multi: QXPair):
+        self.id = id
         self.zero = zero
         self.multi = multi
 
@@ -178,7 +176,7 @@ class QXMatch(QXExp):
         visitor.visitMatch(self)
 
     def ID(self):
-        return self.v
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def zero(self):
         return self.zero
@@ -339,7 +337,7 @@ class QXSKIP(QXExp):
         visitor.visitSKIP(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self):
         return self.v
@@ -354,7 +352,7 @@ class QXX(QXExp):
         visitor.visitX(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self):
         return self.v
@@ -369,7 +367,7 @@ class QXSR(QXExp):
         visitor.visitSR(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self):
         return self.v
@@ -384,7 +382,7 @@ class QXQFT(QXExp):
         visitor.visitQFT(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
     def vexp(self):
         return self.v
@@ -398,7 +396,7 @@ class QXRQFT(QXExp):
         visitor.visitRQFT(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
 
 class QXLshift(QXExp):
@@ -409,7 +407,7 @@ class QXLshift(QXExp):
         visitor.visitLshift(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
 class QXRshift(QXExp):
     def __init__(self, id: str):
@@ -419,7 +417,7 @@ class QXRshift(QXExp):
         visitor.visitRshift(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()
 
 
 class QXRev(QXExp):
@@ -430,4 +428,4 @@ class QXRev(QXExp):
         visitor.visitRev(self)
 
     def ID(self):
-        return self.id
+        return self.id if isinstance(self.id, str) else self.id.getText()

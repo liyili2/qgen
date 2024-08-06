@@ -21,7 +21,9 @@ from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 from Source.quantumCode.AST_Scripts.TypeDetector import TypeDetector
-from Source.quantumCode.AST_Scripts.XMLProgrammer import Nat, Fun, Qty
+from Source.quantumCode.AST_Scripts.XMLProgrammer import *
+from quantumCode.AST_Scripts.XMLProgrammer import *
+from Source.quantumCode.AST_Scripts.XMLPrinter import XMLPrinter
 
 
 def pretty_print_element(element):
@@ -29,6 +31,12 @@ def pretty_print_element(element):
         return ""
     if isinstance(element, XMLExpParser.RootContext):
         pretty_string = Trees.toStringTree(element, None, XMLExpParser)
+    elif isinstance(element, QXRoot):
+        xml_printer = XMLPrinter()
+        xml_printer.visitProgram(element.program)
+        pretty_string = xml_printer.xml_output
+        return pretty_string
+
     else:
         raw_str = ET.tostring(element, 'utf-8')
         parsed = minidom.parseString(raw_str)
@@ -46,8 +54,8 @@ def parse_string_to_ast(xml_string):
     token_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(token_stream)
     root = parser.root()
-    transform = ProgramTransformer()
-    new_tree = transform.visitRoot(root)
+    transformer = ProgramTransformer()
+    new_tree = transformer.visitRoot(root)
     return new_tree
 
 
@@ -214,9 +222,10 @@ class QGateInsertion(StmtInsertion):
         root_xml_element: ET.Element = new_contents[op.target[0]]
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_xml_element)
         print(pretty_print_element(parent))
-#        print(pretty_print_element(root_ast_element))
+        print(pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
+        tpe = type(root_ast_element)
         type_detector.visitRoot(root_ast_element)
         type_detector_env = type_detector.type_environment
         print(type_detector_env)
