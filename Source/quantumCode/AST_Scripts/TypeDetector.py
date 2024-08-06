@@ -32,7 +32,7 @@ class TypeDetector(ProgramVisitor):
         bl = BlockContain()
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
-            if bl.visit(ctx.program):
+            if bl.visit(ctx.exp(i)):
                 return
             i += 1
 
@@ -167,8 +167,8 @@ class TypeDetector(ProgramVisitor):
     def visitRQFT(self, ctx: XMLProgrammer.QXRQFT):
         x = ctx.ID()
         #ctx.vexp().accept(self)
-        if isinstance(self.type_environment.get(x), Qty):
-            if self.type_environment.get(x).type() is None:
+        if isinstance(self.type_environment.get(x).type, Qty):
+            if self.type_environment.get(x).type is None:
                 self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
             elif self.type_environment.get(x).type() == "Phi":
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})

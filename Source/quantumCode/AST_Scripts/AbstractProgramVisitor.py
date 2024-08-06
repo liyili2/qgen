@@ -8,6 +8,10 @@ class AbstractProgramVisitor(ABC):
 
 
     @abstractmethod
+    def visit(self, ctx):
+        pass
+
+    @abstractmethod
     def visitNext(self, ctx):
         pass
 

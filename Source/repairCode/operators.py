@@ -207,10 +207,8 @@ class QGateInsertion(StmtInsertion):
         if target is None or ingredient is None:
             return False
 
-        initial_type_env = type_envs[self.ingredient[0]]
         initial_type_env = {'m': Nat, 'na': Nat, 'size': Nat,
                             'x': Qty(16), 'f': Fun("d", {}, {})}
-        print(initial_type_env)
         root = new_contents[op.target[0]].find('.')
 
 
@@ -221,14 +219,13 @@ class QGateInsertion(StmtInsertion):
 
         root_xml_element: ET.Element = new_contents[op.target[0]]
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_xml_element)
-        print(pretty_print_element(parent))
         print(pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
-        tpe = type(root_ast_element)
         type_detector.visitRoot(root_ast_element)
         type_detector_env = type_detector.type_environment
-        print(type_detector_env)
+        print("initial type:", initial_type_env)
+        print("final type:", type_detector_env)
         delete_block(parent)
         self.insert_adjacent_to_target(parent, target, ingredient)
 
