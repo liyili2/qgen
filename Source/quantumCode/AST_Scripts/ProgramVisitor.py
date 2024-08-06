@@ -1,9 +1,63 @@
 from quantumCode.AST_Scripts import XMLProgrammer
+from quantumCode.AST_Scripts.XMLProgrammer import *
 
 from quantumCode.AST_Scripts.AbstractProgramVisitor import AbstractProgramVisitor
 
 
 class ProgramVisitor(AbstractProgramVisitor):
+
+    def visit(self, ctx):
+        match ctx:
+            case QXRoot():
+                return self.visitRoot(ctx)
+            case QXNext():
+                return self.visitNext(ctx)
+            case QXProgram():
+                return self.visitProgram(ctx)
+            case QXBlock():
+                return self.visitBlock(ctx)
+            case QXLet():
+                return self.visitLet(ctx)
+            case QXApp():
+                return self.visitApp(ctx)
+            case QXCU():
+                return self.visitCU(ctx)
+            case QXIf():
+                return self.visitIf(ctx)
+            case QXMatch():
+                return self.visitMatch(ctx)
+            case QXPair():
+                return self.visitPair(ctx)
+            case QXBin():
+                return self.visitBin(ctx)
+            case QXIDExp():
+                return self.visitIDExp(ctx)
+            case QXNum():
+                return self.visitNum(ctx)
+            case Qty():
+                return self.visitQTy(ctx)
+            case Nat():
+                return self.visitNat(ctx)
+            case Fun():
+                return self.visitFun(ctx)
+            case QXSKIP():
+                return self.visitSKIP(ctx)
+            case QXX():
+                return self.visitX(ctx)
+            case QXSR():
+                return self.visitSR(ctx)
+            case QXQFT():
+                return self.visitQFT(ctx)
+            case QXRQFT():
+                return self.visitRQFT(ctx)
+            case QXLshift():
+                return self.visitLshift(ctx)
+            case QXRshift():
+                return self.visitRshift(ctx)
+            case QXRev():
+                return self.visitRev(ctx)
+            case _:
+                raise NotImplementedError(f"No visit method defined for {type(ctx)}")
 
     # Visit a parse tree produced by XMLExpParser#root.
     def visitRoot(self, ctx: XMLProgrammer.QXRoot):
