@@ -1,61 +1,24 @@
 #from collections import ChainMap
 from types import NoneType
-from quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
-from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from quantumCode.AST_Scripts.XMLProgrammer import *
 
-class XMLPrinter(XMLExpVisitor):
+class XMLPrinter(ProgramVisitor):
 
     def __init__(self):
         #self.type_environment = type_environment
         self.xml_output = ''
         #self.indentation = 0
 
-    def visitRoot(self, ctx: XMLExpParser.RootContext):
-        self.xml_output += self.visitChildren(ctx)
-
-    # Visit a parse tree produced by XMLExpParser#nextexp.
-    def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
-        self.xml_output += self.visitChildren(ctx)
-
     # Visit a parse tree produced by XMLExpParser#program.
-    def visitProgram(self, ctx: XMLExpParser.ProgramContext):
+    def visitProgram(self, ctx: XMLProgrammer.QXProgram):
         i = 0
         while ctx.exp(i) is not None:
             ctx.exp(i).accept(self)
             self.xml_output += "\n"
             i += 1
 
-    # should do nothing
-    def visitExp(self, ctx: XMLExpParser.ExpContext):
-        if ctx.letexp() is not None:
-            ctx.letexp().accept(self)
-        elif ctx.appexp() is not None:
-            ctx.appexp().accept(self)
-        elif ctx.ifexp() is not None:
-            ctx.ifexp().accept(self)
-        elif ctx.matchexp() is not None:
-            ctx.matchexp().accept(self)
-        elif ctx.cuexp() is not None:
-            self.visitCUexp(ctx.cuexp())
-        elif ctx.skipexp() is not None:
-            ctx.skipexp().accept(self)
-        elif ctx.xexp() is not None:
-            ctx.xexp().accept(self)
-        elif ctx.srexp() is not None:
-            ctx.srexp().accept(self)
-        elif ctx.qftexp() is not None:
-            ctx.qftexp().accept(self)
-        elif ctx.lshiftexp() is not None:
-            ctx.lshiftexp().accept(self)
-        elif ctx.rshiftexp() is not None:
-            ctx.rshiftexp().accept(self)
-        elif ctx.revexp() is not None:
-            ctx.revexp().accept(self)
-        elif ctx.rqftexp() is not None:
-            ctx.rqftexp().accept(self)
-
-    def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
-        self.xml_output += "let " + ctx.Identifier().accept(self) + " = "
+    def visitLet(self, ctx: XMLProgrammer.QXLet):
+        self.xml_output += "let " + ctx.ID() + " = "
         i = 0
         while ctx.idexp(i) is not None:
             self.xml_output += "("
@@ -65,53 +28,47 @@ class XMLPrinter(XMLExpVisitor):
         self.xml_output += " in\n  "
         ctx.program().accept(self)
 
-    def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        self.xml_output += "match "
-        ctx.Identifier().accept(self)
+    def visitMatch(self, ctx: XMLProgrammer.QXMatch):
+        self.xml_output += "match "+ ctx.ID()
         self.xml_output += " with "
-        i = 0
-        while ctx.exppair(i) is not None:
-            ctx.exppair(i).accept(self)
-            i += 1
+        ctx.zero().accept(self)
+        ctx.multi().accept(self)
         self.xml_output += "\n end \n"
 
-    def visitExppair(self, ctx: XMLExpParser.ExppairContext):
-        ctx.element().accept(self)
+    def visitPair(self, ctx: XMLProgrammer.QXPair):
+        ctx.elem().accept(self)
         self.xml_output += " => "
         ctx.program().accept(self)
 
-    def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        self.xml_output += " "
-        ctx.Identifier().accept(self)
+    def visitApp(self, ctx: XMLProgrammer.QXApp):
+        self.xml_output += " " + ctx.ID()
         self.xml_output += "("
         i = 0
         while ctx.vexp(i) is not None:
             ctx.vexp(i).accept(self)
             self.xml_output += ", "
-            #print("var",ctxa.idexp(i+1).Identifier())
+            #print("var",ctxa.idexp(i+1).ID())
             i += 1
         self.xml_output += ")"
 
-    def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
+    def visitIf(self, ctx: XMLProgrammer.QXIf):
         self.xml_output += "if "
         ctx.vexp().accept(self)
         self.xml_output += " then {"
-        ctx.nextexp(0).accept(self)
+        ctx.left().accept(self)
         self.xml_output += "} else {"
-        ctx.nextexp(1).accept(self)
+        ctx.right().accept(self)
         self.xml_output += "}"
 
-    def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
-        self.xml_output += "  SKIP ("
-        ctx.Identifier().accpet(self)
+    def visitSKIP(self, ctx: XMLProgrammer.QXSKIP):
+        self.xml_output += "  SKIP (" + ctx.ID()
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
 
     # X posi, changed the following for an example
-    def visitXexp(self, ctx: XMLExpParser.XexpContext):
-        self.xml_output += "  X ("
-        ctx.Identifier().accpet(self)
+    def visitX(self, ctx: XMLProgrammer.QXX):
+        self.xml_output += "  X (" + ctx.ID()
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
@@ -119,111 +76,86 @@ class XMLPrinter(XMLExpVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
-        self.xml_output += "  CU ("
-        ctx.Identifier().accpet(self)
+    def visitCU(self, ctx: XMLProgrammer.QXCU):
+        self.xml_output += "  CU (" + ctx.ID()
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
         ctx.program().accept(self)
 
     # SR n x, now variables are all string, are this OK?
-    def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        self.xml_output += "  SR ("
-        ctx.Identifier().accpet(self)
+    def visitSR(self, ctx: XMLProgrammer.QXSR):
+        self.xml_output += "  SR (" + ctx.ID()
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
 
-    def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
-        self.xml_output += "  Lshift "
-        ctx.Identifier().accpet(self)
+    def visitLshift(self, ctx: XMLProgrammer.QXLshift):
+        self.xml_output += "  Lshift " + ctx.ID()
 
-    def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
-        self.xml_output += "  Rshift "
-        ctx.Identifier().accpet(self)
+    def visitRshift(self, ctx: XMLProgrammer.QXRshift):
+        self.xml_output += "  Rshift " + ctx.ID()
 
-    def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
-        self.xml_output += "  Rev "
-        ctx.Identifier().accpet(self)
+    def visitRev(self, ctx: XMLProgrammer.QXRev):
+        self.xml_output += "  Rev " + ctx.ID()
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
-        self.xml_output += "  QFT ("
-        ctx.Identifier().accpet(self)
+    def visitQFT(self, ctx: XMLProgrammer.QXQFT):
+        self.xml_output += "  QFT (" + ctx.ID()
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
 
-    def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
-        self.xml_output += "  RQFT "
-        ctx.Identifier().accpet(self)
+    def visitRQFT(self, ctx: XMLProgrammer.QXRQFT):
+        self.xml_output += "  RQFT " + ctx.ID()
 
-    def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        ctx.Identifier().accpet(self)
-        if ctx.atype() is not None:
+    def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
+        self.xml_output += ctx.ID()
+        if ctx.type() is not None:
             self.xml_output += " : "
-            ctx.atype().accept(self)
+            ctx.type().accept(self)
 
-    def visitAtype(self, ctx:XMLExpParser.AtypeContext):
-        if ctx.Nat() is not None:
-            self.xml_output += "nat"
-        elif ctx.Qt() is not None:
-           self.xml_output += "Q("
-           ctx.element(0).accept(self)
-           self.xml_output += ")"
-        elif ctx.Nor() is not None:
-           self.xml_output += "Nor("
-           ctx.element(0).accept(self)
-           self.xml_output += ")"
-        elif ctx.Phi() is not None:
-           self.xml_output += "Phi("
-           ctx.element(0).accept(self)
-           self.xml_output += ", "
-           ctx.element(1).accept(self)
-           self.xml_output += ")"
-
-
-
-    def visitElement(self, ctx:XMLExpParser.ElementContext):
-        if ctx.numexp() is not None:
-            ctx.numexp().accept(self)
+    def visitQTy(self, ctx: XMLProgrammer.Qty):
+        if ctx.type() is None:
+            self.xml_output += "Q("
+            ctx.get_num().accept(self)
+            self.xml_output += ")"
+        elif ctx.type() == "Nor":
+            self.xml_output += "Nor("
+            ctx.get_num().accept(self)
+            self.xml_output += ")"
         else:
-            ctx.Identifier().accept(self)
+            self.xml_output += "Phi("
+            ctx.get_num().accept(self)
+            self.xml_output += ", "
+            self.xml_output += str(ctx.get_anum())
+            self.xml_output += ")"
 
-    def visitVexp(self, ctx: XMLExpParser.VexpContext):
-        if ctx.idexp() is not None:
-            ctx.idexp().accept(self)
-        if ctx.NUM() is not None:
-            ctx.numexp().accept(self)
-        else:
-            #print("here")
-            #print("op",ctx.op())
-            ctx.vexp(0).accept(self)
-            if ctx.op().Plus() is not None:
-                self.xml_output += " + "
-            elif ctx.op().Minus() is not None:
-                self.xml_output += " - "
-            elif ctx.op().Times() is not None:
-                self.xml_output += " * "
-            elif ctx.op().Div() is not None:
-                self.xml_output += " / "
-            elif ctx.op().Exp() is not None:
-                self.xml_output += " ^ "
-            elif ctx.op().Mod() is not None:
-                self.xml_output += " % "
-            elif ctx.op().GNum() is not None:
-                self.xml_output += " @ "
-            ctx.vexp(1).accept(self)
+    def visitNat(self, ctx: XMLProgrammer.Nat):
+        self.xml_output += "nat"
 
-    def visitTerminal(self, node):
-        # For leaf nodes
-        if node.getSymbol().type == XMLExpParser.Identifier:
-            self.xml_output += ""f'{node.getText()}\n'""
-        if node.getSymbol().type == XMLExpParser.Number:
-            self.xml_output += ""f'{node.getText()}\n'""
-        self.xml_output += ""
+    def visitBin(self, ctx: XMLProgrammer.QXBin):
+        if ctx.op() == "Plus":
+        self.left().accept(self)
+        if ctx.op() == "Plus":
+            self.xml_output += " + "
+        elif ctx.op() == "Minus":
+            self.xml_output += " - "
+        elif ctx.op() == "Times":
+            self.xml_output += " * "
+        elif ctx.op() == "Div":
+            self.xml_output += " / "
+        elif ctx.op() == "Exp":
+            self.xml_output += " ^ "
+        elif ctx.op() == "Mod":
+            self.xml_output += " % "
+        elif ctx.op() == "GNum":
+            self.xml_output += " @ "
+        self.right().accept(self)
+
+    def visitNum(self, ctx: XMLProgrammer.QXNum):
+        self.xml_output += str(ctx.num())
 
     # def visit(self, ctx):
     #    if ctx.getChildCount() > 0:
