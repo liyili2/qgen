@@ -1,7 +1,7 @@
 #from collections import ChainMap
 from types import NoneType
-from XMLExpVisitor import XMLExpVisitor
-from XMLExpParser import XMLExpParser
+from quantumCode.AST_Scripts.XMLExpVisitor import XMLExpVisitor
+from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 
 class XMLPrinter(XMLExpVisitor):
 
@@ -101,7 +101,7 @@ class XMLPrinter(XMLExpVisitor):
         ctx.nextexp(1).accept(self)
         self.xml_output += "}"
 
-    def visitSkipexp(self, ctx: ExpParser.SkipexpContext):
+    def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
         self.xml_output += "  SKIP ("
         ctx.Identifier().accpet(self)
         self.xml_output += ", "
@@ -109,7 +109,7 @@ class XMLPrinter(XMLExpVisitor):
         self.xml_output += ")"
 
     # X posi, changed the following for an example
-    def visitXexp(self, ctx: ExpParser.XexpContext):
+    def visitXexp(self, ctx: XMLExpParser.XexpContext):
         self.xml_output += "  X ("
         ctx.Identifier().accpet(self)
         self.xml_output += ", "
@@ -119,7 +119,7 @@ class XMLPrinter(XMLExpVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCUexp(self, ctx: ExpParser.CuexpContext):
+    def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
         self.xml_output += "  CU ("
         ctx.Identifier().accpet(self)
         self.xml_output += ", "
@@ -128,35 +128,35 @@ class XMLPrinter(XMLExpVisitor):
         ctx.program().accept(self)
 
     # SR n x, now variables are all string, are this OK?
-    def visitSrexp(self, ctx: ExpParser.SrexpContext):
+    def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
         self.xml_output += "  SR ("
         ctx.Identifier().accpet(self)
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
 
-    def visitLshiftexp(self, ctx: ExpParser.LshiftexpContext):
+    def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
         self.xml_output += "  Lshift "
         ctx.Identifier().accpet(self)
 
-    def visitRshiftexp(self, ctx: ExpParser.RshiftexpContext):
+    def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
         self.xml_output += "  Rshift "
         ctx.Identifier().accpet(self)
 
-    def visitRevexp(self, ctx: ExpParser.RevexpContext):
+    def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
         self.xml_output += "  Rev "
         ctx.Identifier().accpet(self)
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQftexp(self, ctx: ExpParser.QftexpContext):
+    def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
         self.xml_output += "  QFT ("
         ctx.Identifier().accpet(self)
         self.xml_output += ", "
         ctx.vexp().accept(self)
         self.xml_output += ")"
 
-    def visitRqftexp(self, ctx: ExpParser.RqftexpContext):
+    def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
         self.xml_output += "  RQFT "
         ctx.Identifier().accpet(self)
 

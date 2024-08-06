@@ -14,153 +14,162 @@ from quantumCode.AST_Scripts.XMLProgrammer import *
 class ProgramTransformer(XMLExpVisitor):
 
     def visitRoot(self, ctx: XMLExpParser.RootContext):
-        program = ctx.program().accept(self)
+        program = self.visitProgram(ctx.program())
         return QXRoot(program)
 
     def visitProgram(self, ctx: XMLExpParser.ProgramContext):
         i = 0
         tmp = []
         while ctx.exp(i) is not None:
-            tmp = tmp.append(ctx.exp(i).accept(self))
+            v = self.visitExp(ctx.exp(i))
+            tmp.append(v)
             i += 1
         return QXProgram(tmp)
 
     def visitNextexp(self, ctx: XMLExpParser.NextexpContext):
-        return QXNext(ctx.program().accept(self))
+        v = self.visitProgram(ctx.program())
+        return QXNext(v)
 
     def visitExp(self, ctx: XMLExpParser.ExpContext):
         if ctx.letexp() is not None:
-            return ctx.letexp().accept(self)
+            return self.visitLetexp(ctx.letexp())
         elif ctx.appexp() is not None:
-            return ctx.appexp().accept(self)
+            return self.visitAppexp(ctx.appexp())
         elif ctx.ifexp() is not None:
-            return ctx.ifexp().accept(self)
+            return self.visitIfexp(ctx.ifexp())
         elif ctx.matchexp() is not None:
-            return ctx.matchexp().accept(self)
+            return self.visitMatchexp(ctx.matchexp())
         elif ctx.cuexp() is not None:
             return self.visitCUexp(ctx.cuexp())
         elif ctx.skipexp() is not None:
-            return ctx.skipexp().accept(self)
+            return self.visitSkipexp(ctx.skipexp())
         elif ctx.xexp() is not None:
-            return ctx.xexp().accept(self)
+            return self.visitXexp(ctx.xexp())
         elif ctx.srexp() is not None:
-            return ctx.srexp().accept(self)
+            return self.visitSrexp(ctx.srexp())
         elif ctx.qftexp() is not None:
-            return ctx.qftexp().accept(self)
+            return self.visitQftexp(ctx.qftexp())
         elif ctx.lshiftexp() is not None:
-            return ctx.lshiftexp().accept(self)
+            return self.visitLshiftexp(ctx.lshiftexp())
         elif ctx.rshiftexp() is not None:
-            return ctx.rshiftexp().accept(self)
+            return self.visitRshiftexp(ctx.rshiftexp())
         elif ctx.revexp() is not None:
-            return ctx.revexp().accept(self)
+            return self.visitRevexp(ctx.revexp())
         elif ctx.rqftexp() is not None:
-            return ctx.rqftexp().accept(self)
+            return self.visitRqftexp(ctx.rqftexp())
         elif ctx.blockexp() is not None:
-            return ctx.blockexp().accept(self)
+            return self.visitBlockexp(ctx.blockexp())
 
     def get_type_env(self):
         return self.type_environment
 
     def visitElement(self, ctx: XMLExpParser.ElementContext):
         if ctx.numexp() is not None:
-            return QXNum(ctx.numexp().accept(self))
+            v = self.visitNumexp(ctx.numexp())
+            return QXNum(v)
         else:
-            return QXIDExp(ctx.Identifier().accept(self), None)
+            return QXIDExp(ctx.Identifier(), None)
 
     def visitAtype(self, ctx: XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:
             return Nat()
         elif ctx.Qt() is not None:
-            return Qty(ctx.element(0).accept(self))
+            v = self.visitElement(ctx.element(0))
+            return Qty(v)
         elif ctx.Nor() is not None:
-            return Qty(ctx.element(0).accept(self), "Nor")
+            v = self.visitElement(ctx.element(0))
+            return Qty(v, "Nor")
         elif ctx.Phi() is not None:
-            return Qty(ctx.element(0).accept(self), "Phi", ctx.element(1).accept(self))
+            v = self.visitElement(ctx.element(0))
+            v1 = v = self.visitElement(ctx.element(1))
+            return Qty(v, "Phi", v1)
         return Nat()
 
     def visitLetexp(self, ctx: XMLExpParser.LetexpContext):
         i = 0
-        f = ctx.Identifier().accept(self)
+        f = ctx.Identifier()
         tml = []
         while ctx.idexp(i) is not None:
-            x = ctx.idexp(i).accept(self)
+            x = self.visitIdexp(ctx.idexp(i))
             tml.append(x)
-        fv = ctx.program().accept(self)
+        fv = self.visitProgram(ctx.program())
         return QXLet(f, tml, fv)
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
-        f = ctx.vexp().accept(self)
-        left = ctx.nextexp(0).accept(self)
-        right = ctx.nextexp(1).accept(self)
+        f = self.visitVexp(ctx.vexp())
+        left = self.visitNextexp(ctx.nextexp(0))
+        right = self.visitNextexp(ctx.nextexp(1))
         return QXIf(f,left,right)
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
-        vx = ctx.Identifier().accept(self)
+        vx = ctx.Identifier()
         i = 0
         tmp = []
         while ctx.vexp(i) is not None:
-            tmp.append(ctx.vexp(i).accep(self))
+            v = self.visitVexp(ctx.vexp(i))
+            tmp.append(v)
+            i = i + 1
         return QXApp(vx,tmp)
 
     def visitMatchexp(self, ctx: XMLExpParser.MatchexpContext):
-        x = ctx.Identifier().accept(self)
-        left = ctx.exppair(0).accept(self)
-        right = ctx.exppair(1).accept(self)
+        x = ctx.Identifier()
+        left = self.visitExppair(ctx.exppair(0))
+        right = self.visitExppair(ctx.exppair(1))
         return QXMatch(x,left, right)
 
     def visitExppair(self, ctx:XMLExpParser.ExppairContext):
-        elem = ctx.element().accept(self)
-        prog = ctx.program().accept(self)
+        elem = self.visitElement(ctx.element())
+        prog = self.visitProgram(ctx.program())
         return QXPair(elem, prog)
 
     # should do nothing
     def visitSkipexp(self, ctx: XMLExpParser.SkipexpContext):
-        x = ctx.Identifier().accept(self)
-        v = ctx.vexp().accept(self)
+        x = ctx.Identifier()
+        v = self.visitVexp(ctx.vexp())
         return QXSKIP(x, v)
 
     # X posi, changed the following for an example
     def visitXexp(self, ctx: XMLExpParser.XexpContext):
-        x = ctx.Identifier().accept(self)
-        v = ctx.vexp().accept(self)
+        x = ctx.Identifier()
+        v = self.visitVexp(ctx.vexp())
         return QXX(x, v)
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
     def visitCUexp(self, ctx: XMLExpParser.CuexpContext):
-        x = ctx.Identifier().accept(self)
-        v = ctx.vexp().accept(self)
-        p = ctx.program().accept(self)
+        x = ctx.Identifier()
+        v = self.visitVexp(ctx.vexp())
+        p = self.visitProgram(ctx.program())
         return QXCU(x, v, p)
 
     # SR n x, now variables are all string, are this OK?
     def visitSrexp(self, ctx: XMLExpParser.SrexpContext):
-        x = ctx.Identifier().accept(self)
-        v = ctx.vexp().accept(self)
+        x = ctx.Identifier()
+        v = self.visitVexp(ctx.vexp())
         return QXSR(x, v)
 
     def visitLshiftexp(self, ctx: XMLExpParser.LshiftexpContext):
-        x = ctx.Identifier().accept(self)
+        x = ctx.Identifier()
         return QXLshift(x)
 
     def visitRshiftexp(self, ctx: XMLExpParser.RshiftexpContext):
-        x = ctx.Identifier().accept(self)
+        x = ctx.Identifier()
         return QXRshift(x)
 
     def visitRevexp(self, ctx: XMLExpParser.RevexpContext):
-        x = ctx.Identifier().accept(self)
+        x = ctx.Identifier()
         return QXRev(x)
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
     def visitQftexp(self, ctx: XMLExpParser.QftexpContext):
-        x = ctx.Identifier().accept(self)
-        v = ctx.vexp().accept(self)
+        x = ctx.Identifier()
+        v = self.visitVexp(ctx.vexp())
         return QXQFT(x,v)
 
 
     def visitRqftexp(self, ctx: XMLExpParser.RqftexpContext):
-        x = ctx.Identifier().accept(self)
+        x = ctx.Identifier()
         return QXRQFT(x)
 
     def visit(self, ctx: ParserRuleContext):
@@ -170,39 +179,45 @@ class ProgramTransformer(XMLExpVisitor):
             return self.visitTerminal(ctx)
 
     def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
-        x = ctx.Identifier().accept(self)
-        t = ctx.atype().accept(self)
-        return QXIdExp(x, t)
+        x = ctx.Identifier()
+        t = self.visitAtype(ctx.atype())
+        return QXIDExp(x, t)
 
     # Visit a parse tree produced by XMLExpParser#vexp.
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
         if ctx.idexp() is not None:
-            return ctx.idexp().accept(self)
+            return self.visitIdexp(ctx.idexp())
         if ctx.NUM() is not None:
-            v = ctx.numexp().accept(self)
+            v = self.visitNumexp(ctx.numexp())
             return QXNum(v)
         else:
-            return QXBin(str(ctx.OP()), ctx.vexp(0).accept(self), ctx.vexp(1).accept(self))
+            v1 = self.visitVexp(ctx.vexp(0))
+            v2 = self.visitVexp(ctx.vexp(1))
+            return QXBin(str(ctx.OP()), v1, v2)
     # the only thing that matters will be 48 and 47
 
     def visitAtype(self, ctx:XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:
             return Nat()
         if ctx.Qt() is not None:
-            v = ctx.element(0).accept(self)
+            v = self.visitElement(ctx.element(0))
             return Qty(v)
         if ctx.Nor() is not None:
-            v = ctx.element(0).accept(self)
+            v = self.visitElement(ctx.element(0))
             return Qty(v, "Nor")
         if ctx.Nor() is not None:
-            v = ctx.element(0).accept(self)
-            v1 = ctx.element(1).accept(self)
+            v = self.visitElement(ctx.element(0))
+            v1 = self.visitElement(ctx.element(1))
             return Qty(v, "Phi", v1)
 
-    def visitTerminal(self, node):
+    def visitNumexp(self, ctx:XMLExpParser.NumexpContext):
+        return int(ctx.getText())
+
+    #def visitTerminal(self, node):
         # print("terminal")
-        if node.getSymbol().type == XMLExpParser.Identifier:
-            return node.getText()
-        if node.getSymbol().type == XMLExpParser.Number:
-            return int(node.getText())
-        return "None"
+    #    if node.getSymbol().type == XMLExpParser.Identifier:
+    #        return node.getText()
+    #    if node.getSymbol().type == XMLExpParser.Number:
+    #        return int(node.getText())
+    #    print("here1")
+    #    return None

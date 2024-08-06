@@ -1,6 +1,6 @@
 from quantumCode.AST_Scripts import XMLProgrammer
 
-from Source.quantumCode.AST_Scripts.AbstractProgramVisitor import AbstractProgramVisitor
+from quantumCode.AST_Scripts.AbstractProgramVisitor import AbstractProgramVisitor
 
 
 class ProgramVisitor(AbstractProgramVisitor):

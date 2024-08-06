@@ -1,6 +1,6 @@
 from types import NoneType
 
-from Source.quantumCode.AST_Scripts import AbstractProgramVisitor
+from quantumCode.AST_Scripts import AbstractProgramVisitor
 
 
 class QXTop:

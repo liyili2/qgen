@@ -10,7 +10,7 @@ from quantumCode.AST_Scripts.XMLExpParser import *
 from quantumCode.AST_Scripts.XMLExpVisitor import *
 from quantumCode.AST_Scripts.ProgramVisitor import ProgramVisitor
 
-from Source.quantumCode.AST_Scripts import XMLProgrammer
+from quantumCode.AST_Scripts import XMLProgrammer
 
 
 class TypeSearch(ProgramVisitor):
