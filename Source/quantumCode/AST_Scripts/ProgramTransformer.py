@@ -180,8 +180,11 @@ class ProgramTransformer(XMLExpVisitor):
 
     def visitIdexp(self, ctx: XMLExpParser.IdexpContext):
         x = ctx.Identifier()
-        t = self.visitAtype(ctx.atype())
-        return QXIDExp(x, t)
+        if ctx.atype() is not None:
+            t = self.visitAtype(ctx.atype())
+            return QXIDExp(x, t)
+        else:
+            return QXIDExp(x, None)
 
     # Visit a parse tree produced by XMLExpParser#vexp.
     def visitVexp(self, ctx: XMLExpParser.VexpContext):
@@ -191,10 +194,25 @@ class ProgramTransformer(XMLExpVisitor):
             v = self.visitNumexp(ctx.numexp())
             return QXNum(v)
         else:
+            op = self.visitOp(ctx.op())
             v1 = self.visitVexp(ctx.vexp(0))
             v2 = self.visitVexp(ctx.vexp(1))
-            return QXBin(str(ctx.OP()), v1, v2)
+            return QXBin(op, v1, v2)
     # the only thing that matters will be 48 and 47
+
+    def visitOp(self, ctx:XMLExpParser.OpContext):
+        if ctx.Plus() is not None:
+            return "Plus"
+        elif ctx.Minus() is not None:
+            return "Minus"
+        elif ctx.Times() is not None:
+            return "Times"
+        elif ctx.Div() is not None:
+            return "Div"
+        elif ctx.Exp() is not None:
+            return "Exp"
+        elif ctx.GNum() is not None:
+            return "GNum"
 
     def visitAtype(self, ctx:XMLExpParser.AtypeContext):
         if ctx.Nat() is not None:

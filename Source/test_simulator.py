@@ -52,7 +52,7 @@ class Test_Simulator(object):
     #the quantum component satisfies with the output
     def test_init(self):
         # //We first turn x array to QFT type, and we apply SR gate to rotate the phase of x for 2 pi i * (1/2^10). It will make sense if 10 < rmax, RQFT is the inverse of QFT.
-        str = "<pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> <app id = 'f' > <vexp op = 'id' type = 'Nat' > na </vexp> <vexp op = 'id' type = 'Nat' > size </vexp> <vexp op = 'id' type = 'Nat' > m </vexp> <vexp op = 'id' type = 'Phi(size, size)' > x </vexp> </app> <pexp gate = 'RQFT' id = 'x' > </pexp> </root>"
+        str = "<pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> <app id = 'f' > <vexp op = 'id' type = 'Nat' > na </vexp> <vexp op = 'id' type = 'Nat' > size </vexp> <vexp op = '-' > <vexp op = 'id' > size </vexp> <vexp op = 'id' > m </vexp> </vexp> <vexp op = 'id' type = 'Phi(size, size)' > x </vexp> </app> <pexp gate = 'RQFT' id = 'x' > </pexp> </root>"
         i_stream = InputStream(str)
         print("abc")
         lexer = XMLExpLexer(i_stream)
@@ -87,7 +87,7 @@ def test_trivial():
     Test_Simulator()
     assert True
 
-str = "<root> <pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> <app id = 'f' > <vexp op = 'id' type = 'Nat' > na </vexp> <vexp op = 'id' type = 'Nat' > size </vexp> <vexp op = 'id' type = 'Nat' > m </vexp> <vexp op = 'id' type = 'Phi(size, size)' > x </vexp> </app> <pexp gate = 'RQFT' id = 'x' > </pexp> </root>"
+str = "<root> <pexp gate = 'QFT' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> <app id = 'f' > <vexp op = '-' > <vexp op = 'id' > size </vexp> <vexp op = 'id' > m </vexp> </vexp> <vexp op = 'id' type = 'Nat' > size </vexp> <vexp op = 'id' type = 'Nat' > m </vexp> <vexp op = 'id' type = 'Phi(size, size)' > x </vexp> </app> <pexp gate = 'RQFT' id = 'x' > </pexp> </root>"
 i_stream = InputStream(str)
 lexer = XMLExpLexer(i_stream)
 t_stream = CommonTokenStream(lexer)

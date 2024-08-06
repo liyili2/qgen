@@ -1,6 +1,7 @@
 #from collections import ChainMap
 from types import NoneType
 from quantumCode.AST_Scripts.XMLProgrammer import *
+from quantumCode.AST_Scripts.ProgramVisitor import *
 
 class XMLPrinter(ProgramVisitor):
 
@@ -136,7 +137,6 @@ class XMLPrinter(ProgramVisitor):
         self.xml_output += "nat"
 
     def visitBin(self, ctx: XMLProgrammer.QXBin):
-        if ctx.op() == "Plus":
         self.left().accept(self)
         if ctx.op() == "Plus":
             self.xml_output += " + "
