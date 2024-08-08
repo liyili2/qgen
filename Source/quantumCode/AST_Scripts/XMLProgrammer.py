@@ -64,13 +64,16 @@ class QXElem(QXTop):
 class QXIDExp(QXElem, QXVexp):
     def __init__(self, id: str, type: QXType = None):
         self.id = id
-        self.type = type
+        self._type = type
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitIDExp(self)
 
     def ID(self):
         return self.id if self.id is str else self.id.getText()
+
+    def type(self):
+        return self._type
 
 
 
@@ -153,18 +156,18 @@ class QXIf(QXExp):
         return self.right
 
 class QXPair(QXTop):
-    def __init__(self, v: QXElem, p: QXProgram):
-        self.v = v
-        self.prog = p
+    def __init__(self, elem: QXElem, p: QXProgram):
+        self._elem = elem
+        self.program = p
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitPair(self)
 
     def elem(self):
-        return self.v
+        return self._elem
 
     def program(self):
-        return self.prog
+        return self.program
 
 class QXMatch(QXExp):
     def __init__(self, id: str, zero: QXPair, multi: QXPair):
@@ -294,6 +297,8 @@ class Qty(QXType):
         visitor.visitQty(self)
 
 class Nat(QXType):
+
+    type = "Nat"
 
     def type(self):
         return "Nat"

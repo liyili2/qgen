@@ -36,7 +36,7 @@ class BlockContain(ProgramVisitor):
         return ctx.program().accept(self)
 
     def visitMatch(self, ctx:XMLProgrammer.QXMatch):
-        return ctx.zero.program().accept(self) and ctx.multi.program().accept(self)
+        return ctx.zero.program.accept(self) and ctx.multi.program.accept(self)
 
     def visitIf(self, ctx:XMLProgrammer.QXIf):
         return ctx.left.accept(self) and ctx.right.accept(self)

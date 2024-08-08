@@ -39,7 +39,7 @@ class XMLPrinter(ProgramVisitor):
     def visitPair(self, ctx: XMLProgrammer.QXPair):
         ctx.elem().accept(self)
         self.xml_output += " => "
-        ctx.program().accept(self)
+        ctx.program.accept(self)
 
     def visitApp(self, ctx: XMLProgrammer.QXApp):
         self.xml_output += " " + ctx.ID()

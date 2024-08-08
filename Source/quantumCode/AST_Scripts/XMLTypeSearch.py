@@ -11,6 +11,7 @@ from quantumCode.AST_Scripts.XMLExpVisitor import *
 from quantumCode.AST_Scripts.ProgramVisitor import ProgramVisitor
 
 from quantumCode.AST_Scripts import XMLProgrammer
+from quantumCode.AST_Scripts.XMLProgrammer import Nat, Qty
 
 
 class TypeSearch(ProgramVisitor):
@@ -44,11 +45,11 @@ class TypeSearch(ProgramVisitor):
         #value = self.st.get(x)
         #print("value match", value)
         fenv = copy.deepcopy(self.type_environment)
-        ctx.zero().accept(self)
+        ctx.zero.accept(self)
         fenv1 = copy.deepcopy(self.type_environment)
-        va = ctx.multi().elem().ID()
+        va = ctx.multi.elem().ID()
         self.type_environment = fenv.update({va: Nat()})
-        ctx.multi().accept(self)
+        ctx.multi.accept(self)
         if self.type_environment is not None:
             return joinTypes(fenv1, self.type_environment)
 

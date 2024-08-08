@@ -41,7 +41,7 @@ class TypeDetector(ProgramVisitor):
 
     def visitIDExp(self, ctx:XMLProgrammer.QXIDExp):
         tv = ctx.ID()
-        return isinstance(self.type_environment.get(tv), Nat())
+        return self.type_environment.get(tv) == Nat
 
     def visitNum(self, ctx:XMLProgrammer.QXNum):
         return True

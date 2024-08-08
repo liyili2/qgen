@@ -102,7 +102,7 @@ class ProgramVisitor(AbstractProgramVisitor):
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):
         ctx.elem().accept(self)
-        ctx.program().accept(self)
+        ctx.program.accept(self)
 
     def visitBin(self, ctx: XMLProgrammer.QXBin):
         ctx.left().accept(self)

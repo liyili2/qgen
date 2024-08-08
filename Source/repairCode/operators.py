@@ -31,9 +31,9 @@ def pretty_print_element(element):
         return ""
     if isinstance(element, XMLExpParser.RootContext):
         pretty_string = Trees.toStringTree(element, None, XMLExpParser)
-    elif isinstance(element, QXRoot):
+    elif isinstance(element, QXTop):
         xml_printer = XMLPrinter()
-        xml_printer.visitProgram(element.program)
+        xml_printer.visit(element)
         pretty_string = xml_printer.xml_output
         return pretty_string
 
@@ -53,9 +53,9 @@ def parse_string_to_ast(xml_string):
     lexer = XMLExpLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
     parser = XMLExpParser(token_stream)
-    root = parser.root()
+    target_top_node = parser.root()
     transformer = ProgramTransformer()
-    new_tree = transformer.visitRoot(root)
+    new_tree = transformer.visitRoot(target_top_node)
     return new_tree
 
 
@@ -209,20 +209,22 @@ class QGateInsertion(StmtInsertion):
 
         initial_type_env = {'m': Nat, 'na': Nat, 'size': Nat,
                             'x': Qty(16), 'f': Fun("d", {}, {})}
+
         root = new_contents[op.target[0]].find('.')
+        converted_root = convert_xml_element_to_ast(root)
 
-
+        type_checker = TypeInfer(initial_type_env)
+        type_checker.visit(converted_root)
 
         block_el = ET.Element("block")
-
         self.insert_adjacent_to_target(parent, target, block_el)
 
-        root_xml_element: ET.Element = new_contents[op.target[0]]
+        root_xml_element: ET.Element = new_contents[op.target[0]].find('.')
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_xml_element)
-        print(pretty_print_element(root_ast_element))
+        print("root ast", pretty_print_element(root_ast_element))
 
         type_detector = TypeDetector(initial_type_env)
-        type_detector.visitRoot(root_ast_element)
+        type_detector.visit(root_ast_element)
         type_detector_env = type_detector.type_environment
         print("initial type:", initial_type_env)
         print("final type:", type_detector_env)
