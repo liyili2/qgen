@@ -158,7 +158,7 @@ class QXIf(QXExp):
 class QXPair(QXTop):
     def __init__(self, elem: QXElem, p: QXProgram):
         self._elem = elem
-        self.program = p
+        self._program = p
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitPair(self)
@@ -167,13 +167,13 @@ class QXPair(QXTop):
         return self._elem
 
     def program(self):
-        return self.program
+        return self._program
 
 class QXMatch(QXExp):
     def __init__(self, id: str, zero: QXPair, multi: QXPair):
         self.id = id
         self._zero = zero
-        self.multi = multi
+        self._multi = multi
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitMatch(self)
@@ -185,7 +185,7 @@ class QXMatch(QXExp):
         return self._zero
 
     def multi(self):
-        return self.multi
+        return self._multi
 
 
 
@@ -256,10 +256,10 @@ def joinTypes(a: dict, b: dict):
     return a
 
 
-def equalTypes(a: dict, b: dict):
+def equalTypes(a: dict, b: type):
     tmp = True
     for key in a.keys():
-        if a.get(key) != b.get(key):
+        if a.get(key) != b:
             tmp = False
     return tmp
 

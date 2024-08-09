@@ -53,7 +53,7 @@ class XMLExpPrinter(XMLExpVisitor):
         self.xml_output += "'>"
         i = 0
         ctx._zero().accept(self)
-        ctx.multi().accept(self)
+        ctx._multi().accept(self)
         #self.xml_output += "\n end \n"
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):

@@ -33,13 +33,13 @@ class XMLPrinter(ProgramVisitor):
         self.xml_output += "match "+ ctx.ID()
         self.xml_output += " with "
         ctx._zero.accept(self)
-        ctx.multi.accept(self)
+        ctx._multi.accept(self)
         self.xml_output += "\n end \n"
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):
         ctx.elem().accept(self)
         self.xml_output += " => "
-        ctx.program.accept(self)
+        ctx._program.accept(self)
 
     def visitApp(self, ctx: XMLProgrammer.QXApp):
         self.xml_output += " " + ctx.ID()
@@ -113,9 +113,9 @@ class XMLPrinter(ProgramVisitor):
 
     def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
         self.xml_output += ctx.ID()
-        if ctx.type is not None:
+        if ctx.type() is not None:
             self.xml_output += " : "
-            ctx.type.accept(self)
+            ctx.type().accept(self)
 
     def visitQTy(self, ctx: XMLProgrammer.Qty):
         if ctx.type() is None:

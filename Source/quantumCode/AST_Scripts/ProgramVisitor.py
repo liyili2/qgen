@@ -98,11 +98,11 @@ class ProgramVisitor(AbstractProgramVisitor):
 
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         ctx._zero().accept(self)
-        ctx.multi().accept(self)
+        ctx._multi().accept(self)
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):
         ctx.elem().accept(self)
-        ctx.program.accept(self)
+        ctx._program.accept(self)
 
     def visitBin(self, ctx: XMLProgrammer.QXBin):
         ctx.left().accept(self)

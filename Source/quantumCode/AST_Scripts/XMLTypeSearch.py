@@ -47,9 +47,9 @@ class TypeSearch(ProgramVisitor):
         fenv = copy.deepcopy(self.type_environment)
         ctx._zero.accept(self)
         fenv1 = copy.deepcopy(self.type_environment)
-        va = ctx.multi.elem().ID()
+        va = ctx._multi.elem().ID()
         self.type_environment = fenv.update({va: Nat()})
-        ctx.multi.accept(self)
+        ctx._multi.accept(self)
         if self.type_environment is not None:
             return joinTypes(fenv1, self.type_environment)
 

@@ -91,10 +91,10 @@ class TypeDetector(ProgramVisitor):
         bl = BlockContain()
         if bl.visitProgram(ctx._zero().program()):
             ctx._zero().program().accept(self)
-        elif bl.visitProgram(ctx.multi().program()):
-            va = ctx.multi().elem().ID()
+        elif bl.visitProgram(ctx._multi().program()):
+            va = ctx._multi().elem().ID()
             self.type_environment.update({va: Nat()})
-            ctx.multi().program().accept(self)
+            ctx._multi().program().accept(self)
             self.type_environment.pop(va)
 
     # should do nothing

@@ -202,10 +202,10 @@ class Simulator(ProgramVisitor):
         value = self.st.get(x)
         ctx._zero().program().accept(self)
         #print("value match", value)
-        va = ctx.multi().elem().ID()
+        va = ctx._multi().elem().ID()
         tmpv = self.st.get(va)
         self.st.update({va: int(value) - 1})
-        ctx.multi().program().accept(self)
+        ctx._multi().program().accept(self)
         self.st.update({va:tmpv})
 
 
