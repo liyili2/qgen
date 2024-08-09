@@ -11,7 +11,8 @@ from quantumCode.AST_Scripts.XMLExpVisitor import *
 from quantumCode.AST_Scripts.XMLTypeSearch import *
 from quantumCode.AST_Scripts.XMLProgrammer import *
 
-class TypeInfer(ProgramVisitor):
+
+class TypeChecker(ProgramVisitor):
 
     # x, y, z, env : ChainMap{ x: n, y : m, z : v} , n m v are nat numbers 100, 100, 100, eg {x : 128}
     # st state map, {x : v1, y : v2 , z : v3}, eg {x : v1}: v1,
@@ -21,6 +22,7 @@ class TypeInfer(ProgramVisitor):
     # Coq_nval(b,r) b == |0> | |1>, r == e^(2 pi i * 1 / n), r = 0 Coq_nval(b, 0)
     # x -> v1 ----> run simulator -----> v2 ---> calInt(v2,128) == (x + 2^10) % 2^128
     def __init__(self, type_environment: dict):
+
         self.type_environment = type_environment
 
     def visitProgram(self, ctx: XMLProgrammer.QXProgram):
@@ -32,7 +34,7 @@ class TypeInfer(ProgramVisitor):
         return tmp
 
     # Visit a parse tree produced by XMLExpParser#blockexp.
-    def visitBlock(self, ctx:XMLProgrammer.QXBlock):
+    def visitBlock(self, ctx: XMLProgrammer.QXBlock):
         return True
 
     def get_type_env(self):
@@ -44,7 +46,7 @@ class TypeInfer(ProgramVisitor):
     def visitNat(self, ctx: XMLProgrammer.Nat):
         return ctx
 
-    def visitLet(self, ctx:XMLProgrammer.QXLet):
+    def visitLet(self, ctx: XMLProgrammer.QXLet):
         i = 0
         f = ctx.ID()
         tml = []
@@ -73,7 +75,7 @@ class TypeInfer(ProgramVisitor):
         #print("f", ctx)
         #ctx.exp().accept(self)
 
-    def visitIf(self, ctx:XMLProgrammer.QXIf):
+    def visitIf(self, ctx: XMLProgrammer.QXIf):
         if ctx.vexp().accept(self):
             tmv = copy.deepcopy(self.type_environment)
             tmp1 = ctx.left().accept(self)
@@ -83,7 +85,7 @@ class TypeInfer(ProgramVisitor):
             return tmp1 and tmp2 and equalTypes(rmv, self.type_environment)
         return False
 
-    def visitApp(self, ctx:XMLProgrammer.QXApp):
+    def visitApp(self, ctx: XMLProgrammer.QXApp):
         vx = ctx.ID()
         qty = self.type_environment.get(vx)
         tml = qty.args()
@@ -102,9 +104,9 @@ class TypeInfer(ProgramVisitor):
                 tmp = tmp and ctx.vexp(i).accept(self)
         return tmp
 
-    def visitMatch(self, ctx:XMLProgrammer.QXMatch):
+    def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
-        fenv = copy.deepcopy(self.type_environment) 
+        fenv = copy.deepcopy(self.type_environment)
         va = ctx.zero().elem().ID()
         senv = copy.deepcopy(self.type_environment)
         senv.update({va: Nat()})
@@ -122,21 +124,21 @@ class TypeInfer(ProgramVisitor):
         self.type_environment = senv2.update({va: Nat()})
         ctx.multi().program().accept(self)
         senv3 = self.type_environment
-        return equalTypes(fenv4,senv3.pop(va))
+        return equalTypes(fenv4, senv3.pop(va))
 
     # should do nothing
-    def visitSKIP(self, ctx:XMLProgrammer.QXSKIP):
+    def visitSKIP(self, ctx: XMLProgrammer.QXSKIP):
         x = ctx.ID()
         ctx.vexp().accept(self)
         return isinstance(self.type_environment.get(x), Qty)
 
     # X posi, changed the following for an example
-    def visitX(self, ctx:XMLProgrammer.QXX):
+    def visitX(self, ctx: XMLProgrammer.QXX):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
             else:
                 return self.type_environment.get(x).type() == "Nor"
@@ -146,12 +148,12 @@ class TypeInfer(ProgramVisitor):
 
     # we will first get the position in st and check if the state is 0 or 1,
     # then decide if we go to recucively call ctx.exp
-    def visitCU(self, ctx:XMLProgrammer.QXCU):
+    def visitCU(self, ctx: XMLProgrammer.QXCU):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 ctx.program().accept(self)
                 return True
             else:
@@ -160,42 +162,42 @@ class TypeInfer(ProgramVisitor):
         return False
 
     # SR n x, now variables are all string, are this OK?
-    def visitSR(self, ctx:XMLProgrammer.QXSR):
+    def visitSR(self, ctx: XMLProgrammer.QXSR):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Phi")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Phi")})
                 return True
             else:
                 return self.type_environment.get(x).type() == "Phi"
         return False
 
-    def visitLshift(self, ctx:XMLProgrammer.QXLshift):
+    def visitLshift(self, ctx: XMLProgrammer.QXLshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
             else:
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRshift(self, ctx:XMLProgrammer.QXRshift):
+    def visitRshift(self, ctx: XMLProgrammer.QXRshift):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
             else:
                 return self.type_environment.get(x).type() == "Nor"
         return False
 
-    def visitRev(self, ctx:XMLProgrammer.QXRev):
+    def visitRev(self, ctx: XMLProgrammer.QXRev):
         x = ctx.ID()
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
             else:
                 return self.type_environment.get(x).type() == "Nor"
@@ -203,42 +205,41 @@ class TypeInfer(ProgramVisitor):
 
     # actually, we need to change the QFT function
     # the following QFT is only for full QFT, we did not have the case for AQFT
-    def visitQFT(self, ctx:XMLProgrammer.QXQFT):
+    def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Phi")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Phi")})
                 return True
             elif self.type_environment.get(x).type() == "Nor":
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Phi")})
                 return True
         return False
 
-
-    def visitRQFT(self, ctx:XMLProgrammer.QXRQFT):
+    def visitRQFT(self, ctx: XMLProgrammer.QXRQFT):
         x = ctx.ID()
         ctx.vexp().accept(self)
         if isinstance(self.type_environment.get(x), Qty):
             if self.type_environment.get(x).type() is None:
-                self.type_environment.update({x:Qty(self.type_environment.get(x).get_num(),"Nor")})
+                self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
             elif self.type_environment.get(x).type() == "Phi":
                 self.type_environment.update({x: Qty(self.type_environment.get(x).get_num(), "Nor")})
                 return True
         return False
 
-    def visitIDExp(self, ctx:XMLProgrammer.QXIDExp):
+    def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
         return isinstance(self.type_environment.get(ctx.ID()), Nat)
 
     # Visit a parse tree produced by XMLExpParser#vexp.
-    def visitBin(self, ctx:XMLProgrammer.QXBin):
+    def visitBin(self, ctx: XMLProgrammer.QXBin):
         return ctx.left().accept(self) and ctx.left().accept(self)
+
     # the only thing that matters will be 48 and 47
 
-    def visitNum(self, ctx:XMLProgrammer.QXNum):
+    def visitNum(self, ctx: XMLProgrammer.QXNum):
         return True
-
 
     def visitTerminal(self, node):
         # print("terminal")
