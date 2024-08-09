@@ -50,6 +50,7 @@ class TypeChecker(ProgramVisitor):
         i = 0
         f = ctx.ID()
         tml = []
+        tmv = copy.deepcopy(self.type_environment)
         while ctx.idexp(i) is not None:
             x = ctx.idexp(i).ID()
             tml.append(x)
@@ -59,17 +60,16 @@ class TypeChecker(ProgramVisitor):
                 v = Nat()
             self.type_environment.update({x: v})
             i += 1
-
-        tmv = copy.deepcopy(self.type_environment)
-        tx = TypeSearch(self.type_environment)
-        tx.visitProgram(ctx.program())
-        self.type_environment = copy.deepcopy(tx.type_environment)
+        #tmv = copy.deepcopy(self.type_environment)
+        tfv = copy.deepcopy(self.type_environment)
+        #tx = TypeSearch(self.type_environment)
+        #tx.visitProgram(ctx.program())
+        #self.type_environment = copy.deepcopy(tx.type_environment)
         fv = ctx.program().accept(self)
-        tmv.update({f: Fun(tml, tx.type_environment, self.type_environment)})
-
-        for j in range(len(tml)):
-            tmv.pop(tml[j])
-            j += 1
+        tmv.update({f: Fun(tml, tfv, self.type_environment)})
+        #for j in range(len(tml)):
+        #    tmv.pop(tml[j])
+        #    j += 1
         self.type_environment = tmv
         return fv
         #print("f", ctx)
@@ -110,21 +110,21 @@ class TypeChecker(ProgramVisitor):
         va = ctx.zero().elem().ID()
         senv = copy.deepcopy(self.type_environment)
         senv.update({va: Nat()})
-        s1 = TypeSearch(fenv)
-        s1.visitProgram(ctx.zero().program())
-        s2 = TypeSearch(senv)
-        s2.visitProgram(ctx.multi().program())
-        fenv1 = s1.type_environment
-        senv1 = s2.type_environment.pop(va)
-        senv2 = joinTypes(fenv1, senv1)
-        fenv3 = copy.deepcopy(senv2)
-        self.type_environment = fenv3
+        #s1 = TypeSearch(fenv)
+        #s1.visitProgram(ctx.zero().program())
+        #s2 = TypeSearch(senv)
+        #s2.visitProgram(ctx.multi().program())
+        #fenv1 = s1.type_environment
+        #senv1 = s2.type_environment.pop(va)
+        #senv2 = joinTypes(fenv1, senv1)
+        #fenv3 = copy.deepcopy(senv2)
+        self.type_environment = fenv
         ctx.zero().program().accept(self)
-        fenv4 = self.type_environment
-        self.type_environment = senv2.update({va: Nat()})
+        fenv1 = self.type_environment
+        self.type_environment = senv
         ctx.multi().program().accept(self)
-        senv3 = self.type_environment
-        return equalTypes(fenv4, senv3.pop(va))
+        senv1 = self.type_environment
+        return equalTypes(fenv1, senv1.pop(va))
 
     # should do nothing
     def visitSKIP(self, ctx: XMLProgrammer.QXSKIP):
