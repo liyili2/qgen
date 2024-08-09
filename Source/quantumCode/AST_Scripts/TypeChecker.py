@@ -241,10 +241,3 @@ class TypeChecker(ProgramVisitor):
     def visitNum(self, ctx: XMLProgrammer.QXNum):
         return True
 
-    def visitTerminal(self, node):
-        # print("terminal")
-        if node.getSymbol().type == XMLExpParser.Identifier:
-            return node.getText()
-        if node.getSymbol().type == XMLExpParser.Number:
-            return int(node.getText())
-        return "None"
