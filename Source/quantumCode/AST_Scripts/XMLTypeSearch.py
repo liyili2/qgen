@@ -45,7 +45,7 @@ class TypeSearch(ProgramVisitor):
         #value = self.st.get(x)
         #print("value match", value)
         fenv = copy.deepcopy(self.type_environment)
-        ctx.zero.accept(self)
+        ctx._zero.accept(self)
         fenv1 = copy.deepcopy(self.type_environment)
         va = ctx.multi.elem().ID()
         self.type_environment = fenv.update({va: Nat()})

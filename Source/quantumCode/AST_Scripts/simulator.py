@@ -200,7 +200,7 @@ class Simulator(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         value = self.st.get(x)
-        ctx.zero().program().accept(self)
+        ctx._zero().program().accept(self)
         #print("value match", value)
         va = ctx.multi().elem().ID()
         tmpv = self.st.get(va)

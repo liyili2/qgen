@@ -89,8 +89,8 @@ class TypeDetector(ProgramVisitor):
 
     def visitMatch(self, ctx:XMLProgrammer.QXMatch):
         bl = BlockContain()
-        if bl.visitProgram(ctx.zero().program()):
-            ctx.zero().program().accept(self)
+        if bl.visitProgram(ctx._zero().program()):
+            ctx._zero().program().accept(self)
         elif bl.visitProgram(ctx.multi().program()):
             va = ctx.multi().elem().ID()
             self.type_environment.update({va: Nat()})

@@ -97,7 +97,7 @@ class ProgramVisitor(AbstractProgramVisitor):
         ctx.right().accept(self)
 
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
-        ctx.zero().accept(self)
+        ctx._zero().accept(self)
         ctx.multi().accept(self)
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):

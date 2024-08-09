@@ -9,7 +9,7 @@ from lxml import etree
 import copy
 
 from antlr4 import InputStream, CommonTokenStream
-from quantumCode.AST_Scripts.TypeChecker import TypeInfer
+from quantumCode.AST_Scripts.TypeChecker import TypeChecker
 from repairCode.configs.type_env import type_envs
 from pyggi.tree.xml_engine import XmlEngine
 from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
@@ -213,7 +213,7 @@ class QGateInsertion(StmtInsertion):
         root = new_contents[op.target[0]].find('.')
         converted_root = convert_xml_element_to_ast(root)
 
-        type_checker = TypeInfer(initial_type_env)
+        type_checker = TypeChecker(initial_type_env)
         type_checker.visit(converted_root)
 
         block_el = ET.Element("block")

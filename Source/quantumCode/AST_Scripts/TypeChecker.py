@@ -119,7 +119,7 @@ class TypeChecker(ProgramVisitor):
         #senv2 = joinTypes(fenv1, senv1)
         #fenv3 = copy.deepcopy(senv2)
         self.type_environment = fenv
-        ctx.zero().program().accept(self)
+        ctx._zero().program().accept(self)
         fenv1 = self.type_environment
         self.type_environment = senv
         ctx.multi().program().accept(self)

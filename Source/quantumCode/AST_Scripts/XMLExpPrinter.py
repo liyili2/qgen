@@ -52,7 +52,7 @@ class XMLExpPrinter(XMLExpVisitor):
         self.xml_output += ctx.ID()
         self.xml_output += "'>"
         i = 0
-        ctx.zero().accept(self)
+        ctx._zero().accept(self)
         ctx.multi().accept(self)
         #self.xml_output += "\n end \n"
 

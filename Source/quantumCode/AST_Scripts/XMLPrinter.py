@@ -32,7 +32,7 @@ class XMLPrinter(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         self.xml_output += "match "+ ctx.ID()
         self.xml_output += " with "
-        ctx.zero.accept(self)
+        ctx._zero.accept(self)
         ctx.multi.accept(self)
         self.xml_output += "\n end \n"
 

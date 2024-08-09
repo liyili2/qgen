@@ -172,7 +172,7 @@ class QXPair(QXTop):
 class QXMatch(QXExp):
     def __init__(self, id: str, zero: QXPair, multi: QXPair):
         self.id = id
-        self.zero = zero
+        self._zero = zero
         self.multi = multi
 
     def accept(self, visitor : AbstractProgramVisitor):
@@ -182,7 +182,7 @@ class QXMatch(QXExp):
         return self.id if isinstance(self.id, str) else self.id.getText()
 
     def zero(self):
-        return self.zero
+        return self._zero
 
     def multi(self):
         return self.multi
