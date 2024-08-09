@@ -107,7 +107,7 @@ class TypeChecker(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         fenv = copy.deepcopy(self.type_environment)
-        va = ctx.zero().elem().ID()
+        va = ctx.multi().elem().ID()
         senv = copy.deepcopy(self.type_environment)
         senv.update({va: Nat()})
         #s1 = TypeSearch(fenv)
