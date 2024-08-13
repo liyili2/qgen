@@ -31,25 +31,25 @@ class QXType(QXTop):
 
 class QXRoot(QXTop):
     def __init__(self, program: QXProgram):
-        self.program = program
+        self._program = program
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRoot(self)
 
     def program(self):
-        return self.program
+        return self._program
 
 
 
 class QXNext(QXTop):
     def __init__(self, program: QXProgram):
-        self.program = program
+        self._program = program
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitNext(self)
 
     def program(self):
-        return self.program
+        return self._program
 
 class QXVexp(QXTop):
 
@@ -267,7 +267,7 @@ def equalTypes(a: dict, b: type):
 
 class Qty(QXType):
 
-    def __init__(self, qubit_array_size: QXElem, type: str = None, m=None):
+    def __init__(self, qubit_array_size: int, type: str = None, m=None):
         self.qubit_array_size = qubit_array_size
         self.type = type
         if m is None:

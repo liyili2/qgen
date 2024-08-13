@@ -200,12 +200,12 @@ class Simulator(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         value = self.st.get(x)
-        ctx._zero().program().accept(self)
+        ctx._zero()._program().accept(self)
         #print("value match", value)
         va = ctx._multi().elem().ID()
         tmpv = self.st.get(va)
         self.st.update({va: int(value) - 1})
-        ctx._multi().program().accept(self)
+        ctx._multi()._program().accept(self)
         self.st.update({va:tmpv})
 
 
@@ -232,7 +232,7 @@ class Simulator(ProgramVisitor):
             self.state.update({xv: re})
             #print("vara",xv,"vala",re)
 
-        ctxa.program().accept(self)
+        ctxa._program().accept(self)
         while len(tmpv) != 0:
             xv,re = tmpv.popitem()
             if re is not None:
@@ -283,7 +283,7 @@ class Simulator(ProgramVisitor):
         x = self.st.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         if x.getBits()[p]:
-            ctx.program().accept(self)
+            ctx._program().accept(self)
         else:
             return  # do nothing
 

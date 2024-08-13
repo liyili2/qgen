@@ -60,8 +60,6 @@ class ProgramTransformer(XMLExpVisitor):
         elif ctx.blockexp() is not None:
             return self.visitBlockexp(ctx.blockexp())
 
-    def get_type_env(self):
-        return self.type_environment
 
     def visitElement(self, ctx: XMLExpParser.ElementContext):
         if ctx.numexp() is not None:
@@ -178,52 +176,18 @@ class ProgramTransformer(XMLExpVisitor):
             return self.visitRoot(ctx)
         elif isinstance(ctx, XMLExpParser.ProgramContext):
             return self.visitProgram(ctx)
-        elif isinstance(ctx, XMLExpParser.NextexpContext):
-            return self.visitNextexp(ctx)
         elif isinstance(ctx, XMLExpParser.ExpContext):
             return self.visitExp(ctx)
-        elif isinstance(ctx, XMLExpParser.LetexpContext):
-            return self.visitLetexp(ctx)
-        elif isinstance(ctx, XMLExpParser.AppexpContext):
-            return self.visitAppexp(ctx)
-        elif isinstance(ctx, XMLExpParser.IfexpContext):
-            return self.visitIfexp(ctx)
-        elif isinstance(ctx, XMLExpParser.MatchexpContext):
-            return self.visitMatchexp(ctx)
         elif isinstance(ctx, XMLExpParser.ExppairContext):
             return self.visitExppair(ctx)
-        elif isinstance(ctx, XMLExpParser.SkipexpContext):
-            return self.visitSkipexp(ctx)
-        elif isinstance(ctx, XMLExpParser.XexpContext):
-            return self.visitXexp(ctx)
-        elif isinstance(ctx, XMLExpParser.CuexpContext):
-            return self.visitCUexp(ctx)
-        elif isinstance(ctx, XMLExpParser.SrexpContext):
-            return self.visitSrexp(ctx)
-        elif isinstance(ctx, XMLExpParser.LshiftexpContext):
-            return self.visitLshiftexp(ctx)
-        elif isinstance(ctx, XMLExpParser.RshiftexpContext):
-            return self.visitRshiftexp(ctx)
-        elif isinstance(ctx, XMLExpParser.RevexpContext):
-            return self.visitRevexp(ctx)
-        elif isinstance(ctx, XMLExpParser.QftexpContext):
-            return self.visitQftexp(ctx)
-        elif isinstance(ctx, XMLExpParser.RqftexpContext):
-            return self.visitRqftexp(ctx)
-        elif isinstance(ctx, XMLExpParser.BlockexpContext):
-            return self.visitBlockexp(ctx)
         elif isinstance(ctx, XMLExpParser.ElementContext):
             return self.visitElement(ctx)
-        elif isinstance(ctx, XMLExpParser.IdexpContext):
-            return self.visitIdexp(ctx)
         elif isinstance(ctx, XMLExpParser.AtypeContext):
             return self.visitAtype(ctx)
         elif isinstance(ctx, XMLExpParser.VexpContext):
             return self.visitVexp(ctx)
         elif isinstance(ctx, XMLExpParser.OpContext):
             return self.visitOp(ctx)
-        elif isinstance(ctx, XMLExpParser.NumexpContext):
-            return self.visitNumexp(ctx)
         else:
             return super().visit(ctx)
 
@@ -280,11 +244,5 @@ class ProgramTransformer(XMLExpVisitor):
     def visitNumexp(self, ctx:XMLExpParser.NumexpContext):
         return int(ctx.getText())
 
-    #def visitTerminal(self, node):
-        # print("terminal")
-    #    if node.getSymbol().type == XMLExpParser.Identifier:
-    #        return node.getText()
-    #    if node.getSymbol().type == XMLExpParser.Number:
-    #        return int(node.getText())
-    #    print("here1")
-    #    return None
+    def visitBlockexp(self, ctx:XMLExpParser.BlockexpContext):
+        return QXBlock()

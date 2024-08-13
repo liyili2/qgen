@@ -105,10 +105,10 @@ if __name__ == "__main__":
         raise Exception('Invalid Algorithm')
     # Run the algorithm
     algorithm.run()
-    solution = algorithm.get_result()
+    solution = algorithm.result()
     EditList = algorithm.solutions
     print("EditList\n" , EditList)
     print("======================RESULT======================")
-    print(solution)
-    print(solution.program)
+    print(type(solution))
+    print(solution._program)
     #program.remove_tmp_variant()
