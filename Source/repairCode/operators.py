@@ -1,70 +1,19 @@
 """
 Possible Edit Operators
 """
-import random
-from xml.dom import minidom
-
-from antlr4 import ParserRuleContext
-from lxml import etree
 import copy
-
-from antlr4 import InputStream, CommonTokenStream
-from quantumCode.AST_Scripts.TypeChecker import TypeChecker
-from quantumCode.AST_Scripts.XMLExpPrinter import XMLExpPrinter
-from pyggi.tree.xml_engine import XmlEngine
-from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
+import random
 import xml.etree.ElementTree as ET
-from antlr4.tree.Trees import Trees
 
-from quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
-from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from lxml import etree
 
-from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 from Source.quantumCode.AST_Scripts.TypeDetector import TypeDetector
-from Source.quantumCode.AST_Scripts.XMLProgrammer import *
-from quantumCode.AST_Scripts.XMLProgrammer import *
-from Source.quantumCode.AST_Scripts.XMLPrinter import XMLPrinter
-
-
-def pretty_print_element(element):
-    def print_xml_exp():
-        printer = XMLExpPrinter({})
-        printer.visitRoot(element)
-        return printer.xml_output
-
-    pretty_string = ""
-    if isinstance(element, XMLExpParser.RootContext):
-        pretty_string = Trees.toStringTree(element, None, XMLExpParser)
-    elif isinstance(element, QXTop):
-        pretty_string = print_xml_exp()
-    else:
-        raw_str = ET.tostring(element, 'utf-8')
-        parsed = minidom.parseString(raw_str)
-        pretty_string = parsed.toprettyxml(indent="  ")
-    return pretty_string
-
-
-def parse_string_to_ast(xml_string):
-    input_stream = InputStream(xml_string)
-    lexer = XMLExpLexer(input_stream)
-    token_stream = CommonTokenStream(lexer)
-    parser = XMLExpParser(token_stream)
-    target_top_node = parser.root()
-    transformer = ProgramTransformer()
-    new_tree = transformer.visit(target_top_node)
-    return new_tree
-
-
-def convert_xml_element_to_ast(element):
-    xml_string = ET.tostring(element, encoding='unicode')
-    xml_string = xml_string.replace('"', "'")
-    ast_root = parse_string_to_ast(xml_string)
-    return ast_root
-
-
-def delete_block(parent):
-    for child in parent.findall("block"):
-        parent.remove(child)
+from pyggi.tree import StmtReplacement, StmtInsertion, StmtDeletion
+from pyggi.tree.xml_engine import XmlEngine
+from quantumCode.AST_Scripts.TypeChecker import TypeChecker
+from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
+from repairCode.configs.type_env import type_envs
+from repairCode.utils.operator_utils import convert_xml_element_to_ast, pretty_print_element, delete_block
 
 
 class QGateReplacement(StmtReplacement):
@@ -157,17 +106,6 @@ class QGateInsertion(StmtInsertion):
         result = self.do_insert(self, program, self, new_contents, modification_points, engine)
         return result
 
-    def insert_adjacent_parser_rule_context(self, parent, target, ingredient):
-        children = parent.children
-        for i, child in enumerate(children):
-            if child == target:
-                tmp = copy.deepcopy(ingredient)
-                if self.direction == 'after':
-                    children.insert(i + 1, tmp)
-                else:
-                    children.insert(i, tmp)
-                return
-
     def insert_adjacent_element_tree_element(self, parent, target, ingredient):
         for i, child in enumerate(parent):
             if child == target:
@@ -188,11 +126,13 @@ class QGateInsertion(StmtInsertion):
             raise Exception("Unexpected type")
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
-        def check_type():
+        def check_type(init_type_env):
             root = new_contents[op.target[0]].find('.')
             converted_root = convert_xml_element_to_ast(root)
-            type_checker = TypeChecker(initial_type_env)
+            type_checker = TypeChecker(init_type_env)
             type_checker.visit(converted_root)
+            print(type_checker.type_environment)
+            return type_checker.type_environment
 
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
@@ -203,19 +143,17 @@ class QGateInsertion(StmtInsertion):
         if target is None or ingredient is None:
             return False
 
-        initial_type_env = {'m': Nat, 'na': Nat, 'size': Nat,
-                            'x': Qty(16), 'f': Fun("d", {}, {})}
-
-        check_type()
+        initial_type_env = type_envs[op.target[0]]
+        checked_type_env = check_type(initial_type_env)
         block_el = ET.Element("block")
         self.insert_adjacent_to_target(parent, target, block_el)
         root_element: ET.Element = new_contents[op.target[0]].find('.')
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_element)
 
-        type_detector = TypeDetector(initial_type_env)
+        type_detector = TypeDetector(checked_type_env)
         type_detector.visit(root_ast_element)
         type_detector_env = type_detector.type_environment
-        print("initial type:", initial_type_env)
+        print("initial type:", checked_type_env)
         print("final type:", type_detector_env)
         print(pretty_print_element(root_element))
         delete_block(parent)
