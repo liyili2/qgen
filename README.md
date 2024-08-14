@@ -4,7 +4,7 @@
 
 Dependencies :
 
-Before running qGen, ensure that the following dependencies are installed:
+Before running Qgen, ensure that the following dependencies are installed:
 
 Python: Make sure you have Python 3.10+ installed.
 
@@ -15,9 +15,13 @@ astor -0.8.1
 pytest
 lxml
 
-# Running qGen :
+# Running Qgen :
 
-python qgen.py [OPTIONS]
+python Qgen.py
+
+# Running Qgen with options :
+
+python Qgen.py [OPTIONS]
 
 Available options:
 
@@ -34,4 +38,4 @@ Available options:
 --targetfitness=0.01 (Target Fitness ,default :0)
 
 # Example command :
-python qgen.py --project_path=Benchmark/rz_adder --algorithm=ga --epoch=3 --iter=100 --pop=20 --mutation=0.2 --crossover=0.8 --sel=tournament --tags='["gate"]' --operators='["QGateInsertion"]' --targetfitness=0.01
+python Qgen.py --project_path=Benchmark/rz_adder --algorithm=ga --epoch=3 --iter=100 --pop=20 --mutation=0.2 --crossover=0.8 --sel=tournament --tags='["gate"]' --operators='["QGateInsertion"]' --targetfitness=0.01
