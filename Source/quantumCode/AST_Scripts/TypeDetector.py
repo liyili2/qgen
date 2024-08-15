@@ -60,12 +60,12 @@ class TypeDetector(ProgramVisitor):
         bl = BlockContain()
         if bl.visitProgram(ctx.program()):
             i = 0
-            f = ctx.ID()
-            tml = []
-            tmv = copy.deepcopy(self.type_environment)
+            #f = ctx.ID()
+            #tml = []
+            #tmv = copy.deepcopy(self.type_environment)
             while ctx.idexp(i) is not None:
                 x = ctx.idexp(i).ID()
-                tml.append(x)
+                #tml.append(x)
                 v = ctx.idexp(i).type().accept(self)
                 self.type_environment.update({x: v})
                 i += 1
