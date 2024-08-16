@@ -99,10 +99,10 @@ class QProgram(TreeProgram):
         assert target_file in self.target_files
 
         # Matches all occurences of ./let[1]/match[1]/pair[1-9](one or more occurence of app[1-9], if[1-9], or pexp[1-9]) then nothing after
-        # Example: Matches: ./let[1]/match[1]/pair[1]/pexp[1] and ./let[1]/match[1]/pair[2]/app[1]/vexp[1]
+        # Example--- Matches: ./let[1]/match[1]/pair[1]/pexp[1] and ./let[1]/match[1]/pair[2]/app[1]
         # Does not match: ./let[1]/match[1]/vexp[1] or ./let[1]/match[1]/pair[2]/app[1]/vexp[1]/let[1] 
         valid_path_regex = re.compile(r'\./let\[1\]/match\[1\]/pair\[\d+\](/(pexp|if|app)\[\d+\])+$')
-        valid_indices = [i for i,point in enumerate(self.modification_points[target_file]) if valid_path_regex.match(point)]
+        valid_indices = [i for i, point in enumerate(self.modification_points[target_file]) if valid_path_regex.match(point)]
         assert method in ['random','weighted']
 
         if method == 'random' or target_file not in self.modification_weights:

@@ -106,7 +106,7 @@ class QGateInsertion(StmtInsertion):
         result = self.do_insert(self, program, self, new_contents, modification_points, engine)
         return result
 
-    def insert_adjacent_element_tree_element(self, parent, target, ingredient):
+    def insert_adjacent_to_target(self, parent, target, ingredient):
         for i, child in enumerate(parent):
             if child == target:
                 tmp = copy.deepcopy(ingredient)
@@ -119,19 +119,12 @@ class QGateInsertion(StmtInsertion):
                 parent.insert(i, tmp)
                 break
 
-    def insert_adjacent_to_target(self, parent, target, ingredient):
-        if isinstance(parent, ET.Element):
-            self.insert_adjacent_element_tree_element(parent, target, ingredient)
-        else:
-            raise Exception("Unexpected type")
-
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
         def check_type(init_type_env):
             root = new_contents[op.target[0]].find('.')
             converted_root = convert_xml_element_to_ast(root)
             type_checker = TypeChecker(init_type_env)
             type_checker.visit(converted_root)
-            print(type_checker.type_environment)
             return type_checker.type_environment
 
         # get elements
@@ -149,13 +142,11 @@ class QGateInsertion(StmtInsertion):
         self.insert_adjacent_to_target(parent, target, block_el)
         root_element: ET.Element = new_contents[op.target[0]].find('.')
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_element)
-
+        print("env before", checked_type_env)
+        cop = checked_type_env.copy()
         type_detector = TypeDetector(checked_type_env)
         type_detector.visit(root_ast_element)
-        type_detector_env = type_detector.type_environment
-        print("initial type:", checked_type_env)
-        print("final type:", type_detector_env)
-        print(pretty_print_element(root_element))
+        print("env after", type_detector.type_environment)
         delete_block(parent)
         self.insert_adjacent_to_target(parent, target, ingredient)
 
@@ -175,7 +166,6 @@ class QGateInsertion(StmtInsertion):
                     else:
                         new_pos = '{}/{}[{}]'.format(h, t, p + 1)
                     modification_points[op.target[0]][i] = new_pos
-
         update_modification_points()
         return True
 

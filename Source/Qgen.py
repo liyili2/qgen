@@ -110,5 +110,5 @@ if __name__ == "__main__":
     print("EditList\n" , EditList)
     print("======================RESULT======================")
     print(type(solution))
-    print(solution._program)
+    print(solution.program)
     #program.remove_tmp_variant()
