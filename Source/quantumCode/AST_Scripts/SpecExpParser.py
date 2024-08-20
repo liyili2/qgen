@@ -69,7 +69,7 @@ class SpecExpParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     literalNames = [ "<INVALID>", "'('", "')'", "'->'", "'A'", "'.'", "'E'", 
-                     "':'", "','", "'nat'", "'Q'", "'Nor'", "'Phi'", "'not'", 
+                     "':'", "','", "'nat'", "'Q'", "'nor'", "'phi'", "'not'", 
                      "'&&'", "'||'", "'+'", "'-'", "'*'", "'/'", "'%'", 
                      "'<'", "'='", "'>'", "<INVALID>", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "'@'", "'...'" ]

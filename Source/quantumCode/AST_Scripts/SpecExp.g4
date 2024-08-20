@@ -36,9 +36,9 @@ Nat : 'nat';
 
 Qt : 'Q';
 
-Nor : 'Nor';
+Nor : 'nor';
 
-Phi : 'Phi';
+Phi : 'phi';
 
 Not : 'not';
 
