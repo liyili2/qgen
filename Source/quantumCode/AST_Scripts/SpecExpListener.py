@@ -17,12 +17,21 @@ class SpecExpListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SpecExpParser#aexp.
-    def enterAexp(self, ctx:SpecExpParser.AexpContext):
+    # Enter a parse tree produced by SpecExpParser#qexp.
+    def enterQexp(self, ctx:SpecExpParser.QexpContext):
         pass
 
-    # Exit a parse tree produced by SpecExpParser#aexp.
-    def exitAexp(self, ctx:SpecExpParser.AexpContext):
+    # Exit a parse tree produced by SpecExpParser#qexp.
+    def exitQexp(self, ctx:SpecExpParser.QexpContext):
+        pass
+
+
+    # Enter a parse tree produced by SpecExpParser#qexps.
+    def enterQexps(self, ctx:SpecExpParser.QexpsContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#qexps.
+    def exitQexps(self, ctx:SpecExpParser.QexpsContext):
         pass
 
 
@@ -32,6 +41,15 @@ class SpecExpListener(ParseTreeListener):
 
     # Exit a parse tree produced by SpecExpParser#vexp.
     def exitVexp(self, ctx:SpecExpParser.VexpContext):
+        pass
+
+
+    # Enter a parse tree produced by SpecExpParser#bexp.
+    def enterBexp(self, ctx:SpecExpParser.BexpContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#bexp.
+    def exitBexp(self, ctx:SpecExpParser.BexpContext):
         pass
 
 

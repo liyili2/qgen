@@ -14,13 +14,23 @@ class SpecExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecExpParser#aexp.
-    def visitAexp(self, ctx:SpecExpParser.AexpContext):
+    # Visit a parse tree produced by SpecExpParser#qexp.
+    def visitQexp(self, ctx:SpecExpParser.QexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecExpParser#qexps.
+    def visitQexps(self, ctx:SpecExpParser.QexpsContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SpecExpParser#vexp.
     def visitVexp(self, ctx:SpecExpParser.VexpContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecExpParser#bexp.
+    def visitBexp(self, ctx:SpecExpParser.BexpContext):
         return self.visitChildren(ctx)
 
 

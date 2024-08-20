@@ -1,13 +1,39 @@
 grammar SpecExp;
 
-program: aexp '->' aexp ;
+program: qexps '->' qexps
+      | 'A' '(' vexp ',' vexp ')' program
+      | 'E' Identifier '@' bexp '.' program ;
 
-aexp: '|' vexp '>' ('|' vexp '>')* ;
+qexp: Nor '(' vexp ',' vexp ')'  | Phi '(' vexp ',' vexp ')' ;
+
+qexps : qexp ( qexp )*;
         
-vexp: Identifier | numexp | vexp Plus vexp | vexp Minus vexp | vexp Mult  vexp | vexp Div vexp | vexp Mod vexp | vexp Less vexp | vexp Equal vexp | vexp Greater vexp;
+vexp: Identifier | numexp
+ | vexp Plus vexp
+ | vexp Minus vexp
+ | vexp Mult vexp
+ | vexp Div vexp
+ | vexp Mod vexp;
+
+bexp: vexp Equal vexp
+    | vexp Less vexp
+    | vexp Greater vexp
+    | Not bexp
+    | bexp And bexp
+    | bexp Or bexp;
                                             
 numexp: Number | '-' Number ;       
-  
+
+Nor : 'Nor';
+
+Phi : 'Phi';
+
+Not : 'not';
+
+And : '&&';
+
+Or : '||';
+
 Plus:  '+';
  
 Minus: '-' ;
