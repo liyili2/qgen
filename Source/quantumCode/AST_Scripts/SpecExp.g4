@@ -1,10 +1,18 @@
 grammar SpecExp;
 
-program: qexps '->' qexps
-      | 'A' '(' vexp ',' vexp ')' program
-      | 'E' Identifier '@' bexp '.' program ;
+program: arrow
+      | always
+      | exists ;
 
-qexp: Nor '(' vexp ',' vexp ')'  | Phi '(' vexp ',' vexp ')' ;
+atype: Nat | Qt '(' vexp ')' ;
+
+arrow: qexps '->' qexps;
+
+always: 'A' vexp '.' program;
+
+exists: 'E' Identifier ':' atype ('@' bexp)? '.' program;
+
+qexp: Nor '(' Identifier ',' vexp ',' vexp ')'  | Phi '(' Identifier ',' vexp ',' vexp ')' ;
 
 qexps : qexp ( qexp )*;
         
@@ -23,6 +31,10 @@ bexp: vexp Equal vexp
     | bexp Or bexp;
                                             
 numexp: Number | '-' Number ;       
+
+Nat : 'nat';
+
+Qt : 'Q';
 
 Nor : 'Nor';
 

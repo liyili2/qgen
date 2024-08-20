@@ -14,6 +14,26 @@ class SpecExpVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by SpecExpParser#atype.
+    def visitAtype(self, ctx:SpecExpParser.AtypeContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecExpParser#arrow.
+    def visitArrow(self, ctx:SpecExpParser.ArrowContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecExpParser#always.
+    def visitAlways(self, ctx:SpecExpParser.AlwaysContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecExpParser#exists.
+    def visitExists(self, ctx:SpecExpParser.ExistsContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by SpecExpParser#qexp.
     def visitQexp(self, ctx:SpecExpParser.QexpContext):
         return self.visitChildren(ctx)

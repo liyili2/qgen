@@ -17,6 +17,42 @@ class SpecExpListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SpecExpParser#atype.
+    def enterAtype(self, ctx:SpecExpParser.AtypeContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#atype.
+    def exitAtype(self, ctx:SpecExpParser.AtypeContext):
+        pass
+
+
+    # Enter a parse tree produced by SpecExpParser#arrow.
+    def enterArrow(self, ctx:SpecExpParser.ArrowContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#arrow.
+    def exitArrow(self, ctx:SpecExpParser.ArrowContext):
+        pass
+
+
+    # Enter a parse tree produced by SpecExpParser#always.
+    def enterAlways(self, ctx:SpecExpParser.AlwaysContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#always.
+    def exitAlways(self, ctx:SpecExpParser.AlwaysContext):
+        pass
+
+
+    # Enter a parse tree produced by SpecExpParser#exists.
+    def enterExists(self, ctx:SpecExpParser.ExistsContext):
+        pass
+
+    # Exit a parse tree produced by SpecExpParser#exists.
+    def exitExists(self, ctx:SpecExpParser.ExistsContext):
+        pass
+
+
     # Enter a parse tree produced by SpecExpParser#qexp.
     def enterQexp(self, ctx:SpecExpParser.QexpContext):
         pass
