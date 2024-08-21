@@ -74,7 +74,6 @@ def parser_generator():
     parser.add_argument('--operators',    type=str,   default='[]',         help='Operators (default: [])')
     parser.add_argument('--targetfitness', type=str,   default='0',         help='Target Fitness (default: 0)')
     return parser.parse_args()
-1
 
 
 if __name__ == "__main__":
