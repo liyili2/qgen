@@ -120,6 +120,8 @@ class QGateInsertion(StmtInsertion):
                 break
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
+        def choose_ingredient():
+            pass
         def check_type(init_type_env):
             root = new_contents[op.target[0]].find('.')
             converted_root = convert_xml_element_to_ast(root)
@@ -196,6 +198,8 @@ class QGateInsertion(StmtInsertion):
 class QGateDeletion(StmtDeletion):
     def __init__(self, target):
         super(QGateDeletion, self).__init__(target)
+
+
 
     def apply(self, program, new_contents, modification_points):
         print("Qgate deletion apply")
