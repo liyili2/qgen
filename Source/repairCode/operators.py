@@ -13,6 +13,7 @@ from pyggi.tree.xml_engine import XmlEngine
 from quantumCode.AST_Scripts.TypeChecker import TypeChecker
 from quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from repairCode.configs.type_env import type_envs
+from repairCode.utils.ingredient_generator import IngredientGenerator
 from repairCode.utils.operator_utils import convert_xml_element_to_ast, pretty_print_element, delete_block
 
 
@@ -121,7 +122,7 @@ class QGateInsertion(StmtInsertion):
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
         def choose_ingredient():
-            pass
+            return IngredientGenerator(checked_type_env).generate_ingredients()
         def check_type(init_type_env):
             root = new_contents[op.target[0]].find('.')
             converted_root = convert_xml_element_to_ast(root)
