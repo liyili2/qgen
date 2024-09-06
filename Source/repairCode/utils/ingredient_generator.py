@@ -1,6 +1,8 @@
 import random
 import xml.etree.ElementTree as ET
 
+from quantumCode.AST_Scripts.XMLProgrammer import Nat
+
 
 def random_num():
     return random.randint(-1, 1)
@@ -21,10 +23,13 @@ class IngredientGenerator:
     def get_identifier(self, element):
 
         if element.tag == 'app':
-            return self.APP_IDENTIFIER
+            return 'f'
         type_environment_identifiers = self.type_environment.keys()
         identifier = random.choice([type_environment_identifiers])
         return identifier
+
+    def get_associated_class(self, identifier):
+        return self.type_environment[identifier]
 
     def generate_let(self):
         let_el = ET.Element("Let")
@@ -119,35 +124,63 @@ class IngredientGenerator:
     def create_program(self):
         return self.create_exp()
 
-    def create_nextexp(self):
+    def create_nextexp(self, inner_element=None):
         next_el = ET.Element('next')
-        next_el.append(self.create_program())
+        if inner_element:
+            next_el.append(inner_element)
+        else:
+            next_el.append(self.create_program())
         return next_el
 
-    def generate_if(self, target_element, ingredient_list):
+    def generate_if(self):
         if_el = ET.Element("Ifa")
+        # insert true
         if_el.append(self.vexp_factory.create_vexp())
-        if_el.append(self.create_nextexp())
-        if_el.append(self.create_nextexp())
+        if_el.append(self.create_nextexp(self.generate_skipexp()))
+        if_el.append(self.create_nextexp(self.generate_skipexp()))
         return if_el
 
     def generate_app(self):
         app_el = ET.Element("App")
-        app_el.set("id", self.get_identifier(app_el))
+        identifier = self.get_identifier(app_el)
+        function_mapping = self.get_associated_class(identifier)
+        vars_in_function = function_mapping.args
+        type_mapping_before_function = function_mapping.pre
+
+        # get f from type_env
+        # body of app should be a list of vexp. type args of Fun determine what vexp
+        app_el.set("id", identifier)
         app_el.append(self.vexp_factory.create_vexp())
+        for var in vars_in_function:
+            type_of_var = type_mapping_before_function[var]
+            vexp = None
+            vexp_factory = self.VexpFactory(self)
+            if type_of_var == Nat():
+                vexp = vexp_factory.vexp_arithmetic()
+            else:
+                vexp = vexp_factory.vexp_quantum()
+            app_el.append(vexp)
         return app_el
 
     def generate_pexp(self):
-        gate_types_with_vexp = ["SKIP", "X", "SR", "QFT", "CU"]
-        gate_types_without_vexp = ["Lshift", "Rshift", "Rev", "RQFT"]
-
-        gate_types = gate_types_with_vexp + gate_types_without_vexp
-        gate = random.choice(gate_types)
-
+        gate_types_with_vexp = ["X", "QFT", "CU"]
+        gate_types_without_vexp = ["RQFT", "SR"]
+        # done
+        # find type of x
+        # if x is Nor, then you can generate X, CU, QFT
+        # if x is Phi, then you can do SR and RQFT
         pexp_el = ET.Element("pexp")
-        pexp_el.set("gate", gate)
-        pexp_el.set("id", self.get_identifier(pexp_el))
+        identifier = self.get_identifier(pexp_el)
 
+        var_type = self.get_associated_class(identifier).type
+        assert var_type in {'Nor', 'Phi'}
+        if var_type == 'Nor':
+            gate = random.choice(gate_types_with_vexp)
+        else:
+            gate = random.choice(gate_types_without_vexp)
+
+        pexp_el.set("gate", gate)
+        pexp_el.set("id", identifier)
         if gate in gate_types_with_vexp:
             pexp_el.append(self.vexp_factory.create_vexp())
             if gate == "CU":
@@ -155,10 +188,10 @@ class IngredientGenerator:
 
         return pexp_el
 
-    def generate_ingredients(self, target_element):
-        block_functions = [self.generate_if, self.generate_app, self.generate_pexp]
-        random_block = random.choice(block_functions)
-        return random_block()
+    def do_generate_ingredients(self, target_element):
+        element_functions = [self.generate_if, self.generate_app, self.generate_pexp]
+        random_element_function = random.choice(element_functions)
+        return random_element_function()
 
     def create_vexp_factory(self):
         return self.VexpFactory(self)
@@ -194,13 +227,21 @@ class IngredientGenerator:
 
         def create_vexp(self, possible_vexp_types=None):
             if possible_vexp_types is None:
-                possible_vexp_types = self.vexp_types
+                possible_vexp_types = self.vexp_types_not_nested
             function = random.choice(possible_vexp_types)
             return function()
 
+        def vexp_quantum(self, identifier, el_type):
+            vexp = self.et_vexp_element()
+            vexp.set('op', 'id')
+            vexp.set('type', el_type)
+            vexp.text = identifier
+            return vexp
 
-    def generate_ingredients(type_environment):
-        generator = IngredientGenerator(type_environment)
-        ingredient = generator.generate_ingredients()
-        print(ET.tostring(ingredient))
+        def vexp_arithmetic(self):
+            pass
+
+    def generate_ingredients(self):
+        generator = IngredientGenerator(self.type_environment)
+        ingredient = generator.do_generate_ingredients(None)
         return ingredient

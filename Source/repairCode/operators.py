@@ -108,9 +108,14 @@ class QGateInsertion(StmtInsertion):
         return result
 
     def insert_adjacent_to_target(self, parent, target, ingredient):
+        print(ingredient)
         for i, child in enumerate(parent):
             if child == target:
-                tmp = copy.deepcopy(ingredient)
+                try:
+                    tmp = copy.deepcopy(ingredient)
+                except Exception as e:
+                    print("qahh")
+
                 if self.direction == 'after':
                     tmp.tail = child.tail
                     child.tail = None
@@ -122,7 +127,7 @@ class QGateInsertion(StmtInsertion):
 
     def do_insert(self, cls, program, op, new_contents, modification_points, engine):
         def choose_ingredient():
-            return IngredientGenerator(checked_type_env).generate_ingredients()
+            return IngredientGenerator(checked_type_env).generate_app()
         def check_type(init_type_env):
             root = new_contents[op.target[0]].find('.')
             converted_root = convert_xml_element_to_ast(root)
@@ -133,14 +138,14 @@ class QGateInsertion(StmtInsertion):
         # get elements
         target = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]])
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]] + '..')
-        ingredient = program.contents[op.ingredient[0]].find(
-            program.modification_points[op.ingredient[0]][op.ingredient[1]])
+        initial_type_env = type_envs[op.target[0]]
+        checked_type_env = check_type(initial_type_env)
+        ingredient = choose_ingredient()
 
         if target is None or ingredient is None:
             return False
 
-        initial_type_env = type_envs[op.target[0]]
-        checked_type_env = check_type(initial_type_env)
+
         block_el = ET.Element("block")
         self.insert_adjacent_to_target(parent, target, block_el)
         root_element: ET.Element = new_contents[op.target[0]].find('.')
@@ -195,6 +200,8 @@ class QGateInsertion(StmtInsertion):
     #if it is Nor, then use X, CU,
     #if it is nat, can only use if with two branching
 
+#todo
+# separate out pexp and vexp insertion functions
 
 class QGateDeletion(StmtDeletion):
     def __init__(self, target):

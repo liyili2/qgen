@@ -22,8 +22,6 @@ ifexp : '<' Ifa '>' vexp nextexp nextexp '</' Ifa '>';
 
 appexp : '<' APP 'id' '=' '\'' Identifier '\'' '>' (vexp)* '</' APP '>';
 
-//ida : '<' ID 'type' '=' '\'' atype '\'' '>' Identifier '</' ID '>' ;
-        
 vexp: idexp | '<' VEXP OP '=' '\'' NUM '\'' '>' numexp '</' VEXP '>'
     | '<' VEXP OP '=' '\'' op '\'' '>' vexp vexp '</' VEXP '>';
 
