@@ -1,0 +1,1890 @@
+
+Test Case 1  		(Key = 1.1.1.1.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 2  		(Key = 1.1.1.2.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 3  		(Key = 1.1.1.3.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 4  		(Key = 1.1.2.1.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 5  		(Key = 1.1.2.2.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 6  		(Key = 1.1.2.3.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 7  		(Key = 1.1.3.1.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 8  		(Key = 1.1.3.2.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 9  		(Key = 1.1.3.3.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 10 		(Key = 1.1.4.1.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 11 		(Key = 1.1.4.2.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 12 		(Key = 1.1.4.3.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 13 		(Key = 1.1.5.1.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 14 		(Key = 1.1.5.2.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 15 		(Key = 1.1.5.3.)
+   num_qubits      :  small
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 16 		(Key = 1.2.1.1.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 17 		(Key = 1.2.1.2.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 18 		(Key = 1.2.1.3.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 19 		(Key = 1.2.2.1.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 20 		(Key = 1.2.2.2.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 21 		(Key = 1.2.2.3.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 22 		(Key = 1.2.3.1.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 23 		(Key = 1.2.3.2.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 24 		(Key = 1.2.3.3.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 25 		(Key = 1.2.4.1.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 26 		(Key = 1.2.4.2.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 27 		(Key = 1.2.4.3.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 28 		(Key = 1.2.5.1.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 29 		(Key = 1.2.5.2.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 30 		(Key = 1.2.5.3.)
+   num_qubits      :  small
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 31 		(Key = 1.3.1.1.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 32 		(Key = 1.3.1.2.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 33 		(Key = 1.3.1.3.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 34 		(Key = 1.3.2.1.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 35 		(Key = 1.3.2.2.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 36 		(Key = 1.3.2.3.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 37 		(Key = 1.3.3.1.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 38 		(Key = 1.3.3.2.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 39 		(Key = 1.3.3.3.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 40 		(Key = 1.3.4.1.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 41 		(Key = 1.3.4.2.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 42 		(Key = 1.3.4.3.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 43 		(Key = 1.3.5.1.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 44 		(Key = 1.3.5.2.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 45 		(Key = 1.3.5.3.)
+   num_qubits      :  small
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 46 		(Key = 2.1.1.1.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 47 		(Key = 2.1.1.2.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 48 		(Key = 2.1.1.3.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 49 		(Key = 2.1.2.1.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 50 		(Key = 2.1.2.2.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 51 		(Key = 2.1.2.3.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 52 		(Key = 2.1.3.1.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 53 		(Key = 2.1.3.2.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 54 		(Key = 2.1.3.3.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 55 		(Key = 2.1.4.1.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 56 		(Key = 2.1.4.2.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 57 		(Key = 2.1.4.3.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 58 		(Key = 2.1.5.1.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 59 		(Key = 2.1.5.2.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 60 		(Key = 2.1.5.3.)
+   num_qubits      :  medium
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 61 		(Key = 2.2.1.1.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 62 		(Key = 2.2.1.2.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 63 		(Key = 2.2.1.3.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 64 		(Key = 2.2.2.1.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 65 		(Key = 2.2.2.2.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 66 		(Key = 2.2.2.3.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 67 		(Key = 2.2.3.1.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 68 		(Key = 2.2.3.2.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 69 		(Key = 2.2.3.3.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 70 		(Key = 2.2.4.1.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 71 		(Key = 2.2.4.2.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 72 		(Key = 2.2.4.3.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 73 		(Key = 2.2.5.1.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 74 		(Key = 2.2.5.2.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 75 		(Key = 2.2.5.3.)
+   num_qubits      :  medium
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 76 		(Key = 2.3.1.1.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 77 		(Key = 2.3.1.2.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 78 		(Key = 2.3.1.3.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 79 		(Key = 2.3.2.1.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 80 		(Key = 2.3.2.2.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 81 		(Key = 2.3.2.3.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 82 		(Key = 2.3.3.1.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 83 		(Key = 2.3.3.2.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 84 		(Key = 2.3.3.3.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 85 		(Key = 2.3.4.1.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 86 		(Key = 2.3.4.2.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 87 		(Key = 2.3.4.3.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 88 		(Key = 2.3.5.1.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 89 		(Key = 2.3.5.2.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 90 		(Key = 2.3.5.3.)
+   num_qubits      :  medium
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 91 		(Key = 3.1.1.1.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 92 		(Key = 3.1.1.2.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 93 		(Key = 3.1.1.3.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 94 		(Key = 3.1.2.1.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 95 		(Key = 3.1.2.2.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 96 		(Key = 3.1.2.3.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 97 		(Key = 3.1.3.1.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 98 		(Key = 3.1.3.2.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 99 		(Key = 3.1.3.3.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 100		(Key = 3.1.4.1.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 101		(Key = 3.1.4.2.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 102		(Key = 3.1.4.3.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 103		(Key = 3.1.5.1.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 104		(Key = 3.1.5.2.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 105		(Key = 3.1.5.3.)
+   num_qubits      :  large
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 106		(Key = 3.2.1.1.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 107		(Key = 3.2.1.2.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 108		(Key = 3.2.1.3.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 109		(Key = 3.2.2.1.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 110		(Key = 3.2.2.2.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 111		(Key = 3.2.2.3.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 112		(Key = 3.2.3.1.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 113		(Key = 3.2.3.2.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 114		(Key = 3.2.3.3.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 115		(Key = 3.2.4.1.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 116		(Key = 3.2.4.2.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 117		(Key = 3.2.4.3.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 118		(Key = 3.2.5.1.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 119		(Key = 3.2.5.2.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 120		(Key = 3.2.5.3.)
+   num_qubits      :  large
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 121		(Key = 3.3.1.1.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 122		(Key = 3.3.1.2.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 123		(Key = 3.3.1.3.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 124		(Key = 3.3.2.1.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 125		(Key = 3.3.2.2.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 126		(Key = 3.3.2.3.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 127		(Key = 3.3.3.1.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 128		(Key = 3.3.3.2.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 129		(Key = 3.3.3.3.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 130		(Key = 3.3.4.1.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 131		(Key = 3.3.4.2.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 132		(Key = 3.3.4.3.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 133		(Key = 3.3.5.1.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 134		(Key = 3.3.5.2.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 135		(Key = 3.3.5.3.)
+   num_qubits      :  large
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 136		(Key = 4.1.1.1.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 137		(Key = 4.1.1.2.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 138		(Key = 4.1.1.3.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 139		(Key = 4.1.2.1.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 140		(Key = 4.1.2.2.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 141		(Key = 4.1.2.3.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 142		(Key = 4.1.3.1.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 143		(Key = 4.1.3.2.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 144		(Key = 4.1.3.3.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 145		(Key = 4.1.4.1.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 146		(Key = 4.1.4.2.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 147		(Key = 4.1.4.3.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 148		(Key = 4.1.5.1.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 149		(Key = 4.1.5.2.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 150		(Key = 4.1.5.3.)
+   num_qubits      :  max
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 151		(Key = 4.2.1.1.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 152		(Key = 4.2.1.2.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 153		(Key = 4.2.1.3.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 154		(Key = 4.2.2.1.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 155		(Key = 4.2.2.2.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 156		(Key = 4.2.2.3.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 157		(Key = 4.2.3.1.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 158		(Key = 4.2.3.2.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 159		(Key = 4.2.3.3.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 160		(Key = 4.2.4.1.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 161		(Key = 4.2.4.2.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 162		(Key = 4.2.4.3.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 163		(Key = 4.2.5.1.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 164		(Key = 4.2.5.2.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 165		(Key = 4.2.5.3.)
+   num_qubits      :  max
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 166		(Key = 4.3.1.1.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 167		(Key = 4.3.1.2.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 168		(Key = 4.3.1.3.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 169		(Key = 4.3.2.1.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 170		(Key = 4.3.2.2.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 171		(Key = 4.3.2.3.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 172		(Key = 4.3.3.1.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 173		(Key = 4.3.3.2.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 174		(Key = 4.3.3.3.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 175		(Key = 4.3.4.1.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 176		(Key = 4.3.4.2.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 177		(Key = 4.3.4.3.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 178		(Key = 4.3.5.1.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 179		(Key = 4.3.5.2.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 180		(Key = 4.3.5.3.)
+   num_qubits      :  max
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 181		(Key = 5.1.1.1.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 182		(Key = 5.1.1.2.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 183		(Key = 5.1.1.3.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 184		(Key = 5.1.2.1.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 185		(Key = 5.1.2.2.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 186		(Key = 5.1.2.3.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 187		(Key = 5.1.3.1.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 188		(Key = 5.1.3.2.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 189		(Key = 5.1.3.3.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 190		(Key = 5.1.4.1.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 191		(Key = 5.1.4.2.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 192		(Key = 5.1.4.3.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 193		(Key = 5.1.5.1.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 194		(Key = 5.1.5.2.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 195		(Key = 5.1.5.3.)
+   num_qubits      :  zero
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 196		(Key = 5.2.1.1.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 197		(Key = 5.2.1.2.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 198		(Key = 5.2.1.3.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 199		(Key = 5.2.2.1.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 200		(Key = 5.2.2.2.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 201		(Key = 5.2.2.3.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 202		(Key = 5.2.3.1.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 203		(Key = 5.2.3.2.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 204		(Key = 5.2.3.3.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 205		(Key = 5.2.4.1.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 206		(Key = 5.2.4.2.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 207		(Key = 5.2.4.3.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 208		(Key = 5.2.5.1.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 209		(Key = 5.2.5.2.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 210		(Key = 5.2.5.3.)
+   num_qubits      :  zero
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 211		(Key = 5.3.1.1.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 212		(Key = 5.3.1.2.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 213		(Key = 5.3.1.3.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 214		(Key = 5.3.2.1.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 215		(Key = 5.3.2.2.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 216		(Key = 5.3.2.3.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 217		(Key = 5.3.3.1.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 218		(Key = 5.3.3.2.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 219		(Key = 5.3.3.3.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 220		(Key = 5.3.4.1.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 221		(Key = 5.3.4.2.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 222		(Key = 5.3.4.3.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 223		(Key = 5.3.5.1.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 224		(Key = 5.3.5.2.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 225		(Key = 5.3.5.3.)
+   num_qubits      :  zero
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 226		(Key = 6.1.1.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 227		(Key = 6.1.1.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 228		(Key = 6.1.1.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 229		(Key = 6.1.2.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 230		(Key = 6.1.2.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 231		(Key = 6.1.2.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 232		(Key = 6.1.3.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 233		(Key = 6.1.3.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 234		(Key = 6.1.3.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 235		(Key = 6.1.4.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 236		(Key = 6.1.4.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 237		(Key = 6.1.4.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 238		(Key = 6.1.5.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 239		(Key = 6.1.5.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 240		(Key = 6.1.5.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  small
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 241		(Key = 6.2.1.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 242		(Key = 6.2.1.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 243		(Key = 6.2.1.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 244		(Key = 6.2.2.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 245		(Key = 6.2.2.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 246		(Key = 6.2.2.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 247		(Key = 6.2.3.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 248		(Key = 6.2.3.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 249		(Key = 6.2.3.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 250		(Key = 6.2.4.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 251		(Key = 6.2.4.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 252		(Key = 6.2.4.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 253		(Key = 6.2.5.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 254		(Key = 6.2.5.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 255		(Key = 6.2.5.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  medium
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
+
+Test Case 256		(Key = 6.3.1.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  zero_state
+
+
+Test Case 257		(Key = 6.3.1.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  max_state
+
+
+Test Case 258		(Key = 6.3.1.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  small
+   initial_state_x :  random_state
+
+
+Test Case 259		(Key = 6.3.2.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  zero_state
+
+
+Test Case 260		(Key = 6.3.2.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  max_state
+
+
+Test Case 261		(Key = 6.3.2.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  medium
+   initial_state_x :  random_state
+
+
+Test Case 262		(Key = 6.3.3.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  zero_state
+
+
+Test Case 263		(Key = 6.3.3.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  max_state
+
+
+Test Case 264		(Key = 6.3.3.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  large
+   initial_state_x :  random_state
+
+
+Test Case 265		(Key = 6.3.4.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  zero_state
+
+
+Test Case 266		(Key = 6.3.4.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  max_state
+
+
+Test Case 267		(Key = 6.3.4.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  zero
+   initial_state_x :  random_state
+
+
+Test Case 268		(Key = 6.3.5.1.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  zero_state
+
+
+Test Case 269		(Key = 6.3.5.2.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  max_state
+
+
+Test Case 270		(Key = 6.3.5.3.)
+   num_qubits      :  one_bit
+   array_size_na   :  large
+   input_value_m   :  max_value
+   initial_state_x :  random_state
+
