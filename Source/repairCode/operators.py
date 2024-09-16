@@ -140,8 +140,10 @@ class QGateInsertion(StmtInsertion):
         parent = new_contents[op.target[0]].find(modification_points[op.target[0]][op.target[1]] + '..')
         initial_type_env = type_envs[op.target[0]]
         checked_type_env = check_type(initial_type_env)
+        # ingredient = program.contents[op.ingredient[0]].find(
+        #     program.modification_points[op.ingredient[0]][op.ingredient[1]])
         ingredient = choose_ingredient()
-
+        print(type(ingredient))
         if target is None or ingredient is None:
             return False
 
@@ -151,7 +153,6 @@ class QGateInsertion(StmtInsertion):
         root_element: ET.Element = new_contents[op.target[0]].find('.')
         root_ast_element: XMLExpParser.RootContext = convert_xml_element_to_ast(root_element)
         print("env before", checked_type_env)
-        cop = checked_type_env.copy()
         type_detector = TypeDetector(checked_type_env)
         type_detector.visit(root_ast_element)
         print("env after", type_detector.type_environment)

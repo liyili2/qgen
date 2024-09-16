@@ -23,12 +23,15 @@ class IngredientGenerator:
     def get_identifier(self, element):
 
         if element.tag == 'app':
+            print('here')
             return 'f'
-        type_environment_identifiers = self.type_environment.keys()
-        identifier = random.choice([type_environment_identifiers])
+        type_environment_identifiers = list(self.type_environment.keys())
+        identifier = random.choice(type_environment_identifiers)
+        print(identifier)
         return identifier
 
     def get_associated_class(self, identifier):
+        print(identifier)
         return self.type_environment[identifier]
 
     def generate_let(self):
@@ -143,6 +146,7 @@ class IngredientGenerator:
     def generate_app(self):
         app_el = ET.Element("App")
         identifier = self.get_identifier(app_el)
+        print(identifier)
         function_mapping = self.get_associated_class(identifier)
         vars_in_function = function_mapping.args
         type_mapping_before_function = function_mapping.pre
@@ -158,7 +162,7 @@ class IngredientGenerator:
             if type_of_var == Nat():
                 vexp = vexp_factory.vexp_arithmetic()
             else:
-                vexp = vexp_factory.vexp_quantum()
+                vexp = vexp_factory.vexp_quantum(identifier, el_type=None)
             app_el.append(vexp)
         return app_el
 
@@ -239,6 +243,7 @@ class IngredientGenerator:
             return vexp
 
         def vexp_arithmetic(self):
+            # only numexp
             pass
 
     def generate_ingredients(self):
