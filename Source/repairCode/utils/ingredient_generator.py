@@ -229,9 +229,8 @@ class IngredientGenerator:
             vexp.append(self.create_vexp(self.vexp_types_not_nested))
             return vexp
 
-        def create_vexp(self, possible_vexp_types=None):
-            if possible_vexp_types is None:
-                possible_vexp_types = self.vexp_types_not_nested
+        def create_vexp(self, ):
+            possible_vexp_types = self.vexp_types_not_nested
             function = random.choice(possible_vexp_types)
             return function()
 
