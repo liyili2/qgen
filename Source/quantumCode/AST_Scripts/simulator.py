@@ -3,6 +3,7 @@ from collections import ChainMap
 # from types import NoneType
 
 from quantumCode.AST_Scripts.XMLProgrammer import *
+from quantumCode.AST_Scripts.ProgramVisitor import *
 
 NoneType = type(None)
 
