@@ -201,12 +201,12 @@ class Simulator(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         value = self.state.get(x)
-        ctx._zero()._program().accept(self)
+        ctx.zero().program().accept(self)
         #print("value match", value)
         va = ctx._multi().elem().ID()
         tmpv = self.state.get(va)
         self.state.update({va: int(value) - 1})
-        ctx._multi()._program().accept(self)
+        ctx.multi().program().accept(self)
         self.state.update({va:tmpv})
 
 
@@ -233,7 +233,7 @@ class Simulator(ProgramVisitor):
             self.state.update({xv: re})
             #print("vara",xv,"vala",re)
 
-        ctxa._program().accept(self)
+        ctxa.program().accept(self)
         while len(tmpv) != 0:
             xv,re = tmpv.popitem()
             if re is not None:
@@ -284,7 +284,7 @@ class Simulator(ProgramVisitor):
         x = self.state.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         if x.getBits()[p]:
-            ctx._program().accept(self)
+            ctx.program().accept(self)
         else:
             return  # do nothing
 
@@ -374,7 +374,6 @@ class Simulator(ProgramVisitor):
     def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
         v = ctx.vexp().accept(self)
-        print("here",type(ctx.vexp()))
         b = int(v)
         self.turn_qft(x, self.env.get(x) - b)
         #print("qft_exp val",self.env.get(x)-b)
