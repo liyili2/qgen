@@ -67,7 +67,7 @@ class QXIDExp(QXElem, QXVexp):
         self._type = type
 
     def accept(self, visitor : AbstractProgramVisitor):
-        visitor.visitIDExp(self)
+        return visitor.visitIDExp(self)
 
     def ID(self):
         return self.id if self.id is str else self.id.getText()
@@ -201,7 +201,7 @@ class QXBin(QXVexp):
         self.v2 = v2
 
     def accept(self, visitor : AbstractProgramVisitor):
-        visitor.visitBin(self)
+        return visitor.visitBin(self)
 
 
     def OP(self):
@@ -219,7 +219,7 @@ class QXNum(QXElem, QXVexp):
         self.v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
-        visitor.visitNum(self)
+        return visitor.visitNum(self)
 
     def num(self):
         return self.v

@@ -111,9 +111,6 @@ class ProgramVisitor(AbstractProgramVisitor):
     def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
         ctx.type().accept(self)
 
-    def visitNum(self, ctx: XMLProgrammer.QXNum):
-        pass
-
     def visitQTy(self, ctx: XMLProgrammer.Qty):
         ctx.get_num().accept(self)
 

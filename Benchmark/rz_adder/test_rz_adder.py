@@ -5,10 +5,11 @@ from antlr4 import InputStream, CommonTokenStream
 from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
 from Source.quantumCode.AST_Scripts.simulator import CoqNVal, Simulator, bit_array_to_int, to_binary_arr
+from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 
 
 # Test function to initialize and run the rz_adder simulation
-def run_rz_adder_test(num_qubits, loop, val,addend):
+def run_rz_adder_test(num_qubits, val,addend):
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
@@ -19,7 +20,6 @@ def run_rz_adder_test(num_qubits, loop, val,addend):
     transform = ProgramTransformer()
     newTree = transform.visitRoot(tree)
     # print(tree.toStringTree(recog=parser))
-
     # num_qubits = 16  # Number of Qubits
     # val = 100  # init value
     # addend = 10
@@ -30,7 +30,7 @@ def run_rz_adder_test(num_qubits, loop, val,addend):
     environment = dict(
         {"x": num_qubits})  # env has the same variables as state, but here, variable is initiliazed to its qubit num
     y = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
-    y.visitRoot(tree)
+    y.visitRoot(newTree)
     new_state = y.get_state()
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
 
@@ -39,11 +39,10 @@ This test verifies the correctness of the rz_adder function when performing
 simple addition operations without carry propagation.
     ''' 
 
-def parse_tsl_file():
+def parse_tsl_file(file_path):
     test_cases = []
     current_case = {}
-
-    with open("rz_adder/rz_adder.tsl.tsl", 'r') as file:
+    with open(file_path, 'r') as file:
         for line in file:
             line = line.strip()
             
@@ -73,8 +72,8 @@ def map_tsl_to_values(term, parameter_type):
             'medium': [2**n for n in range(3, 5)],  # 2^3 = 8, 2^4 = 16
             'large': [2**n for n in range(5, 7)],  # 2^5 = 32, 2^6 = 64
             'max': [2**n for n in range(7, 9)],  # Example: 2^7 = 128, 2^8 = 256
-            'zero': [0],  # 0 qubits (for edge case)
-            'one_bit': [1]  # Single qubit case
+            'zero': [0,0],  # 0 qubits (for edge case)
+            'one_bit': [1,1]  # Single qubit case
         },
         'array_size_na': {
             'small': (1,4),  # Small size array
@@ -98,7 +97,7 @@ def map_tsl_to_values(term, parameter_type):
 test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
 
 # Generate pytest parameterization
-@pytest.mark.parametrize("num_qubits, array_size_na, val, addend", [
+@pytest.mark.parametrize("num_qubits, array_size_na, input_value_m", [
     (
         random.randint(*map_tsl_to_values(case['num_qubits'], 'num_qubits')),
         random.randint(*map_tsl_to_values(case['array_size_na'], 'array_size_na')),
@@ -107,9 +106,10 @@ test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
     for case in test_cases
 ])
 
-def test_basic_addition(num_qubits, val, addend):
-    expected = (val + addend) % (2 ** num_qubits)
-    assert run_rz_adder_test(num_qubits, val, addend) == expected
+def test_basic_addition(num_qubits, array_size_na, input_value_m):
+    print("testcases",num_qubits, array_size_na, input_value_m)
+    expected = (array_size_na + input_value_m) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, array_size_na, input_value_m) == expected
 
 # @pytest.mark.parametrize("num_qubits, loop, val, addend", [
 #     (2**n, loop, val, addend)

@@ -374,7 +374,7 @@ class Simulator(ProgramVisitor):
     def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
         v = ctx.vexp().accept(self)
-        print("here",v)
+        print("here",type(ctx.vexp()))
         b = int(v)
         self.turn_qft(x, self.env.get(x) - b)
         #print("qft_exp val",self.env.get(x)-b)
@@ -432,10 +432,11 @@ class Simulator(ProgramVisitor):
                     #print("val",tmp[y])
                 return int(tmp[y])
         return 0
-    def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
-        ctx.type().accept(self)
+    # def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
+    #     ctx.type().accept(self)
 
     def visitNum(self, ctx: XMLProgrammer.QXNum):
+        print("nonecc",ctx.num())
         return ctx.num()
 
     #def visitIda(self, ctx: XMLExpParser.IdaContext):
