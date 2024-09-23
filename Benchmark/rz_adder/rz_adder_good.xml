@@ -1,6 +1,6 @@
 <root>
-<let id = 'f' > <vexp op = 'id' type = 'nat' > n </vexp> <vexp op = 'id' type = 'nat' > size </vexp>
-    <vexp op = 'id' type = 'nat' > M </vexp>  <vexp op = 'id' type = 'Q(size)' > x </vexp>
+<let id = 'f' > <vexp op = 'id' type = 'Nat' > n </vexp> <vexp op = 'id' type = 'Nat' > size </vexp>
+    <vexp op = 'id' type = 'Nat' > M </vexp>  <vexp op = 'id' type = 'Q(size)' > x </vexp>
    <match id = 'n' >
           <pair case = '0' >  <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
            <pair case = 'm' >

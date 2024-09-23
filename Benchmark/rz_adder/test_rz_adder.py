@@ -9,7 +9,7 @@ from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 
 
 # Test function to initialize and run the rz_adder simulation
-def run_rz_adder_test(num_qubits, val,addend):
+def run_rz_adder_test(num_qubits, array_size_na, val,addend):
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
@@ -26,6 +26,7 @@ def run_rz_adder_test(num_qubits, val,addend):
     val_array = to_binary_arr(val, num_qubits)  # conver value to array
     state = dict({"x": [CoqNVal(val_array, 0)],
                   "size": num_qubits,
+                  "na": array_size_na,
                   "m": addend})  # initial a chainMap having variable "x" to be 0 (list of False)
     environment = dict(
         {"x": num_qubits})  # env has the same variables as state, but here, variable is initiliazed to its qubit num

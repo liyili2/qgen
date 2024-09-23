@@ -221,9 +221,10 @@ class Simulator(ProgramVisitor):
         tmpa = dict()
         while ctxa.idexp(i) is not None:
             x = ctxa.idexp(i).ID()
+            print("here",x)
             #print("var",ctxa.idexp(i+1).Identifier())
             v = ctx.vexp(i).accept(self)
-            #print("val",v)
+            print("val",v)
             tmpv.update({x:self.state.get(x)})
             tmpa.update({x:v})
             i += 1
@@ -435,7 +436,7 @@ class Simulator(ProgramVisitor):
     #     ctx.type().accept(self)
 
     def visitNum(self, ctx: XMLProgrammer.QXNum):
-        print("nonecc",ctx.num())
+        #print("nonecc",ctx.num())
         return ctx.num()
 
     #def visitIda(self, ctx: XMLExpParser.IdaContext):
