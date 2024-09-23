@@ -118,7 +118,7 @@ test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
 
 def test_basic_addition(num_qubits, array_size_na, input_value_x, input_value_m):
     print("testcases",num_qubits, array_size_na, input_value_x, input_value_m)
-    expected = (input_value_x + input_value_m) % (2 ** num_qubits)
+    expected = (input_value_x + (input_value_m % (2 ** array_size_na))) % (2 ** num_qubits)
     assert run_rz_adder_test(num_qubits, array_size_na, input_value_x, input_value_m) == expected
 
 # @pytest.mark.parametrize("num_qubits, loop, val, addend", [
