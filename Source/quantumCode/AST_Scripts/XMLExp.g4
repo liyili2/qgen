@@ -4,7 +4,7 @@ root: '<' Root '>' program '</' Root '>';
 
 nextexp: '<' Next '>' program '</' Next '>';
 
-program: exp (exp)* ;
+program: (exp)+ ;
 
 exp: letexp | appexp | blockexp | cuexp | ifexp | matchexp | skipexp | xexp | srexp | qftexp | lshiftexp | rshiftexp | revexp | rqftexp;
 
