@@ -169,7 +169,7 @@ class Simulator(ProgramVisitor):
 
     def visitLet(self, ctx: XMLProgrammer.QXLet):
         f = ctx.ID()
-        self.st.update({f: ctx})
+        self.state.update({f: ctx})
         #print("f", ctx)
         #ctx.exp().accept(self)
 
@@ -200,19 +200,19 @@ class Simulator(ProgramVisitor):
 
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
-        value = self.st.get(x)
+        value = self.state.get(x)
         ctx._zero()._program().accept(self)
         #print("value match", value)
         va = ctx._multi().elem().ID()
-        tmpv = self.st.get(va)
-        self.st.update({va: int(value) - 1})
+        tmpv = self.state.get(va)
+        self.state.update({va: int(value) - 1})
         ctx._multi()._program().accept(self)
-        self.st.update({va:tmpv})
+        self.state.update({va:tmpv})
 
 
     def visitApp(self, ctx: XMLProgrammer.QXApp):
         vx = ctx.ID()
-        ctxa = self.st.get(vx)
+        ctxa = self.state.get(vx)
         #print("here",ctx.idexp().Identifier())
         #print("herea",ctxa.idexp(0).Identifier())
         #ctxa = self.st.get(f)
@@ -273,7 +273,7 @@ class Simulator(ProgramVisitor):
     # X posi, changed the following for an example
     def visitX(self, ctx: XMLProgrammer.QXX):
         vx = ctx.ID()
-        x = self.st.get(vx)[0]
+        x = self.state.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         exchange(x, p)
 
@@ -281,7 +281,7 @@ class Simulator(ProgramVisitor):
     # then decide if we go to recursively call ctx.exp
     def visitCU(self, ctx: XMLProgrammer.QXCU):
         vx = ctx.ID()
-        x = self.st.get(vx)[0]
+        x = self.state.get(vx)[0]
         p = ctx.vexp().accept(self)  # this will pass the visitor to the child of ctx
         if x.getBits()[p]:
             ctx._program().accept(self)
