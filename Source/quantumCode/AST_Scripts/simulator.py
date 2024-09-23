@@ -373,7 +373,8 @@ class Simulator(ProgramVisitor):
 
     def visitQFT(self, ctx: XMLProgrammer.QXQFT):
         x = ctx.ID()
-        b = int(ctx.vexp().accept(self))
+        v = ctx.vexp().accept(self)
+        b = int(v)
         self.turn_qft(x, self.env.get(x) - b)
         #print("qft_exp val",self.env.get(x)-b)
         #print("qft_exp x",self.st.get(x))
