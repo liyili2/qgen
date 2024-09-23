@@ -56,6 +56,8 @@ def parse_tsl_file(file_path):
                 current_case['num_qubits'] = line.split(":")[1].strip()
             elif "array_size_na" in line:
                 current_case['array_size_na'] = line.split(":")[1].strip()
+            elif "input_value_x" in line:
+                current_case['input_value_m'] = line.split(":")[1].strip()
             elif "input_value_m" in line:
                 current_case['input_value_m'] = line.split(":")[1].strip()
 
@@ -80,6 +82,13 @@ def map_tsl_to_values(term, parameter_type):
             'small': (1,4),  # Small size array
             'medium': (5,8),  # Medium size array
             'large': (9,16)  # Large size array
+        },
+        'input_value_x': {
+            'small': (1, 10),  # Small value
+            'medium': (11, 100),  # Medium value
+            'large': (101, 1000),  # Large value
+            'zero': (0, 0),  # m = 0
+            'max_value': (10001, 2 ** 16 - 1)  # Max value for 16-bit integer, example
         },
         'input_value_m': {
             'small': (1,10),  # Small value
@@ -107,10 +116,10 @@ test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
     for case in test_cases
 ])
 
-def test_basic_addition(num_qubits, array_size_na, input_value_m):
-    print("testcases",num_qubits, array_size_na, input_value_m)
-    expected = (array_size_na + input_value_m) % (2 ** num_qubits)
-    assert run_rz_adder_test(num_qubits, array_size_na, input_value_m) == expected
+def test_basic_addition(num_qubits, array_size_na, input_value_x, input_value_m):
+    print("testcases",num_qubits, array_size_na, input_value_x, input_value_m)
+    expected = (input_value_x + input_value_m) % (2 ** num_qubits)
+    assert run_rz_adder_test(num_qubits, array_size_na, input_value_x, input_value_m) == expected
 
 # @pytest.mark.parametrize("num_qubits, loop, val, addend", [
 #     (2**n, loop, val, addend)
