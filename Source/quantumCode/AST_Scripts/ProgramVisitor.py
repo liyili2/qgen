@@ -61,7 +61,7 @@ class ProgramVisitor(AbstractProgramVisitor):
 
     # Visit a parse tree produced by XMLExpParser#root.
     def visitRoot(self, ctx: XMLProgrammer.QXRoot):
-        return ctx._program.accept(self)
+        return ctx.program.accept(self)
 
     # Visit a parse tree produced by XMLExpParser#nextexp.
     def visitNext(self, ctx: XMLProgrammer.QXNext):
@@ -97,12 +97,12 @@ class ProgramVisitor(AbstractProgramVisitor):
         ctx.right().accept(self)
 
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
-        ctx._zero().accept(self)
-        ctx._multi().accept(self)
+        ctx.zero().accept(self)
+        ctx.multi().accept(self)
 
     def visitPair(self, ctx: XMLProgrammer.QXPair):
         ctx.elem().accept(self)
-        ctx._program.accept(self)
+        ctx.program.accept(self)
 
     def visitBin(self, ctx: XMLProgrammer.QXBin):
         ctx.left().accept(self)
