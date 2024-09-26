@@ -130,7 +130,7 @@ mapped_test_cases = load_mapped_tsl_from_file("Benchmark/rz_adder/mapped_tsl_val
 ])
 def test_basic_addition(num_qubits, array_size_na, initial_state_x, input_value_m):
     print("Test case:", num_qubits, array_size_na, initial_state_x, input_value_m)
-    expected = (initial_state_x + input_value_m) % (2 ** array_size_na)
+    expected = ((initial_state_x) + (input_value_m % (2 ** array_size_na))) % 2 ** num_qubits
     assert run_rz_adder_test(num_qubits, array_size_na, initial_state_x, input_value_m) == expected
 
 # Fixture to track the runtime of tests
