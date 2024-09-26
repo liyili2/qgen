@@ -1,6 +1,8 @@
 import time
 import pytest
 import random
+import json
+import os
 from antlr4 import InputStream, CommonTokenStream
 from Source.quantumCode.AST_Scripts.XMLExpLexer import XMLExpLexer
 from Source.quantumCode.AST_Scripts.XMLExpParser import XMLExpParser
@@ -9,7 +11,7 @@ from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 
 
 # Test function to initialize and run the rz_adder simulation
-def run_rz_adder_test(num_qubits, array_size_na, val,addend):
+def run_rz_adder_test(num_qubits, array_size_na, val, addend):
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
@@ -19,45 +21,35 @@ def run_rz_adder_test(num_qubits, array_size_na, val,addend):
     tree = parser.root()
     transform = ProgramTransformer()
     newTree = transform.visitRoot(tree)
-    # print(tree.toStringTree(recog=parser))
-    # num_qubits = 16  # Number of Qubits
-    # val = 100  # init value
-    # addend = 10
-    val_array = to_binary_arr(val, num_qubits)  # conver value to array
+    
+    val_array = to_binary_arr(val, num_qubits)  # Convert value to array
     state = dict({"x": [CoqNVal(val_array, 0)],
                   "size": num_qubits,
                   "na": array_size_na,
-                  "m": addend})  # initial a chainMap having variable "x" to be 0 (list of False)
-    environment = dict(
-        {"x": num_qubits})  # env has the same variables as state, but here, variable is initiliazed to its qubit num
-    y = Simulator(state, environment)  # Environment is same, initial state varies by pyTest
+                  "m": addend})  # Initial state
+    environment = dict({"x": num_qubits})  # Environment for simulation
+    y = Simulator(state, environment)
     y.visitRoot(newTree)
     new_state = y.get_state()
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
 
-'''
-This test verifies the correctness of the rz_adder function when performing
-simple addition operations without carry propagation.
-    ''' 
-
+# Function to parse TSL file
 def parse_tsl_file(file_path):
     test_cases = []
     current_case = {}
     with open(file_path, 'r') as file:
         for line in file:
             line = line.strip()
-            
             if line.startswith("Test Case"):
                 if current_case:
                     test_cases.append(current_case)
                 current_case = {}  # Reset current case for next one
-            
             elif "num_qubits" in line:
                 current_case['num_qubits'] = line.split(":")[1].strip()
             elif "array_size_na" in line:
                 current_case['array_size_na'] = line.split(":")[1].strip()
-            elif "input_value_x" in line:
-                current_case['input_value_m'] = line.split(":")[1].strip()
+            elif "initial_state_x" in line:
+                current_case['initial_state_x'] = line.split(":")[1].strip()
             elif "input_value_m" in line:
                 current_case['input_value_m'] = line.split(":")[1].strip()
 
@@ -66,146 +58,82 @@ def parse_tsl_file(file_path):
 
     return test_cases
 
-#Mapping TSL Inputs to Actual Values
-
+# Mapping TSL inputs to actual values
 def map_tsl_to_values(term, parameter_type):
     mappings = {
         'num_qubits': {
-            'small': [2**n for n in range(1, 3)],  # 2^1 = 2, 2^2 = 4
-            'medium': [2**n for n in range(3, 5)],  # 2^3 = 8, 2^4 = 16
-            'large': [2**n for n in range(5, 7)],  # 2^5 = 32, 2^6 = 64
-            'max': [2**n for n in range(7, 9)],  # Example: 2^7 = 128, 2^8 = 256
-            'zero': [0,0],  # 0 qubits (for edge case)
-            'one_bit': [1,1]  # Single qubit case
+            'small': (2, 4),
+            'medium': (4, 8),
+            'large': (8, 16),
+            'max': (16, 32),
+            'one_bit': (1, 1)
         },
         'array_size_na': {
-            'small': (1,4),  # Small size array
-            'medium': (5,8),  # Medium size array
-            'large': (9,16)  # Large size array
-        },
-        'input_value_x': {
-            'small': (1, 10),  # Small value
-            'medium': (11, 100),  # Medium value
-            'large': (101, 1000),  # Large value
-            'zero': (0, 0),  # m = 0
-            'max_value': (10001, 2 ** 16 - 1)  # Max value for 16-bit integer, example
+            'small': (1, 4),
+            'medium': (5, 8),
+            'large': (9, 16)
         },
         'input_value_m': {
-            'small': (1,10),  # Small value
-            'medium': (11,100),  # Medium value
-            'large': (101,1000),  # Large value
-            'zero': (0,0),  # m = 0
-            'max_value': (10001,2**16 - 1)  # Max value for 16-bit integer, example
+            'small': (1, 10),
+            'medium': (11, 100),
+            'large': (101, 1000),
+            'zero': (0, 0),
+            'max_value': (10001, 65535)
         },
+        'initial_state_x': {
+            'zero_state': (0, 0),
+            'max_state': (1 << 3, 1 << 4),
+            'random_state': (1, 15)
+        }
     }
     
     return mappings[parameter_type].get(term, (0,0))
 
+# Save the mapped TSL values to a JSON file so they can be reused
+def save_mapped_tsl_to_file(test_cases, output_file):
+    mapped_test_cases = []
 
+    for case in test_cases:
+        mapped_case = {
+            'num_qubits': random.randint(*map_tsl_to_values(case['num_qubits'], 'num_qubits')),
+            'array_size_na': random.randint(*map_tsl_to_values(case['array_size_na'], 'array_size_na')),
+            'initial_state_x': random.randint(*map_tsl_to_values(case['initial_state_x'], 'initial_state_x')),
+            'input_value_m': random.randint(*map_tsl_to_values(case['input_value_m'], 'input_value_m'))
+        }
+        mapped_test_cases.append(mapped_case)
 
-# Load test cases from TSL
+    # Save the mapped values to a JSON file
+    with open(output_file, 'w') as f:
+        json.dump(mapped_test_cases, f)
+
+    print(f"Mapped TSL values saved to {output_file}")
+
+# Load mapped values from JSON file
+def load_mapped_tsl_from_file(file_path):
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File {file_path} not found. Ensure the values are saved first.")
+    
+    with open(file_path, 'r') as f:
+        return json.load(f)
+
+# Usage: First, parse and save the mapped TSL values to a JSON file
 test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
+save_mapped_tsl_to_file(test_cases, "Benchmark/rz_adder/mapped_tsl_values.txt")
 
-# Generate pytest parameterization
-@pytest.mark.parametrize("num_qubits, array_size_na, input_value_m", [
-    (
-        random.randint(*map_tsl_to_values(case['num_qubits'], 'num_qubits')),
-        random.randint(*map_tsl_to_values(case['array_size_na'], 'array_size_na')),
-        random.randint(*map_tsl_to_values(case['input_value_m'], 'input_value_m'))
-    )
-    for case in test_cases
+# Load the mapped values from the JSON file
+mapped_test_cases = load_mapped_tsl_from_file("Benchmark/rz_adder/mapped_tsl_values.txt")
+
+# Generate pytest parameterization from the loaded values
+@pytest.mark.parametrize("num_qubits, array_size_na, initial_state_x, input_value_m", [
+    (case['num_qubits'], case['array_size_na'], case['initial_state_x'], case['input_value_m'])
+    for case in mapped_test_cases
 ])
+def test_basic_addition(num_qubits, array_size_na, initial_state_x, input_value_m):
+    print("Test case:", num_qubits, array_size_na, initial_state_x, input_value_m)
+    expected = (initial_state_x + input_value_m) % (2 ** array_size_na)
+    assert run_rz_adder_test(num_qubits, array_size_na, initial_state_x, input_value_m) == expected
 
-def test_basic_addition(num_qubits, array_size_na, input_value_x, input_value_m):
-    print("testcases",num_qubits, array_size_na, input_value_x, input_value_m)
-    expected = (input_value_x + (input_value_m % (2 ** array_size_na))) % (2 ** num_qubits)
-    assert run_rz_adder_test(num_qubits, array_size_na, input_value_x, input_value_m) == expected
-
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, loop, val, addend)
-#     for n in range(2, 4)  # Using 2^2, 2^3, i.e., 4, 8
-#     for loop in range(1, 2**n)
-#     for val in range(0, 2**(2**n),2*7)  # Range for val up to 2^num_qubits
-#     for addend in range(0, 2**(2**n),2*19)  # interval as product of primes
-# ])
-
-# def test_basic_addition(num_qubits, loop, val, addend):
-#     expected = (val + addend) % (2 ** loop) #might not be correct
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-# '''
-#   In this test, we check whether the rz_adder correctly handles carry propagation by adding values close to the upper limit 
-#   of the bit range and ensuring that the result wraps around correctly.
-# '''
-
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, loop, val, addend)
-#     for n in range(2, 4)  # This gives us 2^2 = 4 and 2^3 = 8
-#     for loop in range(1, 2**n)
-#     for val in range(2**(2**n)//2, 2**(2**n), 2*7)  #interval as product of primes
-#     for addend in range(1, 2**(2**n), 2*19) 
-# ][:40])  # Limiting to first 40 combinations
-
-# def test_carry_propagation(num_qubits, loop, val, addend):
-#     expected = (val + addend) % (2 ** loop)  #might not be correct
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-# '''Testing array sizelimit
-#    It ensures that the rz_adder correctly wraps around the result within the allowed
-#    bit range (num_qubits).
-# '''
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, loop, val, addend)
-#     for n in range(2, 4)
-#     for loop in range(1, 2**n)
-#     for val in range(0, 2**(2**n)//2,2*7)  # Testing small values
-#     for addend in range(2**(2**n)//2, 2**(2**n),2*19)  # Adding large values
-# ])
-
-# def test_array_size_limit(num_qubits, loop, val, addend):
-#     expected = (val + addend) % (2 ** loop)
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-# #Testing large numbers
-
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, 2**n, 2**32, 2**32)
-#     for n in range(4, 5)
-#     for loop in range(1, 2**n)
-# ])
-
-# def test_large_numbers(num_qubits, loop, val, addend):
-#     expected = (val + addend) % (2 ** loop)
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-# #Testing addend as 0
-
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, loop, val, 0)
-#     for n in range(4, 5)  # Using 2^4 = 16
-#     for loop in range(1, 2**n)
-#     for val in range(0, 40, 5)
-# ])
-
-
-# def test_zero_addend(num_qubits, loop, val, addend):
-#     expected = val
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-# #Testing qubit_array as 0
-
-# @pytest.mark.parametrize("num_qubits, loop, val, addend", [
-#     (2**n, loop, 0, addend)
-#     for n in range(4, 5)  # Using 2^4 = 16
-#     for loop in range(1, 2**n)
-#     for addend in range(0, 40, 5)
-# ])
-
-# def test_zero_qubit_array(num_qubits, loop, val, addend):
-#     expected = addend
-#     assert run_rz_adder_test(num_qubits, loop, val, addend) == expected
-
-
+# Fixture to track the runtime of tests
 @pytest.fixture(scope="session", autouse=True)
 def starter(request):
     start_time = time.time()
@@ -214,4 +142,3 @@ def starter(request):
         print("runtime: {}".format(str(time.time() - start_time)))
 
     request.addfinalizer(finalizer)
-
