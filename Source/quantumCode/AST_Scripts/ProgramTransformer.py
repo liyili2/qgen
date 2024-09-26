@@ -96,9 +96,9 @@ class ProgramTransformer(XMLExpVisitor):
 
     def visitIfexp(self, ctx: XMLExpParser.IfexpContext):
         f = self.visitVexp(ctx.vexp())
-        left = self.visitNextexp(ctx.nextexp(0))
-        right = self.visitNextexp(ctx.nextexp(1))
-        return QXIf(f,left,right)
+        ab = self.visitNextexp(ctx.nextexp(0))
+        cd = self.visitNextexp(ctx.nextexp(1))
+        return QXIf(f,ab,cd)
 
     def visitAppexp(self, ctx: XMLExpParser.AppexpContext):
         vx = ctx.Identifier()
@@ -207,10 +207,10 @@ class ProgramTransformer(XMLExpVisitor):
             v = self.visitNumexp(ctx.numexp())
             return QXNum(v)
         else:
-            op = self.visitOp(ctx.op())
+            x = self.visitOp(ctx.op())
             v1 = self.visitVexp(ctx.vexp(0))
             v2 = self.visitVexp(ctx.vexp(1))
-            return QXBin(op, v1, v2)
+            return QXBin(x, v1, v2)
     # the only thing that matters will be 48 and 47
 
     def visitOp(self, ctx:XMLExpParser.OpContext):

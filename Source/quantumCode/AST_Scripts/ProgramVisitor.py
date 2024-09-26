@@ -1,5 +1,5 @@
 from quantumCode.AST_Scripts import XMLProgrammer
-from quantumCode.AST_Scripts.XMLProgrammer import *
+#from quantumCode.AST_Scripts.XMLProgrammer import *
 
 from quantumCode.AST_Scripts.AbstractProgramVisitor import AbstractProgramVisitor
 

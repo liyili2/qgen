@@ -30,26 +30,26 @@ class QXType(QXTop):
         pass
 
 class QXRoot(QXTop):
-    def __init__(self, program: QXProgram):
-        self._program = program
+    def __init__(self, prog: QXProgram):
+        self.prog = prog
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRoot(self)
 
     def program(self):
-        return self._program
+        return self.prog
 
 
 
 class QXNext(QXTop):
-    def __init__(self, program: QXProgram):
-        self._program = program
+    def __init__(self, prog: QXProgram):
+        self.prog = prog
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitNext(self)
 
     def program(self):
-        return self._program
+        return self.prog
 
 class QXVexp(QXTop):
 
@@ -62,9 +62,9 @@ class QXElem(QXTop):
         pass
 
 class QXIDExp(QXElem, QXVexp):
-    def __init__(self, id: str, type: QXType = None):
+    def __init__(self, id: str, ty: QXType = None):
         self.id = id
-        self._type = type
+        self._type = ty
 
     def accept(self, visitor : AbstractProgramVisitor):
         return visitor.visitIDExp(self)
@@ -138,10 +138,10 @@ class QXCU(QXExp):
 
 
 class QXIf(QXExp):
-    def __init__(self, v: QXVexp, left: QXNext, right: QXNext):
+    def __init__(self, v: QXVexp, lefta, righta):
         self.v = v
-        self.left = left
-        self.right = right
+        self.lefta = lefta
+        self.righta = righta
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitIf(self)
@@ -150,10 +150,10 @@ class QXIf(QXExp):
         return self.v
 
     def left(self):
-        return self.left
+        return self.lefta
 
     def right(self):
-        return self.right
+        return self.righta
 
 class QXPair(QXTop):
     def __init__(self, elem: QXElem, p: QXProgram):

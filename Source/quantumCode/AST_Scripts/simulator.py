@@ -125,9 +125,9 @@ def natminusmod(x, v, a):
 
 def bit_array_to_int(bit_array, num_qubits):
     val = 0
-    print("bit_array", bit_array)
-    print("length of bit array", len(bit_array))
-    print("num_qubits", num_qubits)
+    #print("bit_array", bit_array)
+    #print("length of bit array", len(bit_array))
+    #print("num_qubits", num_qubits)
     for i in range(min(len(bit_array), num_qubits)):
         val += pow(2, i) * int(bit_array[i])
     return val
@@ -201,13 +201,15 @@ class Simulator(ProgramVisitor):
     def visitMatch(self, ctx: XMLProgrammer.QXMatch):
         x = ctx.ID()
         value = self.state.get(x)
-        ctx.zero().program().accept(self)
-        #print("value match", value)
-        va = ctx.multi().elem().ID()
-        tmpv = self.state.get(va)
-        self.state.update({va: int(value) - 1})
-        ctx.multi().program().accept(self)
-        self.state.update({va:tmpv})
+        #print("old value", value)
+        if value == 0:
+            ctx.zero().program().accept(self)
+        else:
+            va = ctx.multi().elem().ID()
+            tmpv = self.state.get(va)
+            self.state.update({va: int(value) - 1})
+            ctx.multi().program().accept(self)
+            self.state.update({va:tmpv})
 
 
     def visitApp(self, ctx: XMLProgrammer.QXApp):
@@ -221,10 +223,10 @@ class Simulator(ProgramVisitor):
         tmpa = dict()
         while ctxa.idexp(i) is not None:
             x = ctxa.idexp(i).ID()
-            print("here",x)
+            #print("here",x)
             #print("var",ctxa.idexp(i+1).Identifier())
             v = ctx.vexp(i).accept(self)
-            print("val",v)
+            #print("val",v)
             tmpv.update({x:self.state.get(x)})
             tmpa.update({x:v})
             i += 1
@@ -248,8 +250,10 @@ class Simulator(ProgramVisitor):
     def visitIf(self, ctx: XMLProgrammer.QXIf):
         v = ctx.vexp().accept(self)
         if v == 1:
+            #print("here", ctx.left())
             ctx.left().accept(self)
         else:
+            #print("here",ctx.right())
             ctx.right().accept(self)
 
     def get_state(self):
@@ -410,19 +414,20 @@ class Simulator(ProgramVisitor):
         x = ctx.left().accept(self)
         y = ctx.right().accept(self)
             #print("val",y)
-        if ctx.op() == "Plus":
+        #print(ctx.OP())
+        if ctx.OP() == "Plus":
             return x + y
-        elif ctx.op() == "Minus":
+        elif ctx.OP() == "Minus":
             return x - y
-        elif ctx.op() == "Times":
+        elif ctx.OP() == "Times":
             return x * y
-        elif ctx.op() == "Div":
+        elif ctx.OP() == "Div":
             return x // y
-        elif ctx.op() == "Exp":
+        elif ctx.OP() == "Exp":
             return x ** y
-        elif ctx.op() == "Mod":
+        elif ctx.OP() == "Mod":
             return x % y
-        elif ctx.op() == "GNum":
+        elif ctx.OP() == "GNum":
                 #print("here1")
             tmp = (calBinNoLength(x))
                 #print("val",tmp)

@@ -4,7 +4,7 @@
    <match id = 'n' >
           <pair case = '0' >  <pexp gate = 'SKIP' id = 'x' > <vexp op = 'num' > 0 </vexp> </pexp> </pair>
            <pair case = 'm' >
-                  <app id = 'f' > <vexp op = 'id' > x </vexp> <vexp op = 'id' > m </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > M </vexp> </app>
+                  <app id = 'f' >  <vexp op = 'id' > m </vexp> <vexp op = 'id' > size </vexp> <vexp op = 'id' > M </vexp> <vexp op = 'id' > x </vexp> </app>
                   <if> <vexp op = '$' > <vexp op = 'id' > M </vexp> <vexp op = 'id' > m </vexp> </vexp>
                       <next> <pexp gate = 'SR' id = 'x' > <vexp op = '-' > <vexp op = 'id' > size </vexp> <vexp op = 'id' > m </vexp> </vexp> </pexp> </next>
                       <next> <pexp gate = 'SKIP' id = 'x' > <vexp op = 'id' > m </vexp> </pexp> </next>
