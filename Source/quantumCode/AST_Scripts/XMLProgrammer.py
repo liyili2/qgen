@@ -15,13 +15,13 @@ class QXExp(QXTop):
 
 class QXProgram(QXTop):
     def __init__(self, exps: [QXExp]):
-        self.exps = exps
+        self._exps = exps
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitProgram(self)
 
     def exp(self, i:int=None):
-        return self.exps[i] if len(self.exps) > i else None
+        return self._exps[i] if len(self._exps) > i else None
 
 
 class QXType(QXTop):
@@ -30,26 +30,26 @@ class QXType(QXTop):
         pass
 
 class QXRoot(QXTop):
-    def __init__(self, prog: QXProgram):
-        self.prog = prog
+    def __init__(self, _prog: QXProgram):
+        self._prog = _prog
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRoot(self)
 
     def program(self):
-        return self.prog
+        return self._prog
 
 
 
 class QXNext(QXTop):
-    def __init__(self, prog: QXProgram):
-        self.prog = prog
+    def __init__(self, _prog: QXProgram):
+        self._prog = _prog
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitNext(self)
 
     def program(self):
-        return self.prog
+        return self._prog
 
 class QXVexp(QXTop):
 
@@ -63,14 +63,14 @@ class QXElem(QXTop):
 
 class QXIDExp(QXElem, QXVexp):
     def __init__(self, id: str, ty: QXType = None):
-        self.id = id
+        self._id = id
         self._type = ty
 
     def accept(self, visitor : AbstractProgramVisitor):
         return visitor.visitIDExp(self)
 
     def ID(self):
-        return self.id if self.id is str else self.id.getText()
+        return self._id if self._id is str else self._id.getText()
 
     def type(self):
         return self._type
@@ -79,36 +79,36 @@ class QXIDExp(QXElem, QXVexp):
 
 class QXLet(QXExp):
     def __init__(self, id: str, ids: [QXIDExp], p: QXProgram):
-        self.id = id
-        self.ids = ids
-        self.prog = p
+        self._id = id
+        self._ids = ids
+        self._prog = p
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitLet(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def idexp(self, i:int = None):
-        return self.ids[i] if i < len(self.ids) else None
+        return self._ids[i] if i < len(self._ids) else None
 
     def program(self):
-        return self.prog
+        return self._prog
     
 
 class QXApp(QXExp):
     def __init__(self, id: str, vs: [QXVexp]):
-        self.id = id
-        self.vs = vs
+        self._id = id
+        self._vs = vs
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitApp(self)
 
     def ID(self) -> str:
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self, i : int = None):
-        return self.vs[i] if len(self.vs) > i else None
+        return self._vs[i] if len(self._vs) > i else None
 
 
 class QXBlock(QXExp):
@@ -120,40 +120,40 @@ class QXBlock(QXExp):
 
 class QXCU(QXExp):
     def __init__(self, id: str, v: QXVexp, p: QXProgram):
-        self.id = id
-        self.v = v
-        self.prog = p
+        self._id = id
+        self._v = v
+        self._prog = p
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitCU(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self):
-        return self.v
+        return self._v
 
     def program(self):
-        return self.prog
+        return self._prog
 
 
 class QXIf(QXExp):
     def __init__(self, v: QXVexp, lefta, righta):
-        self.v = v
-        self.lefta = lefta
-        self.righta = righta
+        self._v = v
+        self._lefta = lefta
+        self._righta = righta
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitIf(self)
 
     def vexp(self):
-        return self.v
+        return self._v
 
     def left(self):
-        return self.lefta
+        return self._lefta
 
     def right(self):
-        return self.righta
+        return self._righta
 
 class QXPair(QXTop):
     def __init__(self, elem: QXElem, p: QXProgram):
@@ -171,7 +171,7 @@ class QXPair(QXTop):
 
 class QXMatch(QXExp):
     def __init__(self, id: str, zero: QXPair, multi: QXPair):
-        self.id = id
+        self._id = id
         self._zero = zero
         self._multi = multi
 
@@ -179,7 +179,7 @@ class QXMatch(QXExp):
         visitor.visitMatch(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def zero(self):
         return self._zero
@@ -196,33 +196,33 @@ class QXMatch(QXExp):
 
 class QXBin(QXVexp):
     def __init__(self, op: str, v1: QXVexp, v2: QXVexp):
-        self.op = op
-        self.v1 = v1
-        self.v2 = v2
+        self._op = op
+        self._v1 = v1
+        self._v2 = v2
 
     def accept(self, visitor : AbstractProgramVisitor):
         return visitor.visitBin(self)
 
 
     def OP(self):
-        return self.op
+        return self._op
 
     def left(self):
-        return self.v1
+        return self._v1
 
     def right(self):
-        return self.v2
+        return self._v1
 
 
 class QXNum(QXElem, QXVexp):
     def __init__(self, v: int):
-        self.v = v
+        self._v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
         return visitor.visitNum(self)
 
     def num(self):
-        return self.v
+        return self._v
 
 
 
@@ -268,30 +268,30 @@ def equalTypes(a: dict, b: type):
 class Qty(QXType):
 
     def __init__(self, qubit_array_size: int, type: str = None, m=None):
-        self.qubit_array_size = qubit_array_size
-        self.type = type
+        self._qubit_array_size = qubit_array_size
+        self._type = type
         if m is None:
-            self.m = "0"
+            self._m = "0"
         else:
-            self.m = m
+            self._m = m
 
     def get_num(self):
-        return self.qubit_array_size
+        return self._qubit_array_size
 
     def get_anum(self):
-        return self.m
+        return self._m
 
     def set_type(self, ty: str):
-        self.type = ty
+        self._type = ty
 
     def type(self):
-        return self.type
+        return self._type
 
     def fullty(self):
-        return (self.type, self.qubit_array_size, self.m)
+        return (self._type, self._qubit_array_size, self._m)
 
     def __str__(self):
-        return f"Qty(type={self.type}, qubit_array_size={self.qubit_array_size}, m={self.m})"
+        return f"Qty(type={self._type}, qubit_array_size={self._qubit_array_size}, m={self._m})"
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitQty(self)
@@ -309,25 +309,25 @@ class Nat(QXType):
 class Fun(QXType):
 
     def __init__(self, args: [str], pre: dict, out: dict):
-        self.args = args
-        self.pre = pre
-        self.out = out
+        self._args = args
+        self._pre = pre
+        self._out = out
         # self.r2 = r2
 
     def type(self):
-        return ("Fun", (self.args, self.pre, self.out))
+        return ("Fun", (self._args, self._pre, self._out))
 
     def args(self):
-        return self.args
+        return self._args
 
     def pre(self):
-        return self.pre
+        return self._pre
 
     def out(self):
-        return self.out
+        return self._out
 
     def __str__(self):
-        return f"Fun(args={self.args}, pre={self.pre}, out={self.out})"
+        return f"Fun(args={self._args}, pre={self._pre}, out={self._out})"
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitFun(self)
@@ -335,102 +335,102 @@ class Fun(QXType):
 
 class QXSKIP(QXExp):
     def __init__(self, id: str, v: QXVexp):
-        self.id = id
-        self.v = v
+        self._id = id
+        self._v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitSKIP(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self):
-        return self.v
+        return self._v
 
 
 class QXX(QXExp):
     def __init__(self, id: str, v: QXVexp):
-        self.id = id
-        self.v = v
+        self._id = id
+        self._v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitX(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self):
-        return self.v
+        return self._v
 
 
 class QXSR(QXExp):
     def __init__(self, id: str, v: QXVexp):
-        self.id = id
-        self.v = v
+        self._id = id
+        self._v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitSR(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self):
-        return self.v
+        return self._v
 
 
 class QXQFT(QXExp):
     def __init__(self, id: str, v: QXVexp):
-        self.id = id
-        self.v = v
+        self._id = id
+        self._v = v
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitQFT(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
     def vexp(self):
-        return self.v
+        return self._v
 
 
 class QXRQFT(QXExp):
     def __init__(self, id: str):
-        self.id = id
+        self._id = id
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRQFT(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
 
 class QXLshift(QXExp):
     def __init__(self, id: str):
-        self.id = id
+        self._id = id
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitLshift(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
 class QXRshift(QXExp):
     def __init__(self, id: str):
-        self.id = id
+        self._id = id
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRshift(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
 
 
 class QXRev(QXExp):
     def __init__(self, id: str):
-        self.id = id
+        self._id = id
 
     def accept(self, visitor : AbstractProgramVisitor):
         visitor.visitRev(self)
 
     def ID(self):
-        return self.id if isinstance(self.id, str) else self.id.getText()
+        return self._id if isinstance(self._id, str) else self._id.getText()
