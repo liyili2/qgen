@@ -16,7 +16,7 @@ from repairCode.qproblem import QProblem
 from repairCode.mutation import PyGGiMutation
 from repairCode.crossover import PyGGiCrossover
 # Custom Operators
-from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion
+from repairCode.operators import QGateReplacement, QGateInsertion, QGateDeletion, QGateReplacement
 
 
 class MyXmlEngine(XmlEngine):  
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     program = QProgram(args.project_path)
     program.operators = args.operators  # Need to parse args into a list
     #program.operators = [StmtDeletion, StmtInsertion, StmtReplacement]
-    program.operators = [QGateInsertion]
+    program.operators = [QGateReplacement]
     program.tags = args.tags
     # Make a Problem
     problem = QProblem(program, number_of_variables=1)

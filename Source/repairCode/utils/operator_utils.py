@@ -47,6 +47,13 @@ def convert_xml_element_to_ast(element):
     return ast_root
 
 
+def convert_xml_element_to_string(element):
+    xml_string = ET.tostring(element, encoding='unicode')
+    xml_string = xml_string.replace('"', "'")
+
+    return xml_string
+
+
 def delete_block(parent):
     for child in parent.findall("block"):
         parent.remove(child)

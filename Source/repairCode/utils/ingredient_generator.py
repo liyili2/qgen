@@ -1,5 +1,6 @@
 import random
 import xml.etree.ElementTree as ET
+import string
 
 
 def random_num():
@@ -154,6 +155,30 @@ class IngredientGenerator:
                 pexp_el.append(self.create_nextexp())
 
         return pexp_el
+
+    # Generate variables, natural num, binary op
+    def generate_vexp(self):
+        # We only have Nat Ops
+        # Try with Minus op first
+        op_types = ["Plus", "Minus", "Times", "Div", "Mod", "Exp", "GNum"]
+        op = random.choice(op_types)
+
+        # Options for the operand
+        opr_opts = ["VAR", "CONST"]
+        opr_opt = random.choice(opr_opts)
+        if opr_opt == "VAR":
+            opr = random.choice(string.ascii_letters)
+        elif opr_opt == "CONST":
+            opr = random.choice(range(0, 100))  # A constant between 0 and 100
+        else:
+            opr = ""  # Unreachable code
+
+        # Create the element
+        vexp_el = ET.Element("vexp")
+        vexp_el.set("op", op)
+        vexp_el.text = str(opr)
+
+        return vexp_el
 
     def generate_ingredients(self, target_element):
         block_functions = [self.generate_if, self.generate_app, self.generate_pexp]
