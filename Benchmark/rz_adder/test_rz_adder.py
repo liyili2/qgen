@@ -12,6 +12,7 @@ from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 
 # Test function to initialize and run the rz_adder simulation
 def run_rz_adder_test(num_qubits, array_size_na, val, addend):
+    print("In rz_adder",num_qubits, array_size_na, val, addend)
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
@@ -23,15 +24,23 @@ def run_rz_adder_test(num_qubits, array_size_na, val, addend):
     newTree = transform.visitRoot(tree)
     
     val_array = to_binary_arr(val, num_qubits)  # Convert value to array
+    print("val_array",val_array)
     state = dict({"x": [CoqNVal(val_array, 0)],
                   "size": num_qubits,
                   "na": array_size_na,
                   "m": addend})  # Initial state
     environment = dict({"x": num_qubits})  # Environment for simulation
     y = Simulator(state, environment)
+    print(f"Running rz_adder with:\n num_qubits={num_qubits}, array_size_na={array_size_na}, val={val}, addend={addend}")
+    print(f"Initial state: {state}")
     y.visitRoot(newTree)
     new_state = y.get_state()
+    print(f"new state: {new_state.get('x')[0].getBits()}")
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
+
+def print_itr(cur_state,step_num):
+    print(f"step{step_num}:{cur_state}")
+
 
 # Function to parse TSL file
 def parse_tsl_file(file_path):
@@ -44,12 +53,12 @@ def parse_tsl_file(file_path):
                 if current_case:
                     test_cases.append(current_case)
                 current_case = {}  # Reset current case for next one
-            elif "num_qubits" in line:
-                current_case['num_qubits'] = line.split(":")[1].strip()
-            elif "array_size_na" in line:
-                current_case['array_size_na'] = line.split(":")[1].strip()
-            elif "initial_state_x" in line:
-                current_case['initial_state_x'] = line.split(":")[1].strip()
+            elif "size" in line:
+                current_case['size'] = line.split(":")[1].strip()
+            elif "na" in line:
+                current_case['na'] = line.split(":")[1].strip()
+            elif "x_input" in line:
+                current_case['x_input'] = line.split(":")[1].strip()
             elif "input_value_m" in line:
                 current_case['input_value_m'] = line.split(":")[1].strip()
 
@@ -61,50 +70,66 @@ def parse_tsl_file(file_path):
 # Mapping TSL inputs to actual values
 def map_tsl_to_values(term, parameter_type):
     mappings = {
-        'num_qubits': {
+        'size': {  # Size of the qubit array
             'small': (2, 4),
             'medium': (4, 8),
             'large': (8, 16),
-            'max': (16, 32),
-            'one_bit': (1, 1)
         },
-        'array_size_na': {
-            'small': (1, 4),
+        'na': {
+            'small': (1, 4), # Small iteration range
             'medium': (5, 8),
             'large': (9, 16)
         },
-        'input_value_m': {
+        'input_value_m': {  # Natural number 'm' to be added in rz_adder
             'small': (1, 10),
             'medium': (11, 100),
             'large': (101, 1000),
             'zero': (0, 0),
             'max_value': (10001, 65535)
         },
-        'initial_state_x': {
-            'zero_state': (0, 0),
-            'max_state': (1 << 3, 1 << 4),
-            'random_state': (1, 15)
+        'x_input': {  # Initial state of the qubit array 'x'
+            'zero_state': (1, 4),
+            'max_state': (4, 8),
+            'random_state': (9, 15)
         }
     }
     
     return mappings[parameter_type].get(term, (0,0))
 
+# Function to apply the constraint that 'na' should not exceed 'size'
+
+def apply_constraints(mapped_case):
+    if mapped_case['na'] > mapped_case['size']:
+        mapped_case['na'] = random.randint(1, mapped_case['size'])
+    
+    max_value = (2 ** mapped_case['size']) - 1
+    if mapped_case['x_input'] > max_value:
+        mapped_case['x_input'] = random.randint(0, max_value)
+    
+    return mapped_case
+    
+
 # Save the mapped TSL values to a JSON file so they can be reused
 def save_mapped_tsl_to_file(test_cases, output_file):
+     # If the file already exists, load it instead of generating new values
+    if os.path.exists(output_file):
+        print(f"Mapped TSL file {output_file} already exists. Loading existing values.")
+        return
     mapped_test_cases = []
 
     for case in test_cases:
         mapped_case = {
-            'num_qubits': random.randint(*map_tsl_to_values(case['num_qubits'], 'num_qubits')),
-            'array_size_na': random.randint(*map_tsl_to_values(case['array_size_na'], 'array_size_na')),
-            'initial_state_x': random.randint(*map_tsl_to_values(case['initial_state_x'], 'initial_state_x')),
+            'size': random.randint(*map_tsl_to_values(case['size'], 'size')),
+            'na': random.randint(*map_tsl_to_values(case['na'], 'na')),
+            'x_input': random.randint(*map_tsl_to_values(case['x_input'], 'x_input')),
             'input_value_m': random.randint(*map_tsl_to_values(case['input_value_m'], 'input_value_m'))
         }
+        mapped_case = apply_constraints(mapped_case)
         mapped_test_cases.append(mapped_case)
 
     # Save the mapped values to a JSON file
     with open(output_file, 'w') as f:
-        json.dump(mapped_test_cases, f)
+        json.dump(mapped_test_cases, f ,indent=4) 
 
     print(f"Mapped TSL values saved to {output_file}")
 
@@ -118,20 +143,23 @@ def load_mapped_tsl_from_file(file_path):
 
 # Usage: First, parse and save the mapped TSL values to a JSON file
 test_cases = parse_tsl_file("Benchmark/rz_adder/rz_adder.tsl.tsl")
-save_mapped_tsl_to_file(test_cases, "Benchmark/rz_adder/mapped_tsl_values.txt")
+save_mapped_tsl_to_file(test_cases, "Benchmark/rz_adder/mapped_tsl_values.json")
 
 # Load the mapped values from the JSON file
-mapped_test_cases = load_mapped_tsl_from_file("Benchmark/rz_adder/mapped_tsl_values.txt")
+mapped_test_cases = load_mapped_tsl_from_file("Benchmark/rz_adder/mapped_tsl_values.json")
 
 # Generate pytest parameterization from the loaded values
-@pytest.mark.parametrize("num_qubits, array_size_na, initial_state_x, input_value_m", [
-    (case['num_qubits'], case['array_size_na'], case['initial_state_x'], case['input_value_m'])
+@pytest.mark.parametrize("x_input,size,na, input_value_m", [
+    (case['size'], case['na'], case['x_input'], case['input_value_m'])
     for case in mapped_test_cases
 ])
-def test_basic_addition(num_qubits, array_size_na, initial_state_x, input_value_m):
-    print("Test case:", num_qubits, array_size_na, initial_state_x, input_value_m)
-    expected = ((initial_state_x) + (input_value_m % (2 ** array_size_na))) % 2 ** num_qubits
-    assert run_rz_adder_test(num_qubits, array_size_na, initial_state_x, input_value_m) == expected
+def test_basic_addition(size,na,x_input, input_value_m):
+    print("Test cases:", size,na,x_input, input_value_m)
+    expected = ((x_input) + (input_value_m % (2 ** na))) % 2 ** size
+    assert run_rz_adder_test(size,na,x_input, input_value_m) == expected
+
+
+  # Initial state
 
 # Fixture to track the runtime of tests
 @pytest.fixture(scope="session", autouse=True)
