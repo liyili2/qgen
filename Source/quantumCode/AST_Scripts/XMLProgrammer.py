@@ -211,7 +211,7 @@ class QXBin(QXVexp):
         return self._v1
 
     def right(self):
-        return self._v1
+        return self._v2
 
 
 class QXNum(QXElem, QXVexp):

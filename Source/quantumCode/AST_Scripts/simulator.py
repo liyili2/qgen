@@ -428,13 +428,13 @@ class Simulator(ProgramVisitor):
         elif ctx.OP() == "Mod":
             return x % y
         elif ctx.OP() == "GNum":
-                #print("here1")
+            #print("here1")
             tmp = (calBinNoLength(x))
                 #print("val",tmp)
                 #print("val",tmp)
                 #print("vala", y)
             if y < len(tmp):
-                    #print("val",tmp[y])
+                #print("here",tmp[y])
                 return int(tmp[y])
         return 0
     # def visitIDExp(self, ctx: XMLProgrammer.QXIDExp):
