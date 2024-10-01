@@ -12,7 +12,6 @@ from Source.quantumCode.AST_Scripts.ProgramTransformer import ProgramTransformer
 
 # Test function to initialize and run the rz_adder simulation
 def run_rz_adder_test(num_qubits, array_size_na, val, addend):
-    print("In rz_adder",num_qubits, array_size_na, val, addend)
     with open("Benchmark/rz_adder/rz_adder_good.xml", 'r') as f:
         str = f.read()
     i_stream = InputStream(str)
@@ -24,22 +23,17 @@ def run_rz_adder_test(num_qubits, array_size_na, val, addend):
     newTree = transform.visitRoot(tree)
     
     val_array = to_binary_arr(val, num_qubits)  # Convert value to array
-    print("val_array",val_array)
     state = dict({"x": [CoqNVal(val_array, 0)],
                   "size": num_qubits,
                   "na": array_size_na,
                   "m": addend})  # Initial state
     environment = dict({"x": num_qubits})  # Environment for simulation
     y = Simulator(state, environment)
-    print(f"Running rz_adder with:\n num_qubits={num_qubits}, array_size_na={array_size_na}, val={val}, addend={addend}")
     print(f"Initial state: {state}")
     y.visitRoot(newTree)
     new_state = y.get_state()
     print(f"new state: {new_state.get('x')[0].getBits()}")
     return bit_array_to_int(new_state.get('x')[0].getBits(), num_qubits)
-
-def print_itr(cur_state,step_num):
-    print(f"step{step_num}:{cur_state}")
 
 
 # Function to parse TSL file
@@ -70,8 +64,8 @@ def parse_tsl_file(file_path):
 # Mapping TSL inputs to actual values
 def map_tsl_to_values(term, parameter_type):
     mappings = {
-        'size': {  # Size of the qubit array
-            'small': (2, 4),
+      'size': {  # Size of the qubit array
+            'small': (1, 4),
             'medium': (4, 8),
             'large': (8, 16),
         },
@@ -88,9 +82,10 @@ def map_tsl_to_values(term, parameter_type):
             'max_value': (10001, 65535)
         },
         'x_input': {  # Initial state of the qubit array 'x'
-            'zero_state': (1, 4),
-            'max_state': (4, 8),
-            'random_state': (9, 15)
+            'zero_state': (0, 0),
+            'random_state': (101, 1000),
+            'max_state': (10001, 65535),
+            
         }
     }
     
@@ -99,12 +94,9 @@ def map_tsl_to_values(term, parameter_type):
 # Function to apply the constraint that 'na' should not exceed 'size'
 
 def apply_constraints(mapped_case):
+    # Ensure 'na' is less than or equal to 'size'
     if mapped_case['na'] > mapped_case['size']:
         mapped_case['na'] = random.randint(1, mapped_case['size'])
-    
-    max_value = (2 ** mapped_case['size']) - 1
-    if mapped_case['x_input'] > max_value:
-        mapped_case['x_input'] = random.randint(0, max_value)
     
     return mapped_case
     
@@ -148,13 +140,12 @@ save_mapped_tsl_to_file(test_cases, "Benchmark/rz_adder/mapped_tsl_values.json")
 # Load the mapped values from the JSON file
 mapped_test_cases = load_mapped_tsl_from_file("Benchmark/rz_adder/mapped_tsl_values.json")
 
-# Generate pytest parameterization from the loaded values
-@pytest.mark.parametrize("x_input,size,na, input_value_m", [
+#Generate pytest parameterization from the loaded values
+@pytest.mark.parametrize("size,na,x_input, input_value_m", [
     (case['size'], case['na'], case['x_input'], case['input_value_m'])
     for case in mapped_test_cases
 ])
-def test_basic_addition(size,na,x_input, input_value_m):
-    print("Test cases:", size,na,x_input, input_value_m)
+def test_basic_addition(size, na ,x_input, input_value_m):
     expected = ((x_input) + (input_value_m % (2 ** na))) % 2 ** size
     assert run_rz_adder_test(size,na,x_input, input_value_m) == expected
 
